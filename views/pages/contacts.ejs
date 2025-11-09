@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <%- include('../partials/header') %>
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">Mes contacts</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Prénom</th>
+                                        <th>Adresse postale</th>
+                                        <th>Courriel</th>
+                                        <th>Téléphone</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Gagnon</td>
+                                        <td>Charles-Antoine</td>
+                                        <td>1044 rue ravel prévost</td>
+                                        <td><a href="mailto:charles.antoine.win@gmail.com">charles.antoine.win@gmail.com</a></td>
+                                        <td><a href="tel:4506024757">450-602-4757</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer text-right bg-light">
+                        <a href="/" class="btn btn-outline-primary">Accueil</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+
+
+
+</body>
+
+</html>

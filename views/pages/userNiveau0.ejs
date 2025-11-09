@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header Card -->
+            <div class="card bg-base-100 shadow-2xl mb-6 border-t-4 border-info">
+                <div class="card-body">
+                    <div class="flex items-center justify-between flex-wrap gap-4">
+                        <div>
+                            <h1 class="text-4xl font-bold bg-gradient-to-r from-info to-primary bg-clip-text text-transparent">
+                                Bonjour, <%= user %> ! 👋
+                            </h1>
+                            <p class="text-gray-600 mt-2">Tableau de bord - <%= typeAcces || 'Invité' %></p>
+                        </div>
+                        <div class="badge badge-info badge-lg gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-4 h-4 stroke-current">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            <%= typeAcces || 'Invité' %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alert Info -->
+            <div class="alert alert-info shadow-lg mb-6">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <h3 class="font-bold">Accès limité</h3>
+                        <div class="text-xs">En tant qu'invité, vous avez accès aux fonctionnalités de base du système.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Card -->
+            <div class="card bg-base-100 shadow-2xl mb-6">
+                <div class="card-body">
+                    <h2 class="card-title text-2xl mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        Fonctionnalités disponibles
+                    </h2>
+
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 p-4 rounded-lg bg-info/10 hover:bg-info/20 transition-colors">
+                            <div class="text-2xl">📋</div>
+                            <div class="flex-1">
+                                <p class="font-medium">Consultation des informations publiques</p>
+                                <p class="text-sm text-gray-500">Accédez aux données partagées</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 p-4 rounded-lg bg-info/10 hover:bg-info/20 transition-colors">
+                            <div class="text-2xl">👁️</div>
+                            <div class="flex-1">
+                                <p class="font-medium">Visualisation des données de base</p>
+                                <p class="text-sm text-gray-500">Explorez les informations essentielles</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <div class="card-actions justify-end">
+                        <a href="/" class="btn btn-outline btn-error gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                            Déconnexion
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

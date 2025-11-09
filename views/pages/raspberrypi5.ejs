@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto">
+            <!-- Header Card -->
+            <div class="card bg-base-100 shadow-2xl mb-6 border-t-4 border-accent">
+                <div class="card-body">
+                    <div class="flex items-center justify-between flex-wrap gap-4">
+                        <div>
+                            <h1 class="text-4xl font-bold bg-gradient-to-r from-accent to-pink-600 bg-clip-text text-transparent">
+                                Raspberry Pi 5 🖥️
+                            </h1>
+                            <p class="text-gray-600 mt-2">Connecté en tant que <%= user %> (<%= typeAcces %>)</p>
+                        </div>
+                        <div class="badge badge-accent badge-lg">
+                            Niveau <%= niveau %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pi Info Card -->
+            <div class="card bg-base-100 shadow-2xl mb-6">
+                <div class="card-body">
+                    <h2 class="card-title text-2xl mb-4">📊 Raspberry Pi 5 - Serveur IoT</h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="stat bg-accent/10 rounded-lg">
+                            <div class="stat-title">État</div>
+                            <div class="stat-value text-success text-2xl">En ligne</div>
+                            <div class="stat-desc">Uptime: 31 jours</div>
+                        </div>
+                        <div class="stat bg-accent/10 rounded-lg">
+                            <div class="stat-title">Température</div>
+                            <div class="stat-value text-success text-2xl">37°C</div>
+                            <div class="stat-desc">Excellente</div>
+                        </div>
+                        <div class="stat bg-accent/10 rounded-lg">
+                            <div class="stat-title">CPU</div>
+                            <div class="stat-value text-info text-2xl">15%</div>
+                            <div class="stat-desc">Utilisation faible</div>
+                        </div>
+                        <div class="stat bg-accent/10 rounded-lg">
+                            <div class="stat-title">Capteurs</div>
+                            <div class="stat-value text-accent text-2xl">24</div>
+                            <div class="stat-desc">Connectés</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description Card -->
+            <div class="card bg-base-100 shadow-2xl mb-6">
+                <div class="card-body">
+                    <h2 class="card-title text-2xl mb-4">ℹ️ Description</h2>
+                    <p class="text-gray-700">
+                        Le Raspberry Pi 5 gère tous les capteurs IoT et dispositifs connectés. Il collecte les données
+                        des capteurs de température, humidité, mouvement et communique avec les systèmes domotiques.
+                    </p>
+                    <div class="alert alert-success mt-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Services actifs: MQTT, Node-RED, Home Assistant</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <div class="card-actions justify-between">
+                        <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-secondary gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                            Retour au dashboard
+                        </a>
+                        <a href="/" class="btn btn-outline btn-error gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                            Déconnexion
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
