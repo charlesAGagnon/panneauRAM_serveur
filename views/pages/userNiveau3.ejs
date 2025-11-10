@@ -7,7 +7,7 @@
     <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <!-- Header Card -->
-            <div class="card bg-base-100 shadow-2xl mb-6 border-t-4 border-error">
+            <div class="card bg-base-100 shadow-2xl mb-6 border-t-4">
                 <div class="card-body">
                     <div class="flex items-center justify-between flex-wrap gap-4">
                         <div>
@@ -16,7 +16,7 @@
                             </h1>
                             <p class="text-gray-600 mt-2">Tableau de bord - <%= typeAcces || 'Administrateur' %></p>
                         </div>
-                        <div class="badge badge-error badge-lg gap-2 animate-pulse">
+                        <div class="badge badge-lg gap-2 animate-pulse">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-4 h-4 stroke-current">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                             </svg>
@@ -27,10 +27,8 @@
             </div>
 
             <!-- Alert Danger -->
-            <div class="alert alert-error shadow-lg mb-6">
+            <div class="alert shadow-lg mb-6">
                 <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 w-6 h-6" fill="none" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                     <div>
                         <h3 class="font-bold">Accès Administrateur - Lecture et Écriture complète</h3>
                         <div class="text-xs">En tant qu'administrateur, vous pouvez consulter et modifier tous les Raspberry Pi sans restriction.</div>
@@ -48,22 +46,22 @@
                     </h2>
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
                         <a href="/raspberrypi1?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-error gap-2 hover:scale-105">
-                            🖥️ Balance
+                            Balance
                         </a>
                         <a href="/raspberrypi2?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-error gap-2 hover:scale-105">
-                            🖥️ Pi Mélangeur
+                            Pi Mélangeur
                         </a>
                         <a href="/raspberrypi3?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-error gap-2 hover:scale-105">
-                            🖥️ Pi 3
+                            Pi 3
                         </a>
                         <a href="/raspberrypi4?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-error gap-2 hover:scale-105">
-                            🖥️ Pi 4
+                            Pi 4
                         </a>
                         <a href="/raspberrypi5?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-error gap-2 hover:scale-105">
-                            🖥️ Pi 5
+                            Pi 5
                         </a>
                         <a href="/raspberrypi6?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-error gap-2 hover:scale-105">
-                            🖥️ Pi 6
+                            Pi 6
                         </a>
                     </div>
                 </div>

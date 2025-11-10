@@ -8,18 +8,18 @@
     <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <!-- Header Card -->
-            <div class="card bg-base-100 shadow-2xl mb-6 border-t-4 border-warning">
+            <div class="card bg-base-100 shadow-2xl mb-6 border-t-4">
                 <div class="card-body">
                     <div class="flex items-center justify-between flex-wrap gap-4">
                         <div>
-                            <h1 class="text-4xl font-bold bg-gradient-to-r from-warning to-orange-600 bg-clip-text text-transparent">
-                                Raspberry Pi 3 - Power Meter ⚡
+                            <h1 class="text-4xl font-bold bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent">
+                                Raspberry Pi 3 - Power Meter
                             </h1>
                             <p class="text-gray-600 mt-2">Connecté en tant que <%= user %> (<%= typeAcces %>)</p>
                         </div>
                         <div class="flex gap-3">
-                            <div class="badge badge-warning badge-lg">Niveau <%= niveau %></div>
-                            <div id="connection-status" class="badge badge-ghost badge-lg">
+                            <div class="badge badge-lg">Niveau <%= niveau %></div>
+                            <div id="connection-status" class="badge badge-lg">
                                 <span class="loading loading-dots loading-xs"></span> Connexion...
                             </div>
                         </div>
@@ -30,44 +30,22 @@
             <!-- Données MQTT en temps réel -->
             <div class="card bg-base-100 shadow-2xl mb-6">
                 <div class="card-body">
-                    <h2 class="card-title text-2xl mb-4">📊 Données MQTT en temps réel</h2>
+                    <h2 class="card-title text-2xl mb-4">Données MQTT en temps réel</h2>
                     <div id="mqtt-data-container" class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <!-- Les données MQTT seront ajoutées ici dynamiquement -->
                     </div>
                 </div>
             </div>
 
-            <!-- Description Card -->
-            <div class="card bg-base-100 shadow-2xl mb-6">
-                <div class="card-body">
-                    <h2 class="card-title text-2xl mb-4">ℹ️ Description</h2>
-                    <p class="text-gray-700">
-                        Le Raspberry Pi 3 gère le Power Meter du système. Il mesure les tensions (Van, Vbn, Vab),
-                        les courants (Ia, Ib), la puissance active (KW), l'énergie consommée (KWh) et le facteur de puissance (FP).
-                    </p>
-                    <div class="alert alert-warning mt-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <span>Fonction: Power Meter - Lecture seule (tensions, courants, puissance, énergie, FP)</span>
-                    </div>
-                </div>
-            </div>
+            <!-- ...description card removed... -->
+            <!-- ...description card removed... -->
 
             <!-- Navigation Buttons -->
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body">
                     <div class="card-actions justify-between">
-                        <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-secondary gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                            Retour au dashboard
-                        </a>
-                        <a href="/" class="btn btn-outline btn-error gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                            Déconnexion
-                        </a>
+                        <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="btn btn-outline gap-2">Retour au dashboard</a>
+                        <a href="/" class="btn btn-outline gap-2">Déconnexion</a>
                     </div>
                 </div>
             </div>
@@ -135,7 +113,7 @@
             let displayValue = value;
             let displayTitle = key;
             let displayUnit = '';
-            let badgeClass = 'badge badge-lg badge-info';
+            let badgeClass = 'badge badge-lg';
 
             if (key === 'Van')
             {
@@ -198,7 +176,7 @@
             {
                 card = document.createElement('div');
                 card.id = 'data-' + key;
-                card.className = 'stat bg-warning/10 rounded-lg';
+                card.className = 'stat rounded-lg';
                 card.innerHTML = `
                     <div class="stat-title">${displayTitle}</div>
                     <div class="stat-value text-2xl">

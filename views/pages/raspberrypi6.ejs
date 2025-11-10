@@ -7,86 +7,61 @@
     <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-5xl mx-auto">
             <!-- Header Card -->
-            <div class="card bg-base-100 shadow-2xl mb-6 border-t-4 border-error">
+            <div class="card bg-base-100 shadow-2xl mb-6 border-t-4">
                 <div class="card-body">
                     <div class="flex items-center justify-between flex-wrap gap-4">
                         <div>
-                            <h1 class="text-4xl font-bold bg-gradient-to-r from-error to-red-600 bg-clip-text text-transparent">
-                                Raspberry Pi 6 🖥️
+                            <h1 class="text-4xl font-bold bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent">
+                                Raspberry Pi 6
                             </h1>
                             <p class="text-gray-600 mt-2">Connecté en tant que <%= user %> (<%= typeAcces %>)</p>
                         </div>
-                        <div class="badge badge-error badge-lg animate-pulse">
-                            Niveau <%= niveau %>
-                        </div>
+                        <div class="badge badge-lg">Niveau <%= niveau %></div>
+                        <!-- ...description card removed... -->
+                        <div class="stat-value text-2xl">En ligne</div>
+                        <div class="stat-desc">Uptime: 45 jours</div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Pi Info Card -->
-            <div class="card bg-base-100 shadow-2xl mb-6">
-                <div class="card-body">
-                    <h2 class="card-title text-2xl mb-4">📊 Raspberry Pi 6 - Serveur de Sécurité</h2>
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div class="stat bg-error/10 rounded-lg">
-                            <div class="stat-title">État</div>
-                            <div class="stat-value text-success text-2xl">En ligne</div>
-                            <div class="stat-desc">Uptime: 45 jours</div>
-                        </div>
-                        <div class="stat bg-error/10 rounded-lg">
-                            <div class="stat-title">Température</div>
-                            <div class="stat-value text-info text-2xl">36°C</div>
-                            <div class="stat-desc">Optimale</div>
-                        </div>
-                        <div class="stat bg-error/10 rounded-lg">
-                            <div class="stat-title">CPU</div>
-                            <div class="stat-value text-success text-2xl">22%</div>
-                            <div class="stat-desc">Utilisation normale</div>
-                        </div>
-                        <div class="stat bg-error/10 rounded-lg">
-                            <div class="stat-title">Menaces bloquées</div>
-                            <div class="stat-value text-error text-2xl">1,247</div>
-                            <div class="stat-desc">Aujourd'hui</div>
-                        </div>
+                    <div class="stat bg-base-200 rounded-lg">
+                        <div class="stat-title">Température</div>
+                        <div class="stat-value text-2xl">36°C</div>
+                        <div class="stat-desc">Optimale</div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Description Card -->
-            <div class="card bg-base-100 shadow-2xl mb-6">
-                <div class="card-body">
-                    <h2 class="card-title text-2xl mb-4">ℹ️ Description</h2>
-                    <p class="text-gray-700">
-                        Le Raspberry Pi 6 est dédié à la sécurité du réseau. Il agit comme pare-feu, détecte les intrusions,
-                        bloque les menaces et enregistre tous les événements de sécurité. Accès réservé aux administrateurs.
-                    </p>
-                    <div class="alert alert-error mt-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                        </svg>
-                        <span>Services actifs: pfSense, Fail2Ban, Snort IDS</span>
+                    <div class="stat bg-base-200 rounded-lg">
+                        <div class="stat-title">CPU</div>
+                        <div class="stat-value text-2xl">22%</div>
+                        <div class="stat-desc">Utilisation normale</div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Navigation Buttons -->
-            <div class="card bg-base-100 shadow-xl">
-                <div class="card-body">
-                    <div class="card-actions justify-between">
-                        <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-secondary gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                            Retour au dashboard
-                        </a>
-                        <a href="/" class="btn btn-outline btn-error gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                            Déconnexion
-                        </a>
+                    <div class="stat bg-base-200 rounded-lg">
+                        <div class="stat-title">Menaces bloquées</div>
+                        <div class="stat-value text-2xl">1,247</div>
+                        <div class="stat-desc">Aujourd'hui</div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Description Card -->
+        <div class="card bg-base-100 shadow-2xl mb-6">
+            <div class="card-body">
+                <h2 class="card-title text-2xl mb-4">Description</h2>
+                <p class="text-gray-700">
+                    Le Raspberry Pi 6 est dédié à la sécurité du réseau. Il agit comme pare-feu, détecte les intrusions,
+                    bloque les menaces et enregistre tous les événements de sécurité. Accès réservé aux administrateurs.
+                </p>
+                <div class="alert mt-4">Services actifs: pfSense, Fail2Ban, Snort IDS</div>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <div class="card-actions justify-between">
+                    <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="btn btn-outline gap-2">Retour au dashboard</a>
+                    <a href="/" class="btn btn-outline gap-2">Déconnexion</a>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 </body>
 </html>

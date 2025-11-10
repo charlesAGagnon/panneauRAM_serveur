@@ -8,18 +8,18 @@
     <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <!-- Header Card -->
-            <div class="card bg-base-100 shadow-2xl mb-6 border-t-4 border-secondary">
+            <div class="card bg-base-100 shadow-2xl mb-6 border-t-4">
                 <div class="card-body">
                     <div class="flex items-center justify-between flex-wrap gap-4">
                         <div>
-                            <h1 class="text-4xl font-bold bg-gradient-to-r from-secondary to-purple-600 bg-clip-text text-transparent">
-                                Raspberry Pi 4 - Aspirateur 🌪️
+                            <h1 class="text-4xl font-bold bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent">
+                                Raspberry Pi 4 - Aspirateur
                             </h1>
                             <p class="text-gray-600 mt-2">Connecté en tant que <%= user %> (<%= typeAcces %>)</p>
                         </div>
                         <div class="flex gap-3">
-                            <div class="badge badge-secondary badge-lg">Niveau <%= niveau %></div>
-                            <div id="connection-status" class="badge badge-ghost badge-lg">
+                            <div class="badge badge-lg">Niveau <%= niveau %></div>
+                            <div id="connection-status" class="badge badge-lg">
                                 <span class="loading loading-dots loading-xs"></span> Connexion...
                             </div>
                         </div>
@@ -32,7 +32,7 @@
                 <!-- Left Column: Status Display -->
                 <div class="card bg-base-100 shadow-2xl">
                     <div class="card-body">
-                        <h2 class="card-title text-2xl mb-4">📊 État du Système en temps réel</h2>
+                        <h2 class="card-title text-2xl mb-4">État du Système en temps réel</h2>
                         <div id="mqtt-data-container" class="grid grid-cols-1 gap-4">
                             <!-- Les données MQTT seront ajoutées ici dynamiquement -->
                         </div>
@@ -45,13 +45,13 @@
                     <!-- Force Control -->
                     <div class="card bg-base-100 shadow-2xl">
                         <div class="card-body">
-                            <h2 class="card-title text-2xl mb-4">🎮 Contrôle de Force</h2>
+                            <h2 class="card-title text-2xl mb-4">Contrôle de Force</h2>
 
                             <div class="mb-4">
                                 <label class="font-semibold mb-2 block">Forcer le cycle</label>
                                 <div class="flex gap-2">
-                                    <button id="force-go" class="btn btn-success flex-1">GO</button>
-                                    <button id="force-stop" class="btn btn-error flex-1">STOP</button>
+                                    <button id="force-go" class="btn btn-outline flex-1">GO</button>
+                                    <button id="force-stop" class="btn btn-outline flex-1">STOP</button>
                                 </div>
                             </div>
                         </div>
@@ -60,33 +60,13 @@
                     <!-- Read-Only Notice -->
                     <div class="card bg-base-100 shadow-2xl">
                         <div class="card-body">
-                            <h2 class="card-title text-2xl mb-4">👁️ Mode Lecture Seule</h2>
-                            <div class="alert alert-info">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <span>Vous êtes en mode consultation. Les contrôles sont désactivés pour votre niveau d'accès.</span>
-                            </div>
+                            <h2 class="card-title text-2xl mb-4">Mode Lecture Seule</h2>
+                            <div class="alert">Vous êtes en mode consultation. Les contrôles sont désactivés pour votre niveau d'accès.</div>
                         </div>
                     </div>
                     <% } %>
 
-                    <!-- Description Card -->
-                    <div class="card bg-base-100 shadow-2xl">
-                        <div class="card-body">
-                            <h2 class="card-title text-2xl mb-4">ℹ️ Description</h2>
-                            <p class="text-gray-700">
-                                Le Raspberry Pi 4 gère le système d'aspiration. Il surveille les niveaux des trois bacs (A, B, C)
-                                et contrôle la séquence d'aspiration.<% if (typeof canWrite !== 'undefined' && canWrite) { %> Les boutons GO et STOP permettent de forcer le démarrage ou l'arrêt du cycle.<% } %>
-                            </p>
-                            <div class="alert alert-secondary mt-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <span>Fonction: Aspirateur - Surveillance des niveaux<% if (typeof canWrite !== 'undefined' && canWrite) { %> + Contrôle de force (GO/STOP)<% } %></span>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- ...description card removed... -->
                 </div>
             </div>
 
@@ -94,38 +74,27 @@
             <div class="card bg-base-100 shadow-xl mt-6">
                 <div class="card-body">
                     <div class="card-actions justify-between">
-                        <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-secondary gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                            Retour au dashboard
-                        </a>
-                        <a href="/" class="btn btn-outline btn-error gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                            Déconnexion
-                        </a>
+                        <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="btn btn-outline gap-2">Retour au dashboard</a>
+                        <a href="/" class="btn btn-outline gap-2">Déconnexion</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     <script>
         const socket = io();
-
         // Rejoindre la room pi4
         socket.emit('join-pi4');
 
         // Gestion de la connexion
         socket.on('connect', () =>
         {
-            document.getElementById('connection-status').innerHTML = '<span class="text-success">● Connecté</span>';
+            document.getElementById('connection-status').innerHTML = '<span style="color: #22c55e; font-size: 1.2em;">●</span> Connecté';
             document.getElementById('connection-status').className = 'badge badge-success badge-lg';
         });
-
         socket.on('disconnect', () =>
         {
-            document.getElementById('connection-status').innerHTML = '<span class="text-error">● Déconnecté</span>';
+            document.getElementById('connection-status').innerHTML = '<span style="color: #ef4444; font-size: 1.2em;">●</span> Déconnecté';
             document.getElementById('connection-status').className = 'badge badge-error badge-lg';
         });
 
@@ -135,14 +104,12 @@
             console.log('Pi 4 - Données initiales:', data);
             updateAllData(data);
         });
-
         // Recevoir les mises à jour en temps réel
         socket.on('mqtt-data-pi4', (data) =>
         {
             console.log('Pi 4 - Mise à jour:', data);
             updateValue(data.key, data.value, data.timestamp);
         });
-
         // Gérer les erreurs
         socket.on('mqtt-error-pi4', (error) =>
         {
@@ -155,13 +122,11 @@
         {
             const container = document.getElementById('mqtt-data-container');
             container.innerHTML = '';
-
             if (Object.keys(data).length === 0)
             {
-                container.innerHTML = '<div class="alert alert-info"><span>Aucune donnée MQTT disponible</span></div>';
+                container.innerHTML = '<div class="alert">Aucune donnée MQTT disponible</div>';
                 return;
             }
-
             for (const [key, value] of Object.entries(data))
             {
                 createDataCard(key, value);
@@ -173,24 +138,22 @@
         {
             const container = document.getElementById('mqtt-data-container');
             let card = document.getElementById('data-' + key);
-
             // Formater la valeur selon le type
             let displayValue = value;
             let displayTitle = key;
-            let badgeClass = 'badge badge-lg badge-secondary';
+            let badgeClass = 'badge badge-lg';
             let displayUnit = '';
-
             if (key === 'sequence')
             {
                 displayTitle = 'Séquence';
-                badgeClass = value === 'FINISHED' ? 'badge badge-lg badge-success' : 'badge badge-lg badge-warning';
+                badgeClass = 'badge badge-lg';
             }
             else if (key === 'NivA')
             {
                 displayTitle = 'Niveau Bac A';
                 displayValue = value + '%';
                 displayUnit = '';
-                badgeClass = value < 30 ? 'badge badge-lg badge-error' : (value < 70 ? 'badge badge-lg badge-warning' : 'badge badge-lg badge-success');
+                badgeClass = 'badge badge-lg';
             }
             else if (key === 'NivB')
             {
@@ -206,37 +169,32 @@
                 displayUnit = '';
                 badgeClass = value < 30 ? 'badge badge-lg badge-error' : (value < 70 ? 'badge badge-lg badge-warning' : 'badge badge-lg badge-success');
             }
-
             if (!card)
             {
                 card = document.createElement('div');
                 card.id = 'data-' + key;
-                card.className = 'stat bg-secondary/10 rounded-lg';
+                card.className = 'stat rounded-lg';
                 card.innerHTML = `
-                    <div class="stat-title">${displayTitle}</div>
-                    <div class="stat-value">
-                        <span class="${badgeClass}" id="value-${key}">${displayValue}</span>
-                    </div>
-                    <div class="stat-desc" id="time-${key}">${timestamp ? new Date(timestamp).toLocaleTimeString() : 'En attente...'}</div>
-                `;
+                <div class="stat-title">${displayTitle}</div>
+                <div id="value-${key}" class="${badgeClass}">${displayValue}</div>
+                <div class="stat-desc" id="time-${key}">${timestamp ? new Date(timestamp).toLocaleTimeString() : 'En attente...'}</div>
+            `;
                 container.appendChild(card);
             }
             else
             {
                 const valueElement = document.getElementById('value-' + key);
                 valueElement.textContent = displayValue;
-
                 // Mettre à jour la classe du badge selon la valeur
                 if (key === 'sequence')
                 {
-                    valueElement.className = value === 'FINISHED' ? 'badge badge-lg badge-success' : 'badge badge-lg badge-warning';
+                    valueElement.className = 'badge badge-lg';
                 }
                 else if (key === 'NivA' || key === 'NivB' || key === 'NivC')
                 {
                     const numValue = parseInt(value);
-                    valueElement.className = numValue < 30 ? 'badge badge-lg badge-error' : (numValue < 70 ? 'badge badge-lg badge-warning' : 'badge badge-lg badge-success');
+                    valueElement.className = 'badge badge-lg';
                 }
-
                 if (timestamp)
                 {
                     document.getElementById('time-' + key).textContent = new Date(timestamp).toLocaleTimeString();
@@ -259,7 +217,6 @@
                 value: 'GO'
             });
         });
-
         // Gestionnaires de boutons - Force STOP
         document.getElementById('force-stop').addEventListener('click', () =>
         {

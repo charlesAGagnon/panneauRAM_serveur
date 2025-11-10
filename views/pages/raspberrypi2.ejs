@@ -8,18 +8,18 @@
     <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <!-- Header Card -->
-            <div class="card bg-base-100 shadow-2xl mb-6 border-t-4 border-success">
+            <div class="card bg-base-100 shadow-2xl mb-6 border-t-4">
                 <div class="card-body">
                     <div class="flex items-center justify-between flex-wrap gap-4">
                         <div>
-                            <h1 class="text-4xl font-bold bg-gradient-to-r from-success to-green-600 bg-clip-text text-transparent">
-                                Raspberry Pi 2 - Mélangeur 🔀
+                            <h1 class="text-4xl font-bold bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent">
+                                Raspberry Pi 2 - Mélangeur
                             </h1>
                             <p class="text-gray-600 mt-2">Connecté en tant que <%= user %> (<%= typeAcces %>)</p>
                         </div>
                         <div class="flex gap-3">
-                            <div class="badge badge-success badge-lg">Niveau <%= niveau %></div>
-                            <div id="connection-status" class="badge badge-ghost badge-lg">
+                            <div class="badge badge-lg">Niveau <%= niveau %></div>
+                            <div id="connection-status" class="badge badge-lg">
                                 <span class="loading loading-dots loading-xs"></span> Connexion...
                             </div>
                         </div>
@@ -32,7 +32,7 @@
                 <!-- Left Column: Status Display -->
                 <div class="card bg-base-100 shadow-2xl">
                     <div class="card-body">
-                        <h2 class="card-title text-2xl mb-4">📊 État du Système en temps réel</h2>
+                        <h2 class="card-title text-2xl mb-4">État du Système en temps réel</h2>
                         <div id="mqtt-data-container" class="grid grid-cols-1 gap-4">
                             <!-- Les données MQTT seront ajoutées ici dynamiquement -->
                         </div>
@@ -45,23 +45,14 @@
                     <!-- Motor Controls -->
                     <div class="card bg-base-100 shadow-2xl">
                         <div class="card-body">
-                            <h2 class="card-title text-2xl mb-4">🎮 Contrôle des Moteurs</h2>
+                            <h2 class="card-title text-2xl mb-4">Contrôle des Moteurs</h2>
 
-                            <!-- Motor A -->
-                            <div class="mb-4">
-                                <label class="font-semibold mb-2 block">Moteur A</label>
-                                <div class="flex gap-2">
-                                    <button id="motorA-on" class="btn btn-success flex-1">ON</button>
-                                    <button id="motorA-off" class="btn btn-neutral flex-1">OFF</button>
-                                </div>
-                            </div>
-
-                            <!-- Motor B -->
+                            <!-- ...description card removed... -->
                             <div class="mb-4">
                                 <label class="font-semibold mb-2 block">Moteur B</label>
                                 <div class="flex gap-2">
-                                    <button id="motorB-on" class="btn btn-success flex-1">ON</button>
-                                    <button id="motorB-off" class="btn btn-neutral flex-1">OFF</button>
+                                    <button id="motorB-on" class="btn btn-outline flex-1">ON</button>
+                                    <button id="motorB-off" class="btn btn-outline flex-1">OFF</button>
                                 </div>
                             </div>
 
@@ -69,8 +60,8 @@
                             <div class="mb-4">
                                 <label class="font-semibold mb-2 block">Moteur C</label>
                                 <div class="flex gap-2">
-                                    <button id="motorC-on" class="btn btn-success flex-1">ON</button>
-                                    <button id="motorC-off" class="btn btn-neutral flex-1">OFF</button>
+                                    <button id="motorC-on" class="btn btn-outline flex-1">ON</button>
+                                    <button id="motorC-off" class="btn btn-outline flex-1">OFF</button>
                                 </div>
                             </div>
                         </div>
@@ -79,10 +70,10 @@
                     <!-- Mode Control -->
                     <div class="card bg-base-100 shadow-2xl">
                         <div class="card-body">
-                            <h2 class="card-title text-2xl mb-4">⚙️ Mode de Fonctionnement</h2>
+                            <h2 class="card-title text-2xl mb-4">Mode de Fonctionnement</h2>
                             <div class="flex gap-2">
-                                <button id="mode-manuel" class="btn btn-secondary flex-1">Manuel</button>
-                                <button id="mode-auto" class="btn btn-accent flex-1">Auto</button>
+                                <button id="mode-manuel" class="btn btn-outline flex-1">Manuel</button>
+                                <button id="mode-auto" class="btn btn-outline flex-1">Auto</button>
                             </div>
                         </div>
                     </div>
@@ -90,7 +81,7 @@
                     <!-- Recipe Control -->
                     <div class="card bg-base-100 shadow-2xl">
                         <div class="card-body">
-                            <h2 class="card-title text-2xl mb-4">📝 Contrôle des Recettes</h2>
+                            <h2 class="card-title text-2xl mb-4">Contrôle des Recettes</h2>
 
                             <!-- Recipe Input -->
                             <div class="mb-4">
@@ -100,16 +91,16 @@
                                     <input type="number" id="recipeB" placeholder="B" class="input input-bordered" min="0" value="0" />
                                     <input type="number" id="recipeC" placeholder="C" class="input input-bordered" min="0" value="0" />
                                 </div>
-                                <button id="sendRecipeBtn" class="btn btn-primary w-full">📤 Envoyer la recette</button>
+                                <button id="sendRecipeBtn" class="btn w-full">Envoyer la recette</button>
                             </div>
 
                             <!-- Recipe Execution -->
                             <div>
                                 <label class="font-semibold mb-2 block">Exécution</label>
                                 <div class="grid grid-cols-3 gap-2">
-                                    <button id="recetteGo-stop" class="btn btn-error">⏹️ Stop</button>
-                                    <button id="recetteGo-go" class="btn btn-success">▶️ Go</button>
-                                    <button id="recetteGo-flush" class="btn btn-warning">🔄 Flush</button>
+                                    <button id="recetteGo-stop" class="btn btn-outline">Stop</button>
+                                    <button id="recetteGo-go" class="btn btn-outline">Go</button>
+                                    <button id="recetteGo-flush" class="btn btn-outline">Flush</button>
                                 </div>
                             </div>
                         </div>
@@ -118,12 +109,9 @@
                     <!-- Read-Only Notice -->
                     <div class="card bg-base-100 shadow-2xl">
                         <div class="card-body">
-                            <h2 class="card-title text-2xl mb-4">👁️ Mode Lecture Seule</h2>
-                            <div class="alert alert-info">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <span>Vous êtes en mode consultation. Les contrôles sont désactivés pour votre niveau d'accès.</span>
+                            <h2 class="card-title text-2xl mb-4">Mode Lecture Seule</h2>
+                            <div class="alert">
+                                Vous êtes en mode consultation. Les contrôles sont désactivés pour votre niveau d'accès.
                             </div>
                         </div>
                     </div>
@@ -135,16 +123,8 @@
             <div class="card bg-base-100 shadow-xl mt-6">
                 <div class="card-body">
                     <div class="card-actions justify-between">
-                        <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-secondary gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                            Retour au dashboard
-                        </a>
-                        <a href="/" class="btn btn-outline btn-error gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                            Déconnexion
-                        </a>
+                        <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="btn btn-outline gap-2">Retour au dashboard</a>
+                        <a href="/" class="btn btn-outline gap-2">Déconnexion</a>
                     </div>
                 </div>
             </div>
@@ -220,7 +200,7 @@
             // Formater la valeur selon le type
             let displayValue = value;
             let displayTitle = key;
-            let badgeClass = 'badge badge-lg badge-neutral';
+            let badgeClass = 'badge badge-lg';
 
             if (key === 'recetteStatut')
             {
@@ -253,7 +233,7 @@
             {
                 card = document.createElement('div');
                 card.id = 'data-' + key;
-                card.className = 'stat bg-success/10 rounded-lg';
+                card.className = 'stat rounded-lg';
                 card.innerHTML = `
                     <div class="stat-title">${displayTitle}</div>
                     <div class="stat-value">

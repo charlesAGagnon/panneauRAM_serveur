@@ -8,19 +8,15 @@
         <div class="max-w-md w-full">
             <div class="card bg-base-100 shadow-2xl">
                 <div class="card-body text-center">
-                    <div class="text-6xl mb-4">🚫</div>
+                    <!-- icon removed to keep UI minimal -->
                     <h1 class="text-4xl font-bold text-error mb-4">Accès refusé</h1>
                     <p class="text-gray-600 mb-6">
                         Désolé <%= user %>, vous n'avez pas les permissions nécessaires pour accéder à cette ressource.
                     </p>
-                    <div class="alert alert-error mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <div class="alert mb-4">
                         <span>Votre niveau d'accès (<%= typeAcces %>) ne permet pas d'accéder à ce Raspberry Pi.</span>
                     </div>
-                    <a href="/dashboard" class="btn btn-primary w-full gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    <a href="/dashboard" class="btn w-full gap-2">
                         Retour au dashboard
                     </a>
                 </div>

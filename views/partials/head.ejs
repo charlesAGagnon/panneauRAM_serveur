@@ -17,27 +17,94 @@
 <style>
     body {
         font-family: 'Inter', sans-serif;
+        /* Simplified color palette: primary + muted neutral */
+        --primary-color: #4f46e5;
+        /* indigo */
+        --muted-color: #6b7280;
+        /* gray-500 */
+        --bg-start: #f8fafc;
+        /* very light */
+        --bg-end: #f1f5f9;
+        /* light */
+
+        /* Use the same background as the login page for a consistent look */
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #0f172a;
+        /* text: slate-900 */
         min-height: 100vh;
         font-size: 18px;
     }
 
+    /* Keep headings consistent */
     .card-title {
         font-size: 2rem !important;
+        color: var(--primary-color);
     }
 
-    .btn {
-        font-size: 1.1rem !important;
-        padding: 0.75rem 1.5rem !important;
+    /* Left blue accent for measurement/stat cards */
+    .stat {
+        position: relative;
+        padding-left: 0.75rem !important;
+        overflow: hidden;
     }
 
+    .stat::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 6px;
+        background: linear-gradient(180deg, #93c5fd 0%, #3b82f6 100%);
+        /* subtle blue gradient */
+        border-radius: 4px 0 0 4px;
+        box-shadow: 0 0 8px rgba(59, 130, 246, 0.12);
+    }
+
+    /* Buttons: use primary or muted only */
+    .btn,
+    .btn-primary {
+        font-size: 1.05rem !important;
+        padding: 0.6rem 1.25rem !important;
+        background-color: var(--primary-color) !important;
+        border-color: transparent !important;
+        color: #ffffff !important;
+    }
+
+    /* Badges: unify to primary or subtle muted */
     .badge {
-        font-size: 1rem !important;
-        padding: 0.75rem 1.25rem !important;
+        font-size: 0.95rem !important;
+        padding: 0.45rem 0.9rem !important;
+        background-color: var(--muted-color) !important;
+        color: #ffffff !important;
     }
 
+    .badge-success,
+    .badge-error,
+    .badge-warning,
+    .badge-info {
+        background-color: var(--primary-color) !important;
+        color: #ffffff !important;
+    }
+
+    /* Alerts: subtle, use primary for accent only */
     .alert {
-        font-size: 1.1rem !important;
+        font-size: 1.05rem !important;
+        background-color: rgba(99, 102, 241, 0.06) !important;
+        /* very light primary tint */
+        color: #0f172a !important;
+        border-left: 4px solid var(--primary-color) !important;
+    }
+
+    /* Card accents: use single primary color for top border */
+    .card[style*="border-t-4"],
+    .card {
+        --card-border-color: var(--primary-color);
+    }
+
+    /* When a template uses a top border class like border-t-4 border-error, keep the top line consistent */
+    .card.border-t-4 {
+        border-top: 4px solid var(--card-border-color) !important;
     }
 
 </style>

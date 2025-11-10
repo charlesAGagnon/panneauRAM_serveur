@@ -7,19 +7,16 @@
     <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-5xl mx-auto">
             <!-- Header Card -->
-            <div class="card bg-base-100 shadow-2xl mb-6 border-t-4 border-success">
+            <div class="card bg-base-100 shadow-2xl mb-6 border-t-4">
                 <div class="card-body">
                     <div class="flex items-center justify-between flex-wrap gap-4">
                         <div>
-                            <h1 class="text-4xl font-bold bg-gradient-to-r from-success to-primary bg-clip-text text-transparent">
-                                Bonjour, <%= user %> ! 🎉
+                            <h1 class="text-4xl font-bold bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent">
+                                Bonjour, <%= user %> !
                             </h1>
                             <p class="text-gray-600 mt-2">Tableau de bord - <%= typeAcces || 'Utilisateur' %></p>
                         </div>
-                        <div class="badge badge-success badge-lg gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-4 h-4 stroke-current">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
+                        <div class="badge badge-lg gap-2">
                             <%= typeAcces || 'Utilisateur' %>
                         </div>
                     </div>
@@ -27,44 +24,24 @@
             </div>
 
             <!-- Alert Success -->
-            <div class="alert alert-success shadow-lg mb-6">
-                <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 w-6 h-6" fill="none" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <div>
-                        <h3 class="font-bold">Accès complet - Lecture et Écriture</h3>
-                        <div class="text-xs">Vous pouvez consulter et modifier les configurations de tous les Raspberry Pi.</div>
-                    </div>
-                </div>
+            <div class="alert shadow-lg mb-6">
+                <h3 class="font-bold">Accès complet - Lecture et Écriture</h3>
+                <div class="text-xs">Vous pouvez consulter et modifier les configurations de tous les Raspberry Pi.</div>
             </div>
 
             <!-- Raspberry Pi Access -->
             <div class="card bg-base-100 shadow-2xl mb-6">
                 <div class="card-body">
                     <h2 class="card-title text-2xl mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>
                         Accès aux Raspberry Pi (Lecture + Écriture)
                     </h2>
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        <a href="/raspberrypi1?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-info gap-2">
-                            🖥️ Pi 1
-                        </a>
-                        <a href="/raspberrypi2?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-success gap-2">
-                            🖥️ Pi 2
-                        </a>
-                        <a href="/raspberrypi3?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-warning gap-2">
-                            🖥️ Pi 3
-                        </a>
-                        <a href="/raspberrypi4?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-secondary gap-2">
-                            🖥️ Pi 4
-                        </a>
-                        <a href="/raspberrypi5?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-accent gap-2">
-                            🖥️ Pi 5
-                        </a>
-                        <a href="/raspberrypi6?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-error gap-2">
-                            🖥️ Pi 6
-                        </a>
+                        <a href="/raspberrypi1?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline gap-2">Pi 1</a>
+                        <a href="/raspberrypi2?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline gap-2">Pi 2</a>
+                        <a href="/raspberrypi3?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline gap-2">Pi 3</a>
+                        <a href="/raspberrypi4?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline gap-2">Pi 4</a>
+                        <a href="/raspberrypi5?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline gap-2">Pi 5</a>
+                        <a href="/raspberrypi6?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline gap-2">Pi 6</a>
                     </div>
                 </div>
             </div>
@@ -73,11 +50,7 @@
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body">
                     <div class="card-actions justify-end">
-                        <a href="/" class="btn btn-outline btn-error gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                            Déconnexion
-                        </a>
+                        <a href="/" class="btn btn-outline gap-2">Déconnexion</a>
                     </div>
                 </div>
             </div>
