@@ -32,8 +32,8 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 w-6 h-6" fill="none" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                     <div>
-                        <h3 class="font-bold">Accès étendu</h3>
-                        <div class="text-xs">En tant que modérateur, vous pouvez gérer les utilisateurs et superviser les opérations du système.</div>
+                        <h3 class="font-bold">Accès complet - Lecture et Écriture</h3>
+                        <div class="text-xs">Vous pouvez consulter et modifier les configurations de tous les Raspberry Pi.</div>
                     </div>
                 </div>
             </div>
@@ -44,23 +44,26 @@
                     <h2 class="card-title text-2xl mb-4">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>
-                        Raspberry Pi disponibles
+                        Accès aux Raspberry Pi (Lecture + Écriture)
                     </h2>
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        <a href="/raspberrypi1?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-warning gap-2">
-                            🖥️ Balance
+                        <a href="/raspberrypi1?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-info gap-2">
+                            🖥️ Pi 1
                         </a>
-                        <a href="/raspberrypi2?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-warning gap-2">
-                            🖥️ Mélangeur
+                        <a href="/raspberrypi2?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-success gap-2">
+                            🖥️ Pi 2
                         </a>
                         <a href="/raspberrypi3?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-warning gap-2">
                             🖥️ Pi 3
                         </a>
-                        <a href="/raspberrypi4?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-warning gap-2">
+                        <a href="/raspberrypi4?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-secondary gap-2">
                             🖥️ Pi 4
                         </a>
-                        <a href="/raspberrypi5?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-warning gap-2">
+                        <a href="/raspberrypi5?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-accent gap-2">
                             🖥️ Pi 5
+                        </a>
+                        <a href="/raspberrypi6?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-error gap-2">
+                            🖥️ Pi 6
                         </a>
                     </div>
                 </div>

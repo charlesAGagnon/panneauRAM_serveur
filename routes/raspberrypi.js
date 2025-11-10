@@ -18,24 +18,9 @@ for (let i = 1; i <= 6; i++)
         const user = req.query.user || 'Invité';
         const typeAcces = req.query.typeAcces || 'Utilisateur';
 
-        // Vérifier les accès selon le niveau
-        const accessRules = {
-            '0': [],
-            '1': ['1', '2'],
-            '2': ['1', '2', '3', '4', '5'],
-            '3': ['1', '2', '3', '4', '5', '6']
-        };
-
-        if (!accessRules[niveau] || !accessRules[niveau].includes(String(i)))
-        {
-            return res.status(403).render('pages/403',
-            {
-                title: 'Accès refusé',
-                user: user,
-                typeAcces: typeAcces,
-                niveau: niveau
-            });
-        }
+        // Tous les niveaux (0-3) ont accès à tous les Pi pour LECTURE
+        // Seuls les niveaux 1-3 peuvent ÉCRIRE
+        const canWrite = niveau !== '0'; // Niveau 0 = lecture seule
 
         res.render(`pages/raspberrypi${i}`,
         {
@@ -43,7 +28,8 @@ for (let i = 1; i <= 6; i++)
             piId: String(i),
             user: user,
             typeAcces: typeAcces,
-            niveau: niveau
+            niveau: niveau,
+            canWrite: canWrite
         });
     });
 }

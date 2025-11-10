@@ -64,41 +64,4 @@ router.get('/dashboard', async function (req, res, next)
     return res.render('pages/dashboard', renderData);
 });
 
-// Routes RaspberryPi
-router.get('/raspberrypi/:id', function (req, res, next)
-{
-    const piId = req.params.id;
-    const niveau = req.query.niveau || '0';
-    const user = req.query.user || 'Invité';
-    const typeAcces = req.query.typeAcces || 'Utilisateur';
-
-    // Vérifier les accès selon le niveau
-    const accessRules = {
-        '0': [],
-        '1': ['1', '2'],
-        '2': ['1', '2', '3', '4', '5'],
-        '3': ['1', '2', '3', '4', '5', '6']
-    };
-
-    if (!accessRules[niveau] || !accessRules[niveau].includes(piId))
-    {
-        return res.status(403).render('pages/403',
-        {
-            title: 'Accès refusé',
-            user: user,
-            typeAcces: typeAcces,
-            niveau: niveau
-        });
-    }
-
-    res.render('pages/raspberrypi',
-    {
-        title: `Raspberry Pi ${piId}`,
-        piId: piId,
-        user: user,
-        typeAcces: typeAcces,
-        niveau: niveau
-    });
-});
-
 module.exports = router;
