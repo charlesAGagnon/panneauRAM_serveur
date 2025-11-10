@@ -169,6 +169,16 @@ function initializeSocketIO(socketIO)
             }
         });
 
+        // Écouter les commandes depuis le dashboard (superviseur)
+        socket.on('mqtt-command-superviseur', (data) =>
+        {
+            console.log('Commande superviseur reçue:', data);
+            if (data.topic && data.value !== undefined)
+            {
+                publish(data.topic, data.value);
+            }
+        });
+
         socket.on('disconnect', () =>
         {
             console.log('Client Socket.IO déconnecté:', socket.id);

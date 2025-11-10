@@ -9,6 +9,7 @@
 <html lang="fr" data-theme="light">
 <head>
     <%- include('../partials/head') %>
+    <link rel="stylesheet" href="/stylesheets/dashboard-controls.css">
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
@@ -106,6 +107,149 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Contrôles Superviseur (uniquement niveaux 1-3) -->
+            <% if (niveau !== '0') { %>
+
+            <!-- Form 1: Mode -->
+            <form id="form-mode" class="control-form">
+                <h3>Mode de fonctionnement</h3>
+                <div class="control-group">
+                    <label class="control-label">Sélectionner le mode</label>
+                    <select id="mode-select" class="control-select">
+                        <option value="auto">AUTO</option>
+                        <option value="manuel">MANUEL</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">Envoyer Mode</button>
+            </form>
+
+            <!-- Form 2: Consignes -->
+            <form id="form-consignes" class="control-form">
+                <h3>Consignes</h3>
+                <div class="control-grid control-grid-3">
+                    <div class="control-group">
+                        <label class="control-label">
+                            <span>Consigne Niveau GB</span>
+                            <span class="control-value" id="consNivGB-value">50%</span>
+                        </label>
+                        <input type="range" id="consNivGB" min="0" max="100" value="50" class="control-slider" step="1">
+                        <div class="control-markers">
+                            <span>0%</span>
+                            <span>50%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">
+                            <span>Consigne Niveau PB</span>
+                            <span class="control-value" id="consNivPB-value">50%</span>
+                        </label>
+                        <input type="range" id="consNivPB" min="0" max="100" value="50" class="control-slider" step="1">
+                        <div class="control-markers">
+                            <span>0%</span>
+                            <span>50%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">
+                            <span>Consigne Temp PB</span>
+                            <span class="control-value" id="consTmpPB-value">50°C</span>
+                        </label>
+                        <input type="range" id="consTmpPB" min="0" max="100" value="50" class="control-slider" step="1">
+                        <div class="control-markers">
+                            <span>0°C</span>
+                            <span>50°C</span>
+                            <span>100°C</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">Envoyer Consignes</button>
+            </form>
+
+            <!-- Form 3: Valves (%) -->
+            <form id="form-valves" class="control-form">
+                <h3>Ouverture des Valves</h3>
+                <div class="control-grid control-grid-4">
+                    <div class="control-group">
+                        <label class="control-label">
+                            <span>Valve GB</span>
+                            <span class="control-value" id="valveGB-cmd-value">50%</span>
+                        </label>
+                        <input type="range" id="valveGB-cmd" min="0" max="100" value="50" class="control-slider" step="1">
+                        <div class="control-markers">
+                            <span>0</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">
+                            <span>Valve PB</span>
+                            <span class="control-value" id="valvePB-cmd-value">50%</span>
+                        </label>
+                        <input type="range" id="valvePB-cmd" min="0" max="100" value="50" class="control-slider" step="1">
+                        <div class="control-markers">
+                            <span>0</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">
+                            <span>Valve EC</span>
+                            <span class="control-value" id="valveEC-cmd-value">50%</span>
+                        </label>
+                        <input type="range" id="valveEC-cmd" min="0" max="100" value="50" class="control-slider" step="1">
+                        <div class="control-markers">
+                            <span>0</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">
+                            <span>Valve EF</span>
+                            <span class="control-value" id="valveEF-cmd-value">50%</span>
+                        </label>
+                        <input type="range" id="valveEF-cmd" min="0" max="100" value="50" class="control-slider" step="1">
+                        <div class="control-markers">
+                            <span>0</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">Envoyer Valves</button>
+            </form>
+
+            <!-- Form 4: Valves ON/OFF et Pompe -->
+            <form id="form-onoff" class="control-form">
+                <h3>Équipements ON/OFF</h3>
+                <div class="control-grid control-grid-3">
+                    <div class="control-group">
+                        <label class="control-label">Valve EEC</label>
+                        <select id="valveEEC-select" class="control-select">
+                            <option value="off">OFF</option>
+                            <option value="on">ON</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Valve EEF</label>
+                        <select id="valveEEF-select" class="control-select">
+                            <option value="off">OFF</option>
+                            <option value="on">ON</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Pompe</label>
+                        <select id="pompe-select" class="control-select">
+                            <option value="off">OFF</option>
+                            <option value="on">ON</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">Envoyer Équipements</button>
+            </form>
+
+            <% } %>
 
             <!-- Accès Raspberry Pi -->
             <div class="card bg-base-100 shadow-2xl mb-6">
@@ -254,6 +398,165 @@
             notice.className = 'alert mt-4';
             notice.textContent = 'Mode consultation uniquement - Vous pouvez visualiser les données mais pas envoyer de commandes.';
             container.appendChild(notice);
+        }
+
+        // Gestionnaires de commandes (uniquement niveaux 1-3)
+        if (niveau !== '0')
+        {
+            // Mise à jour en temps réel des valeurs des sliders
+            document.getElementById('consNivGB').addEventListener('input', (e) =>
+            {
+                document.getElementById('consNivGB-value').textContent = e.target.value + '%';
+            });
+            document.getElementById('consNivPB').addEventListener('input', (e) =>
+            {
+                document.getElementById('consNivPB-value').textContent = e.target.value + '%';
+            });
+            document.getElementById('consTmpPB').addEventListener('input', (e) =>
+            {
+                document.getElementById('consTmpPB-value').textContent = e.target.value + '°C';
+            });
+            document.getElementById('valveGB-cmd').addEventListener('input', (e) =>
+            {
+                document.getElementById('valveGB-cmd-value').textContent = e.target.value + '%';
+            });
+            document.getElementById('valvePB-cmd').addEventListener('input', (e) =>
+            {
+                document.getElementById('valvePB-cmd-value').textContent = e.target.value + '%';
+            });
+            document.getElementById('valveEC-cmd').addEventListener('input', (e) =>
+            {
+                document.getElementById('valveEC-cmd-value').textContent = e.target.value + '%';
+            });
+            document.getElementById('valveEF-cmd').addEventListener('input', (e) =>
+            {
+                document.getElementById('valveEF-cmd-value').textContent = e.target.value + '%';
+            });
+
+            // Form 1: Mode
+            document.getElementById('form-mode').addEventListener('submit', (e) =>
+            {
+                e.preventDefault();
+                const mode = document.getElementById('mode-select').value;
+                console.log('Envoi Mode:', mode);
+
+                socket.emit('mqtt-command-superviseur',
+                {
+                    topic: 'RAM/panneau/cmd/Mode',
+                    value: mode
+                });
+
+                alert('Mode envoyé avec succès !');
+            });
+
+            // Form 2: Consignes
+            document.getElementById('form-consignes').addEventListener('submit', (e) =>
+            {
+                e.preventDefault();
+                const consNivGB = document.getElementById('consNivGB').value;
+                const consNivPB = document.getElementById('consNivPB').value;
+                const consTmpPB = document.getElementById('consTmpPB').value;
+
+                console.log('Envoi Consignes:',
+                {
+                    consNivGB,
+                    consNivPB,
+                    consTmpPB
+                });
+
+                socket.emit('mqtt-command-superviseur',
+                {
+                    topic: 'RAM/panneau/cmd/ConsNivGB',
+                    value: consNivGB
+                });
+                socket.emit('mqtt-command-superviseur',
+                {
+                    topic: 'RAM/panneau/cmd/ConsNivPB',
+                    value: consNivPB
+                });
+                socket.emit('mqtt-command-superviseur',
+                {
+                    topic: 'RAM/panneau/cmd/ConsTmpPB',
+                    value: consTmpPB
+                });
+
+                alert('Consignes envoyées avec succès !');
+            });
+
+            // Form 3: Valves
+            document.getElementById('form-valves').addEventListener('submit', (e) =>
+            {
+                e.preventDefault();
+                const valveGB = document.getElementById('valveGB-cmd').value;
+                const valvePB = document.getElementById('valvePB-cmd').value;
+                const valveEC = document.getElementById('valveEC-cmd').value;
+                const valveEF = document.getElementById('valveEF-cmd').value;
+
+                console.log('Envoi Valves:',
+                {
+                    valveGB,
+                    valvePB,
+                    valveEC,
+                    valveEF
+                });
+
+                socket.emit('mqtt-command-superviseur',
+                {
+                    topic: 'RAM/panneau/cmd/ValveGB',
+                    value: valveGB
+                });
+                socket.emit('mqtt-command-superviseur',
+                {
+                    topic: 'RAM/panneau/cmd/ValvePB',
+                    value: valvePB
+                });
+                socket.emit('mqtt-command-superviseur',
+                {
+                    topic: 'RAM/panneau/cmd/ValveEC',
+                    value: valveEC
+                });
+                socket.emit('mqtt-command-superviseur',
+                {
+                    topic: 'RAM/panneau/cmd/ValveEF',
+                    value: valveEF
+                });
+
+                alert('Valves envoyées avec succès !');
+            });
+
+            // Form 4: Équipements ON/OFF
+            document.getElementById('form-onoff').addEventListener('submit', (e) =>
+            {
+                e.preventDefault();
+                const valveEEC = document.getElementById('valveEEC-select').value;
+                const valveEEF = document.getElementById('valveEEF-select').value;
+                const pompe = document.getElementById('pompe-select').value;
+
+                console.log('Envoi Équipements:',
+                {
+                    valveEEC,
+                    valveEEF,
+                    pompe
+                });
+
+                socket.emit('mqtt-command-superviseur',
+                {
+                    topic: 'RAM/panneau/cmd/ValveEEC',
+                    value: valveEEC
+                });
+                socket.emit('mqtt-command-superviseur',
+                {
+                    topic: 'RAM/panneau/cmd/ValveEEF',
+                    value: valveEEF
+                });
+                socket.emit('mqtt-command-superviseur',
+                {
+                    topic: 'RAM/panneau/cmd/Pompe',
+                    value: pompe
+                });
+
+                alert('Équipements envoyés avec succès !');
+            });
         }
 
     </script>
