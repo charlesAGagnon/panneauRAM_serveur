@@ -6,72 +6,118 @@
 </head>
 <body>
     <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-5xl mx-auto">
+        <div class="max-w-7xl mx-auto">
             <!-- Header Card -->
             <div class="card bg-base-100 shadow-2xl mb-6 border-t-4 border-success">
                 <div class="card-body">
                     <div class="flex items-center justify-between flex-wrap gap-4">
                         <div>
                             <h1 class="text-4xl font-bold bg-gradient-to-r from-success to-green-600 bg-clip-text text-transparent">
-                                Raspberry Pi 2 🖥️
+                                Raspberry Pi 2 - Mélangeur 🔀
                             </h1>
                             <p class="text-gray-600 mt-2">Connecté en tant que <%= user %> (<%= typeAcces %>)</p>
                         </div>
-                        <div class="badge badge-success badge-lg">
-                            Niveau <%= niveau %>
+                        <div class="flex gap-3">
+                            <div class="badge badge-success badge-lg">Niveau <%= niveau %></div>
+                            <div id="connection-status" class="badge badge-ghost badge-lg">
+                                <span class="loading loading-dots loading-xs"></span> Connexion...
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Pi Info Card -->
-            <div class="card bg-base-100 shadow-2xl mb-6">
-                <div class="card-body">
-                    <h2 class="card-title text-2xl mb-4">📊 Raspberry Pi 2 - Serveur de Fichiers</h2>
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div class="stat bg-success/10 rounded-lg">
-                            <div class="stat-title">État</div>
-                            <div class="stat-value text-success text-2xl">En ligne</div>
-                            <div class="stat-desc">Uptime: 22 jours</div>
-                        </div>
-                        <div class="stat bg-success/10 rounded-lg">
-                            <div class="stat-title">Température</div>
-                            <div class="stat-value text-success text-2xl">40°C</div>
-                            <div class="stat-desc">Normale</div>
-                        </div>
-                        <div class="stat bg-success/10 rounded-lg">
-                            <div class="stat-title">CPU</div>
-                            <div class="stat-value text-warning text-2xl">42%</div>
-                            <div class="stat-desc">Utilisation processeur</div>
-                        </div>
-                        <div class="stat bg-success/10 rounded-lg">
-                            <div class="stat-title">Disque</div>
-                            <div class="stat-value text-secondary text-2xl">156GB</div>
-                            <div class="stat-desc">Sur 250GB disponible</div>
+            <!-- Main Grid Layout -->
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Left Column: Status Display -->
+                <div class="card bg-base-100 shadow-2xl">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl mb-4">📊 État du Système en temps réel</h2>
+                        <div id="mqtt-data-container" class="grid grid-cols-1 gap-4">
+                            <!-- Les données MQTT seront ajoutées ici dynamiquement -->
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Description Card -->
-            <div class="card bg-base-100 shadow-2xl mb-6">
-                <div class="card-body">
-                    <h2 class="card-title text-2xl mb-4">ℹ️ Description</h2>
-                    <p class="text-gray-700">
-                        Le Raspberry Pi 2 agit comme serveur de fichiers (NAS). Il stocke tous les fichiers partagés,
-                        les sauvegardes automatiques et gère le système de synchronisation entre les différents Pi.
-                    </p>
-                    <div class="alert alert-success mt-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <span>Services actifs: Samba, NFS, Rsync</span>
+                <!-- Right Column: Controls -->
+                <div class="space-y-6">
+                    <!-- Motor Controls -->
+                    <div class="card bg-base-100 shadow-2xl">
+                        <div class="card-body">
+                            <h2 class="card-title text-2xl mb-4">🎮 Contrôle des Moteurs</h2>
+
+                            <!-- Motor A -->
+                            <div class="mb-4">
+                                <label class="font-semibold mb-2 block">Moteur A</label>
+                                <div class="flex gap-2">
+                                    <button id="motorA-on" class="btn btn-success flex-1">ON</button>
+                                    <button id="motorA-off" class="btn btn-neutral flex-1">OFF</button>
+                                </div>
+                            </div>
+
+                            <!-- Motor B -->
+                            <div class="mb-4">
+                                <label class="font-semibold mb-2 block">Moteur B</label>
+                                <div class="flex gap-2">
+                                    <button id="motorB-on" class="btn btn-success flex-1">ON</button>
+                                    <button id="motorB-off" class="btn btn-neutral flex-1">OFF</button>
+                                </div>
+                            </div>
+
+                            <!-- Motor C -->
+                            <div class="mb-4">
+                                <label class="font-semibold mb-2 block">Moteur C</label>
+                                <div class="flex gap-2">
+                                    <button id="motorC-on" class="btn btn-success flex-1">ON</button>
+                                    <button id="motorC-off" class="btn btn-neutral flex-1">OFF</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mode Control -->
+                    <div class="card bg-base-100 shadow-2xl">
+                        <div class="card-body">
+                            <h2 class="card-title text-2xl mb-4">⚙️ Mode de Fonctionnement</h2>
+                            <div class="flex gap-2">
+                                <button id="mode-manuel" class="btn btn-secondary flex-1">Manuel</button>
+                                <button id="mode-auto" class="btn btn-accent flex-1">Auto</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recipe Control -->
+                    <div class="card bg-base-100 shadow-2xl">
+                        <div class="card-body">
+                            <h2 class="card-title text-2xl mb-4">📝 Contrôle des Recettes</h2>
+
+                            <!-- Recipe Input -->
+                            <div class="mb-4">
+                                <label class="font-semibold mb-2 block">Recette (Format: A-B-C en grammes)</label>
+                                <div class="grid grid-cols-3 gap-2 mb-2">
+                                    <input type="number" id="recipeA" placeholder="A" class="input input-bordered" min="0" value="0" />
+                                    <input type="number" id="recipeB" placeholder="B" class="input input-bordered" min="0" value="0" />
+                                    <input type="number" id="recipeC" placeholder="C" class="input input-bordered" min="0" value="0" />
+                                </div>
+                                <button id="sendRecipeBtn" class="btn btn-primary w-full">📤 Envoyer la recette</button>
+                            </div>
+
+                            <!-- Recipe Execution -->
+                            <div>
+                                <label class="font-semibold mb-2 block">Exécution</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button id="recetteGo-stop" class="btn btn-error">⏹️ Stop</button>
+                                    <button id="recetteGo-go" class="btn btn-success">▶️ Go</button>
+                                    <button id="recetteGo-flush" class="btn btn-warning">🔄 Flush</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Navigation Buttons -->
-            <div class="card bg-base-100 shadow-xl">
+            <div class="card bg-base-100 shadow-xl mt-6">
                 <div class="card-body">
                     <div class="card-actions justify-between">
                         <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-secondary gap-2">
@@ -89,5 +135,284 @@
             </div>
         </div>
     </div>
+
+    <script>
+        const socket = io();
+
+        // Rejoindre la room pi2
+        socket.emit('join-pi2');
+
+        // Gestion de la connexion
+        socket.on('connect', () =>
+        {
+            console.log('✅ Pi 2 - Connecté au serveur Socket.IO');
+            document.getElementById('connection-status').innerHTML = '<span class="text-success">● Connecté</span>';
+            document.getElementById('connection-status').className = 'badge badge-success badge-lg';
+        });
+
+        socket.on('disconnect', () =>
+        {
+            console.log('❌ Pi 2 - Déconnecté du serveur Socket.IO');
+            document.getElementById('connection-status').innerHTML = '<span class="text-error">● Déconnecté</span>';
+            document.getElementById('connection-status').className = 'badge badge-error badge-lg';
+        });
+
+        // Recevoir les données initiales
+        socket.on('mqtt-initial-data-pi2', (data) =>
+        {
+            console.log('Pi 2 - Données initiales:', data);
+            updateAllData(data);
+        });
+
+        // Recevoir les mises à jour en temps réel (ARCHITECTURE COMME PI 1)
+        socket.on('mqtt-data-pi2', (data) =>
+        {
+            console.log('Pi 2 - Mise à jour:', data);
+            updateValue(data.key, data.value, data.timestamp);
+        });
+
+        // Gérer les erreurs
+        socket.on('mqtt-error-pi2', (error) =>
+        {
+            console.error('❌ Erreur MQTT:', error);
+            alert('Erreur MQTT: ' + error.message);
+        });
+
+        // Fonction pour mettre à jour toutes les données
+        function updateAllData(data)
+        {
+            const container = document.getElementById('mqtt-data-container');
+            container.innerHTML = '';
+
+            if (Object.keys(data).length === 0)
+            {
+                container.innerHTML = '<div class="alert alert-info"><span>Aucune donnée MQTT disponible</span></div>';
+                return;
+            }
+
+            for (const [key, value] of Object.entries(data))
+            {
+                createDataCard(key, value);
+            }
+        }
+
+        // Fonction pour créer/mettre à jour une carte de données
+        function createDataCard(key, value, timestamp = null)
+        {
+            const container = document.getElementById('mqtt-data-container');
+            let card = document.getElementById('data-' + key);
+
+            // Formater la valeur selon le type
+            let displayValue = value;
+            let displayTitle = key;
+            let badgeClass = 'badge badge-lg badge-neutral';
+
+            if (key === 'recetteStatut')
+            {
+                displayTitle = 'Statut Recette';
+                displayValue = value.toUpperCase();
+                if (value === 'PROCESSING')
+                {
+                    badgeClass = 'badge badge-lg badge-warning';
+                }
+                else if (value === 'FINISHED')
+                {
+                    badgeClass = 'badge badge-lg badge-success';
+                }
+            }
+            else if (key.startsWith('mot'))
+            {
+                displayTitle = 'Moteur ' + key.charAt(3).toUpperCase();
+                displayValue = value.toUpperCase();
+                if (value === 'on')
+                {
+                    badgeClass = 'badge badge-lg badge-success';
+                }
+                else
+                {
+                    badgeClass = 'badge badge-lg badge-neutral';
+                }
+            }
+
+            if (!card)
+            {
+                card = document.createElement('div');
+                card.id = 'data-' + key;
+                card.className = 'stat bg-success/10 rounded-lg';
+                card.innerHTML = `
+                    <div class="stat-title">${displayTitle}</div>
+                    <div class="stat-value">
+                        <span class="${badgeClass}" id="value-${key}">${displayValue}</span>
+                    </div>
+                    <div class="stat-desc" id="time-${key}">${timestamp ? new Date(timestamp).toLocaleTimeString() : 'En attente...'}</div>
+                `;
+                container.appendChild(card);
+            }
+            else
+            {
+                const valueElement = document.getElementById('value-' + key);
+                valueElement.textContent = displayValue;
+                valueElement.className = badgeClass;
+
+                if (timestamp)
+                {
+                    document.getElementById('time-' + key).textContent = new Date(timestamp).toLocaleTimeString();
+                }
+            }
+        }
+
+        // Fonction pour mettre à jour une valeur (appelée par mqtt-data-pi2)
+        function updateValue(key, value, timestamp)
+        {
+            createDataCard(key, value, timestamp);
+        }
+
+        // ==================== CONTRÔLES DES MOTEURS ====================
+
+        // Moteur A
+        document.getElementById('motorA-on').addEventListener('click', function()
+        {
+            console.log('Commande: Moteur A -> ON');
+            socket.emit('mqtt-command-pi2-motor',
+            {
+                motor: 'motA',
+                value: 'on'
+            });
+        });
+
+        document.getElementById('motorA-off').addEventListener('click', function()
+        {
+            console.log('Commande: Moteur A -> OFF');
+            socket.emit('mqtt-command-pi2-motor',
+            {
+                motor: 'motA',
+                value: 'off'
+            });
+        });
+
+        // Moteur B
+        document.getElementById('motorB-on').addEventListener('click', function()
+        {
+            console.log('Commande: Moteur B -> ON');
+            socket.emit('mqtt-command-pi2-motor',
+            {
+                motor: 'motB',
+                value: 'on'
+            });
+        });
+
+        document.getElementById('motorB-off').addEventListener('click', function()
+        {
+            console.log('Commande: Moteur B -> OFF');
+            socket.emit('mqtt-command-pi2-motor',
+            {
+                motor: 'motB',
+                value: 'off'
+            });
+        });
+
+        // Moteur C
+        document.getElementById('motorC-on').addEventListener('click', function()
+        {
+            console.log('Commande: Moteur C -> ON');
+            socket.emit('mqtt-command-pi2-motor',
+            {
+                motor: 'motC',
+                value: 'on'
+            });
+        });
+
+        document.getElementById('motorC-off').addEventListener('click', function()
+        {
+            console.log('Commande: Moteur C -> OFF');
+            socket.emit('mqtt-command-pi2-motor',
+            {
+                motor: 'motC',
+                value: 'off'
+            });
+        });
+
+        // ==================== CONTRÔLE DU MODE ====================
+
+        document.getElementById('mode-manuel').addEventListener('click', function()
+        {
+            console.log('Commande: Mode -> manuel');
+            socket.emit('mqtt-command-pi2-mode',
+            {
+                value: 'manuel'
+            });
+            this.classList.add('btn-active');
+            document.getElementById('mode-auto').classList.remove('btn-active');
+        });
+
+        document.getElementById('mode-auto').addEventListener('click', function()
+        {
+            console.log('Commande: Mode -> auto');
+            socket.emit('mqtt-command-pi2-mode',
+            {
+                value: 'auto'
+            });
+            this.classList.add('btn-active');
+            document.getElementById('mode-manuel').classList.remove('btn-active');
+        });
+
+        // ==================== CONTRÔLE DES RECETTES ====================
+
+        // Envoyer une recette
+        document.getElementById('sendRecipeBtn').addEventListener('click', function()
+        {
+            const a = document.getElementById('recipeA').value || '0';
+            const b = document.getElementById('recipeB').value || '0';
+            const c = document.getElementById('recipeC').value || '0';
+
+            const recipe = `${a}-${b}-${c}`;
+            console.log('Commande: Recette -> ' + recipe);
+            socket.emit('mqtt-command-pi2-recette',
+            {
+                value: recipe
+            });
+
+            // Feedback visuel
+            this.classList.add('btn-disabled');
+            const originalText = this.innerHTML;
+            this.innerHTML = '✓ Envoyé!';
+            setTimeout(() =>
+            {
+                this.classList.remove('btn-disabled');
+                this.innerHTML = originalText;
+            }, 2000);
+        });
+
+        // Exécution recette - Stop
+        document.getElementById('recetteGo-stop').addEventListener('click', function()
+        {
+            console.log('Commande: RecetteGo -> stop');
+            socket.emit('mqtt-command-pi2-recetteGo',
+            {
+                value: 'stop'
+            });
+        });
+
+        // Exécution recette - Go
+        document.getElementById('recetteGo-go').addEventListener('click', function()
+        {
+            console.log('Commande: RecetteGo -> go');
+            socket.emit('mqtt-command-pi2-recetteGo',
+            {
+                value: 'go'
+            });
+        });
+
+        // Exécution recette - Flush
+        document.getElementById('recetteGo-flush').addEventListener('click', function()
+        {
+            console.log('Commande: RecetteGo -> flush');
+            socket.emit('mqtt-command-pi2-recetteGo',
+            {
+                value: 'flush'
+            });
+        });
+
+    </script>
 </body>
 </html>

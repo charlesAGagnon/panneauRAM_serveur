@@ -18,8 +18,6 @@ const topics = [
     'RAM/balance/etats/unite'
 ];
 
-// Topic d'écriture pour Pi 1
-const WRITE_TOPIC = 'pi/write1';
 
 let io = null;
 

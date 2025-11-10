@@ -11,21 +11,32 @@ const mqtt = require('mqtt');
 // Connexion au broker MQTT
 const client = mqtt.connect('mqtt://localhost:1883');
 
-// Topics de lecture pour Pi 2 (à remplir avec vos topics spécifiques)
+// Topics de lecture pour Pi 2 - Mélangeur (états)
 const topics = [
-    // Exemple: 'pi2/temperature',
-    // Exemple: 'pi2/humidity',
-    // Exemple: 'pi2/status',
+    'RAM/melangeur/etats/recetteStatut',
+    'RAM/melangeur/etats/motA',
+    'RAM/melangeur/etats/motB',
+    'RAM/melangeur/etats/motC'
 ];
 
-// Topic d'écriture pour Pi 2
-const WRITE_TOPIC = 'pi/write2';
+// Topics de commandes (écriture)
+const CMD_TOPICS = {
+    mode: 'RAM/melangeur/cmd/mode',
+    motA: 'RAM/melangeur/cmd/motA',
+    motB: 'RAM/melangeur/cmd/motB',
+    motC: 'RAM/melangeur/cmd/motC',
+    recette: 'RAM/melangeur/cmd/recette',
+    recetteGo: 'RAM/melangeur/cmd/recetteGo'
+};
 
 let io = null;
 
-// Données actuelles pour Pi 2
+// Données actuelles pour Pi 2 - Mélangeur
 const currentData = {
-    // Les données seront ajoutées dynamiquement selon les topics
+    recetteStatut: 'FINISHED',
+    motA: 'off',
+    motB: 'off',
+    motC: 'off'
 };
 
 client.on('connect', function ()
@@ -52,7 +63,8 @@ client.on('connect', function ()
 client.on('message', function (topic, message)
 {
     const value = message.toString();
-    const key = topic.replace('pi2/', ''); // Extraire le nom après pi2/
+    // Extraire le nom après RAM/melangeur/etats/
+    const key = topic.split('/').pop();
 
     console.log(`Pi 2 - Message reçu - Topic: ${topic}, Valeur: ${value}`);
 
@@ -77,21 +89,21 @@ client.on('error', function (error)
     console.error('Pi 2 - Erreur MQTT:', error);
 });
 
-// Fonction pour publier un message vers pi/write2
-function publish(message)
+// Fonction pour publier un message vers un topic spécifique
+function publish(topic, message)
 {
     return new Promise((resolve, reject) =>
     {
-        client.publish(WRITE_TOPIC, message, function (err)
+        client.publish(topic, message, function (err)
         {
             if (err)
             {
-                console.error(`Pi 2 - Erreur lors de la publication sur ${WRITE_TOPIC}:`, err);
+                console.error(`Pi 2 - Erreur lors de la publication sur ${topic}:`, err);
                 reject(err);
             }
             else
             {
-                console.log(`Pi 2 - Message publié sur ${WRITE_TOPIC}: ${message}`);
+                console.log(`Pi 2 - Message publié sur ${topic}: ${message}`);
                 resolve();
             }
         });
@@ -117,13 +129,27 @@ function initializeSocketIO(socketIO)
             socket.emit('mqtt-initial-data-pi2', currentData);
         });
 
-        // Gérer les commandes d'écriture
-        socket.on('mqtt-command-pi2', (data) =>
+        // Gérer les commandes - Mode
+        socket.on('mqtt-command-pi2-mode', (data) =>
         {
-            console.log('Pi 2 - Commande reçue:', data);
-            if (data.message)
+            console.log('Pi 2 - Commande mode reçue:', data.value);
+            publish(CMD_TOPICS.mode, data.value).catch(err =>
             {
-                publish(data.message).catch(err =>
+                socket.emit('mqtt-error-pi2',
+                {
+                    error: err.message
+                });
+            });
+        });
+
+        // Gérer les commandes - Moteurs
+        socket.on('mqtt-command-pi2-motor', (data) =>
+        {
+            console.log(`Pi 2 - Commande moteur ${data.motor} reçue:`, data.value);
+            const topic = CMD_TOPICS[data.motor];
+            if (topic)
+            {
+                publish(topic, data.value).catch(err =>
                 {
                     socket.emit('mqtt-error-pi2',
                     {
@@ -131,6 +157,32 @@ function initializeSocketIO(socketIO)
                     });
                 });
             }
+        });
+
+        // Gérer les commandes - Recette
+        socket.on('mqtt-command-pi2-recette', (data) =>
+        {
+            console.log('Pi 2 - Commande recette reçue:', data.value);
+            publish(CMD_TOPICS.recette, data.value).catch(err =>
+            {
+                socket.emit('mqtt-error-pi2',
+                {
+                    error: err.message
+                });
+            });
+        });
+
+        // Gérer les commandes - RecetteGo
+        socket.on('mqtt-command-pi2-recetteGo', (data) =>
+        {
+            console.log('Pi 2 - Commande recetteGo reçue:', data.value);
+            publish(CMD_TOPICS.recetteGo, data.value).catch(err =>
+            {
+                socket.emit('mqtt-error-pi2',
+                {
+                    error: err.message
+                });
+            });
         });
 
         // Quitter la room lors de la déconnexion
@@ -153,10 +205,10 @@ function getTopics()
     return topics;
 }
 
-// Obtenir le topic d'écriture
-function getWriteTopic()
+// Obtenir les topics de commandes
+function getCmdTopics()
 {
-    return WRITE_TOPIC;
+    return CMD_TOPICS;
 }
 
 module.exports = {
@@ -165,5 +217,5 @@ module.exports = {
     initializeSocketIO,
     getCurrentData,
     getTopics,
-    getWriteTopic
+    getCmdTopics
 };
