@@ -3,7 +3,7 @@
  * @author  charles-Antoine Gagnon
  * @version  1
  * @date     10/11/2025
- * @brief    Gestionnaire MQTT pour Raspberry Pi 4
+ * @brief    Gestionnaire MQTT pour Raspberry Pi 4 - Aspirateur
  */
 
 const mqtt = require('mqtt');
@@ -11,21 +11,27 @@ const mqtt = require('mqtt');
 // Connexion au broker MQTT
 const client = mqtt.connect('mqtt://localhost:1883');
 
-// Topics de lecture pour Pi 4 (à remplir avec vos topics spécifiques)
+// Topics de lecture pour Pi 4 - Aspirateur (états)
 const topics = [
-    // Exemple: 'pi4/temperature',
-    // Exemple: 'pi4/humidity',
-    // Exemple: 'pi4/status',
+    'RAM/aspirateur/etats/sequence',
+    'RAM/aspirateur/etats/NivA',
+    'RAM/aspirateur/etats/NivB',
+    'RAM/aspirateur/etats/NivC'
 ];
 
-// Topic d'écriture pour Pi 4
-const WRITE_TOPIC = 'pi/write4';
+// Topics de commandes (écriture)
+const CMD_TOPICS = {
+    force: 'RAM/aspirateur/cmd/force'
+};
 
 let io = null;
 
-// Données actuelles pour Pi 4
+// Données actuelles pour Pi 4 - Aspirateur
 const currentData = {
-    // Les données seront ajoutées dynamiquement selon les topics
+    sequence: 'FINISHED',
+    NivA: 0,
+    NivB: 0,
+    NivC: 0
 };
 
 client.on('connect', function ()
@@ -52,12 +58,20 @@ client.on('connect', function ()
 client.on('message', function (topic, message)
 {
     const value = message.toString();
-    const key = topic.replace('pi4/', ''); // Extraire le nom après pi4/
+    // Extraire le nom après RAM/aspirateur/etats/
+    const key = topic.split('/').pop();
 
     console.log(`Pi 4 - Message reçu - Topic: ${topic}, Valeur: ${value}`);
 
-    // Mettre à jour les données
-    currentData[key] = value;
+    // Mettre à jour les données (convertir en int pour les niveaux)
+    if (key === 'NivA' || key === 'NivB' || key === 'NivC')
+    {
+        currentData[key] = parseInt(value);
+    }
+    else
+    {
+        currentData[key] = value;
+    }
 
     // Émettre via Socket.IO si disponible (seulement à la room pi4)
     if (io)
@@ -66,7 +80,7 @@ client.on('message', function (topic, message)
         {
             topic: topic,
             key: key,
-            value: value,
+            value: currentData[key],
             timestamp: new Date().toISOString()
         });
     }
@@ -77,21 +91,21 @@ client.on('error', function (error)
     console.error('Pi 4 - Erreur MQTT:', error);
 });
 
-// Fonction pour publier un message vers pi/write4
-function publish(message)
+// Fonction pour publier un message vers un topic spécifique
+function publish(topic, message)
 {
     return new Promise((resolve, reject) =>
     {
-        client.publish(WRITE_TOPIC, message, function (err)
+        client.publish(topic, message, function (err)
         {
             if (err)
             {
-                console.error(`Pi 4 - Erreur lors de la publication sur ${WRITE_TOPIC}:`, err);
+                console.error(`Pi 4 - Erreur lors de la publication sur ${topic}:`, err);
                 reject(err);
             }
             else
             {
-                console.log(`Pi 4 - Message publié sur ${WRITE_TOPIC}: ${message}`);
+                console.log(`Pi 4 - Message publié sur ${topic}: ${message}`);
                 resolve();
             }
         });
@@ -117,20 +131,17 @@ function initializeSocketIO(socketIO)
             socket.emit('mqtt-initial-data-pi4', currentData);
         });
 
-        // Gérer les commandes d'écriture
-        socket.on('mqtt-command-pi4', (data) =>
+        // Gérer les commandes - Force (GO/STOP)
+        socket.on('mqtt-command-pi4-force', (data) =>
         {
-            console.log('Pi 4 - Commande reçue:', data);
-            if (data.message)
+            console.log('Pi 4 - Commande force reçue:', data.value);
+            publish(CMD_TOPICS.force, data.value).catch(err =>
             {
-                publish(data.message).catch(err =>
+                socket.emit('mqtt-error-pi4',
                 {
-                    socket.emit('mqtt-error-pi4',
-                    {
-                        error: err.message
-                    });
+                    error: err.message
                 });
-            }
+            });
         });
 
         // Quitter la room lors de la déconnexion
@@ -153,10 +164,10 @@ function getTopics()
     return topics;
 }
 
-// Obtenir le topic d'écriture
-function getWriteTopic()
+// Obtenir les topics de commandes
+function getCmdTopics()
 {
-    return WRITE_TOPIC;
+    return CMD_TOPICS;
 }
 
 module.exports = {
@@ -165,5 +176,5 @@ module.exports = {
     initializeSocketIO,
     getCurrentData,
     getTopics,
-    getWriteTopic
+    getCmdTopics
 };

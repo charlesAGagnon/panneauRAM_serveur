@@ -113,7 +113,7 @@ function initializeSocketIO(socketIO)
 
     io.on('connection', (socket) =>
     {
-        console.log('Pi 1 - Nouvelle connexion Socket.IO:', socket.id);
+        console.log('Pi 1 - Nouvelle connexion Socket.IO:');
 
         // Rejoindre la room pi1
         socket.on('join-pi1', () =>

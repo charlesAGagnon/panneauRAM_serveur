@@ -2,52 +2,37 @@
 <html lang="fr" data-theme="light">
 <head>
     <%- include('../partials/head') %>
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-5xl mx-auto">
+        <div class="max-w-7xl mx-auto">
             <!-- Header Card -->
             <div class="card bg-base-100 shadow-2xl mb-6 border-t-4 border-warning">
                 <div class="card-body">
                     <div class="flex items-center justify-between flex-wrap gap-4">
                         <div>
                             <h1 class="text-4xl font-bold bg-gradient-to-r from-warning to-orange-600 bg-clip-text text-transparent">
-                                Raspberry Pi 3 🖥️
+                                Raspberry Pi 3 - Power Meter ⚡
                             </h1>
                             <p class="text-gray-600 mt-2">Connecté en tant que <%= user %> (<%= typeAcces %>)</p>
                         </div>
-                        <div class="badge badge-warning badge-lg">
-                            Niveau <%= niveau %>
+                        <div class="flex gap-3">
+                            <div class="badge badge-warning badge-lg">Niveau <%= niveau %></div>
+                            <div id="connection-status" class="badge badge-ghost badge-lg">
+                                <span class="loading loading-dots loading-xs"></span> Connexion...
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Pi Info Card -->
+            <!-- Données MQTT en temps réel -->
             <div class="card bg-base-100 shadow-2xl mb-6">
                 <div class="card-body">
-                    <h2 class="card-title text-2xl mb-4">📊 Raspberry Pi 3 - Serveur de Monitoring</h2>
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div class="stat bg-warning/10 rounded-lg">
-                            <div class="stat-title">État</div>
-                            <div class="stat-value text-success text-2xl">En ligne</div>
-                            <div class="stat-desc">Uptime: 8 jours</div>
-                        </div>
-                        <div class="stat bg-warning/10 rounded-lg">
-                            <div class="stat-title">Température</div>
-                            <div class="stat-value text-warning text-2xl">45°C</div>
-                            <div class="stat-desc">Élevée</div>
-                        </div>
-                        <div class="stat bg-warning/10 rounded-lg">
-                            <div class="stat-title">CPU</div>
-                            <div class="stat-value text-error text-2xl">68%</div>
-                            <div class="stat-desc">Utilisation élevée</div>
-                        </div>
-                        <div class="stat bg-warning/10 rounded-lg">
-                            <div class="stat-title">RAM</div>
-                            <div class="stat-value text-warning text-2xl">3.2GB</div>
-                            <div class="stat-desc">Sur 4GB disponible</div>
-                        </div>
+                    <h2 class="card-title text-2xl mb-4">📊 Données MQTT en temps réel</h2>
+                    <div id="mqtt-data-container" class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Les données MQTT seront ajoutées ici dynamiquement -->
                     </div>
                 </div>
             </div>
@@ -57,14 +42,14 @@
                 <div class="card-body">
                     <h2 class="card-title text-2xl mb-4">ℹ️ Description</h2>
                     <p class="text-gray-700">
-                        Le Raspberry Pi 3 est dédié au monitoring et à la supervision du réseau. Il collecte les métriques,
-                        génère des alertes et affiche les dashboards de surveillance en temps réel avec Grafana.
+                        Le Raspberry Pi 3 gère le Power Meter du système. Il mesure les tensions (Van, Vbn, Vab),
+                        les courants (Ia, Ib), la puissance active (KW), l'énergie consommée (KWh) et le facteur de puissance (FP).
                     </p>
                     <div class="alert alert-warning mt-4">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span>Services actifs: Prometheus, Grafana, AlertManager</span>
+                        <span>Fonction: Power Meter - Lecture seule (tensions, courants, puissance, énergie, FP)</span>
                     </div>
                 </div>
             </div>
@@ -88,5 +73,157 @@
             </div>
         </div>
     </div>
+
+    <script>
+        const socket = io();
+
+        // Rejoindre la room pi3
+        socket.emit('join-pi3');
+
+        // Gestion de la connexion
+        socket.on('connect', () =>
+        {
+            document.getElementById('connection-status').innerHTML = '<span class="text-success">● Connecté</span>';
+            document.getElementById('connection-status').className = 'badge badge-success badge-lg';
+        });
+
+        socket.on('disconnect', () =>
+        {
+            document.getElementById('connection-status').innerHTML = '<span class="text-error">● Déconnecté</span>';
+            document.getElementById('connection-status').className = 'badge badge-error badge-lg';
+        });
+
+        // Recevoir les données initiales
+        socket.on('mqtt-initial-data-pi3', (data) =>
+        {
+            console.log('Pi 3 - Données initiales:', data);
+            updateAllData(data);
+        });
+
+        // Recevoir les mises à jour en temps réel
+        socket.on('mqtt-data-pi3', (data) =>
+        {
+            console.log('Pi 3 - Mise à jour:', data);
+            updateValue(data.key, data.value, data.timestamp);
+        });
+
+        // Fonction pour mettre à jour toutes les données
+        function updateAllData(data)
+        {
+            const container = document.getElementById('mqtt-data-container');
+            container.innerHTML = '';
+
+            if (Object.keys(data).length === 0)
+            {
+                container.innerHTML = '<div class="col-span-full alert alert-warning"><span>Aucune donnée MQTT disponible. Ajoutez des topics dans models/mqtt3.js</span></div>';
+                return;
+            }
+
+            for (const [key, value] of Object.entries(data))
+            {
+                createDataCard(key, value);
+            }
+        }
+
+        // Fonction pour créer une carte de données
+        function createDataCard(key, value, timestamp = null)
+        {
+            const container = document.getElementById('mqtt-data-container');
+            let card = document.getElementById('data-' + key);
+
+            // Formater la valeur selon le type
+            let displayValue = value;
+            let displayTitle = key;
+            let displayUnit = '';
+            let badgeClass = 'badge badge-lg badge-info';
+
+            if (key === 'Van')
+            {
+                displayTitle = 'Tension AN';
+                displayValue = typeof value === 'number' ? value.toFixed(2) : value;
+                displayUnit = ' V';
+                badgeClass = 'badge badge-lg badge-info';
+            }
+            else if (key === 'Vbn')
+            {
+                displayTitle = 'Tension BN';
+                displayValue = typeof value === 'number' ? value.toFixed(2) : value;
+                displayUnit = ' V';
+                badgeClass = 'badge badge-lg badge-info';
+            }
+            else if (key === 'Vab')
+            {
+                displayTitle = 'Tension AB';
+                displayValue = typeof value === 'number' ? value.toFixed(2) : value;
+                displayUnit = ' V';
+                badgeClass = 'badge badge-lg badge-info';
+            }
+            else if (key === 'Ia')
+            {
+                displayTitle = 'Courant A';
+                displayValue = typeof value === 'number' ? value.toFixed(2) : value;
+                displayUnit = ' A';
+                badgeClass = 'badge badge-lg badge-accent';
+            }
+            else if (key === 'Ib')
+            {
+                displayTitle = 'Courant B';
+                displayValue = typeof value === 'number' ? value.toFixed(2) : value;
+                displayUnit = ' A';
+                badgeClass = 'badge badge-lg badge-accent';
+            }
+            else if (key === 'KW')
+            {
+                displayTitle = 'Puissance Active';
+                displayValue = typeof value === 'number' ? value.toFixed(2) : value;
+                displayUnit = ' W';
+                badgeClass = 'badge badge-lg badge-success';
+            }
+            else if (key === 'KWh')
+            {
+                displayTitle = 'Énergie Consommée';
+                displayValue = typeof value === 'number' ? value.toFixed(2) : value;
+                displayUnit = ' Wh';
+                badgeClass = 'badge badge-lg badge-primary';
+            }
+            else if (key === 'FP')
+            {
+                displayTitle = 'Facteur de Puissance';
+                displayValue = typeof value === 'number' ? value.toFixed(1) : value;
+                displayUnit = ' %';
+                badgeClass = 'badge badge-lg badge-secondary';
+            }
+
+            if (!card)
+            {
+                card = document.createElement('div');
+                card.id = 'data-' + key;
+                card.className = 'stat bg-warning/10 rounded-lg';
+                card.innerHTML = `
+                    <div class="stat-title">${displayTitle}</div>
+                    <div class="stat-value text-2xl">
+                        <span class="${badgeClass}" id="value-${key}">${displayValue}${displayUnit}</span>
+                    </div>
+                    <div class="stat-desc" id="time-${key}">${timestamp ? new Date(timestamp).toLocaleTimeString() : 'En attente...'}</div>
+                `;
+                container.appendChild(card);
+            }
+            else
+            {
+                document.getElementById('value-' + key).textContent = displayValue + displayUnit;
+                if (timestamp)
+                {
+                    document.getElementById('time-' + key).textContent = new Date(timestamp).toLocaleTimeString();
+                }
+            }
+        }
+
+        // Fonction pour mettre à jour une valeur
+        function updateValue(key, value, timestamp)
+        {
+            createDataCard(key, value, timestamp);
+        }
+
+    </script>
 </body>
 </html>

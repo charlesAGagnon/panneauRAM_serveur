@@ -11,21 +11,30 @@ const mqtt = require('mqtt');
 // Connexion au broker MQTT
 const client = mqtt.connect('mqtt://localhost:1883');
 
-// Topics de lecture pour Pi 3 (à remplir avec vos topics spécifiques)
+// Topics de lecture pour Pi 3 - Power Meter
 const topics = [
-    // Exemple: 'pi3/temperature',
-    // Exemple: 'pi3/humidity',
-    // Exemple: 'pi3/status',
+    'RAM/powermeter/etats/Van',
+    'RAM/powermeter/etats/Vbn',
+    'RAM/powermeter/etats/Vab',
+    'RAM/powermeter/etats/Ia',
+    'RAM/powermeter/etats/Ib',
+    'RAM/powermeter/etats/KW',
+    'RAM/powermeter/etats/KWh',
+    'RAM/powermeter/etats/FP'
 ];
-
-// Topic d'écriture pour Pi 3
-const WRITE_TOPIC = 'pi/write3';
 
 let io = null;
 
-// Données actuelles pour Pi 3
+// Données actuelles pour Pi 3 - Power Meter
 const currentData = {
-    // Les données seront ajoutées dynamiquement selon les topics
+    Van: 0.0,
+    Vbn: 0.0,
+    Vab: 0.0,
+    Ia: 0.0,
+    Ib: 0.0,
+    KW: 0.0,
+    KWh: 0.0,
+    FP: 0.0
 };
 
 client.on('connect', function ()
@@ -52,12 +61,19 @@ client.on('connect', function ()
 client.on('message', function (topic, message)
 {
     const value = message.toString();
-    const key = topic.replace('pi3/', ''); // Extraire le nom après pi3/
+    // Extraire le nom après RAM/powermeter/etats/
+    const key = topic.split('/').pop();
 
     console.log(`Pi 3 - Message reçu - Topic: ${topic}, Valeur: ${value}`);
 
-    // Mettre à jour les données
-    currentData[key] = value;
+    // Mettre à jour les données (convertir en float)
+    currentData[key] = parseFloat(value);
+
+    // Limiter FP à 100% maximum
+    if (key === 'FP' && currentData[key] > 100)
+    {
+        currentData[key] = 100.0;
+    }
 
     // Émettre via Socket.IO si disponible (seulement à la room pi3)
     if (io)
@@ -66,7 +82,7 @@ client.on('message', function (topic, message)
         {
             topic: topic,
             key: key,
-            value: value,
+            value: currentData[key],
             timestamp: new Date().toISOString()
         });
     }
@@ -77,26 +93,7 @@ client.on('error', function (error)
     console.error('Pi 3 - Erreur MQTT:', error);
 });
 
-// Fonction pour publier un message vers pi/write3
-function publish(message)
-{
-    return new Promise((resolve, reject) =>
-    {
-        client.publish(WRITE_TOPIC, message, function (err)
-        {
-            if (err)
-            {
-                console.error(`Pi 3 - Erreur lors de la publication sur ${WRITE_TOPIC}:`, err);
-                reject(err);
-            }
-            else
-            {
-                console.log(`Pi 3 - Message publié sur ${WRITE_TOPIC}: ${message}`);
-                resolve();
-            }
-        });
-    });
-}
+// Pi 3 est en LECTURE SEULE - pas de fonction publish
 
 // Fonction pour initialiser Socket.IO
 function initializeSocketIO(socketIO)
@@ -117,21 +114,7 @@ function initializeSocketIO(socketIO)
             socket.emit('mqtt-initial-data-pi3', currentData);
         });
 
-        // Gérer les commandes d'écriture
-        socket.on('mqtt-command-pi3', (data) =>
-        {
-            console.log('Pi 3 - Commande reçue:', data);
-            if (data.message)
-            {
-                publish(data.message).catch(err =>
-                {
-                    socket.emit('mqtt-error-pi3',
-                    {
-                        error: err.message
-                    });
-                });
-            }
-        });
+        // Pi 3 est en LECTURE SEULE - pas de commandes
 
         // Quitter la room lors de la déconnexion
         socket.on('disconnect', () =>
@@ -153,17 +136,9 @@ function getTopics()
     return topics;
 }
 
-// Obtenir le topic d'écriture
-function getWriteTopic()
-{
-    return WRITE_TOPIC;
-}
-
 module.exports = {
     client,
-    publish,
     initializeSocketIO,
     getCurrentData,
-    getTopics,
-    getWriteTopic
+    getTopics
 };
