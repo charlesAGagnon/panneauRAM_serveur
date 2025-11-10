@@ -3,7 +3,7 @@
  * @author  charles-Antoine Gagnon
  * @version  1
  * @date     10/11/2025
- * @brief    Gestionnaire MQTT pour Raspberry Pi 5
+ * @brief    Gestionnaire MQTT pour Raspberry Pi 5 - Valves
  */
 
 const mqtt = require('mqtt');
@@ -11,21 +11,18 @@ const mqtt = require('mqtt');
 // Connexion au broker MQTT
 const client = mqtt.connect('mqtt://localhost:1883');
 
-// Topics de lecture pour Pi 5 (à remplir avec vos topics spécifiques)
+// Topics de lecture pour Pi 5 - Valves (états)
 const topics = [
-    // Exemple: 'pi5/temperature',
-    // Exemple: 'pi5/humidity',
-    // Exemple: 'pi5/status',
+    'RAM/valves/etats/Ouverture_PB',
+    'RAM/valves/etats/Ouverture_GB'
 ];
-
-// Topic d'écriture pour Pi 5
-const WRITE_TOPIC = 'pi/write5';
 
 let io = null;
 
-// Données actuelles pour Pi 5
+// Données actuelles pour Pi 5 - Valves
 const currentData = {
-    // Les données seront ajoutées dynamiquement selon les topics
+    Ouverture_PB: 0,
+    Ouverture_GB: 0
 };
 
 client.on('connect', function ()
@@ -52,22 +49,28 @@ client.on('connect', function ()
 client.on('message', function (topic, message)
 {
     const value = message.toString();
-    const key = topic.replace('pi5/', ''); // Extraire le nom après pi5/
+    // Extraire le nom après RAM/valves/etats/
+    const key = topic.split('/').pop();
 
     console.log(`Pi 5 - Message reçu - Topic: ${topic}, Valeur: ${value}`);
 
-    // Mettre à jour les données
-    currentData[key] = value;
+    // Mettre à jour les données (convertir en entier et limiter 0-100)
+    let intValue = parseInt(value);
+    if (isNaN(intValue)) intValue = 0;
+    if (intValue < 0) intValue = 0;
+    if (intValue > 100) intValue = 100;
 
-    // Émettre via Socket.IO si disponible (seulement à la room pi5)
+    currentData[key] = intValue;
+
+    // Envoyer la mise à jour via Socket.IO si disponible
     if (io)
     {
+        const timestamp = new Date().toLocaleString('fr-CA');
         io.to('pi5').emit('mqtt-data-pi5',
         {
-            topic: topic,
             key: key,
-            value: value,
-            timestamp: new Date().toISOString()
+            value: intValue,
+            timestamp: timestamp
         });
     }
 });
@@ -77,66 +80,24 @@ client.on('error', function (error)
     console.error('Pi 5 - Erreur MQTT:', error);
 });
 
-// Fonction pour publier un message vers pi/write5
-function publish(message)
-{
-    return new Promise((resolve, reject) =>
-    {
-        client.publish(WRITE_TOPIC, message, function (err)
-        {
-            if (err)
-            {
-                console.error(`Pi 5 - Erreur lors de la publication sur ${WRITE_TOPIC}:`, err);
-                reject(err);
-            }
-            else
-            {
-                console.log(`Pi 5 - Message publié sur ${WRITE_TOPIC}: ${message}`);
-                resolve();
-            }
-        });
-    });
-}
+// Pi 5 est en LECTURE SEULE - pas de fonction publish
 
 // Fonction pour initialiser Socket.IO
 function initializeSocketIO(socketIO)
 {
     io = socketIO;
 
+    // Écouter les connexions Socket.IO pour Pi 5
     io.on('connection', (socket) =>
     {
-        console.log('Pi 5 - Nouvelle connexion Socket.IO:', socket.id);
-
-        // Rejoindre la room pi5
+        // Gestion de la room pi5
         socket.on('join-pi5', () =>
         {
             socket.join('pi5');
-            console.log(`Pi 5 - Socket ${socket.id} a rejoint la room pi5`);
+            console.log(`Client ${socket.id} a rejoint la room pi5`);
 
-            // Envoyer les données initiales
+            // Envoyer les données actuelles
             socket.emit('mqtt-initial-data-pi5', currentData);
-        });
-
-        // Gérer les commandes d'écriture
-        socket.on('mqtt-command-pi5', (data) =>
-        {
-            console.log('Pi 5 - Commande reçue:', data);
-            if (data.message)
-            {
-                publish(data.message).catch(err =>
-                {
-                    socket.emit('mqtt-error-pi5',
-                    {
-                        error: err.message
-                    });
-                });
-            }
-        });
-
-        // Quitter la room lors de la déconnexion
-        socket.on('disconnect', () =>
-        {
-            console.log('Pi 5 - Déconnexion Socket.IO:', socket.id);
         });
     });
 }
@@ -153,17 +114,9 @@ function getTopics()
     return topics;
 }
 
-// Obtenir le topic d'écriture
-function getWriteTopic()
-{
-    return WRITE_TOPIC;
-}
-
 module.exports = {
     client,
-    publish,
     initializeSocketIO,
     getCurrentData,
-    getTopics,
-    getWriteTopic
+    getTopics
 };

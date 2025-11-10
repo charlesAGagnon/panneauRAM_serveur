@@ -2,6 +2,7 @@
 <html lang="fr" data-theme="light">
 <head>
     <%- include('../partials/head') %>
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
@@ -12,42 +13,29 @@
                     <div class="flex items-center justify-between flex-wrap gap-4">
                         <div>
                             <h1 class="text-4xl font-bold bg-gradient-to-r from-accent to-pink-600 bg-clip-text text-transparent">
-                                Raspberry Pi 5 🖥️
+                                Raspberry Pi 5 - Valves
                             </h1>
                             <p class="text-gray-600 mt-2">Connecté en tant que <%= user %> (<%= typeAcces %>)</p>
                         </div>
-                        <div class="badge badge-accent badge-lg">
-                            Niveau <%= niveau %>
+                        <div class="flex items-center gap-3">
+                            <span id="connection-status" class="badge badge-lg loading loading-spinner">Connexion...</span>
+                            <div class="badge badge-accent badge-lg">
+                                Niveau <%= niveau %>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Pi Info Card -->
+            <!-- Data Display Card -->
             <div class="card bg-base-100 shadow-2xl mb-6">
                 <div class="card-body">
-                    <h2 class="card-title text-2xl mb-4">📊 Raspberry Pi 5 - Serveur IoT</h2>
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div class="stat bg-accent/10 rounded-lg">
-                            <div class="stat-title">État</div>
-                            <div class="stat-value text-success text-2xl">En ligne</div>
-                            <div class="stat-desc">Uptime: 31 jours</div>
-                        </div>
-                        <div class="stat bg-accent/10 rounded-lg">
-                            <div class="stat-title">Température</div>
-                            <div class="stat-value text-success text-2xl">37°C</div>
-                            <div class="stat-desc">Excellente</div>
-                        </div>
-                        <div class="stat bg-accent/10 rounded-lg">
-                            <div class="stat-title">CPU</div>
-                            <div class="stat-value text-info text-2xl">15%</div>
-                            <div class="stat-desc">Utilisation faible</div>
-                        </div>
-                        <div class="stat bg-accent/10 rounded-lg">
-                            <div class="stat-title">Capteurs</div>
-                            <div class="stat-value text-accent text-2xl">24</div>
-                            <div class="stat-desc">Connectés</div>
-                        </div>
+                    <h2 class="card-title text-2xl mb-4">
+                        📊 Données en temps réel
+                        <span class="loading loading-dots loading-sm ml-2"></span>
+                    </h2>
+                    <div id="mqtt-data-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Les données seront insérées ici dynamiquement -->
                     </div>
                 </div>
             </div>
@@ -57,14 +45,14 @@
                 <div class="card-body">
                     <h2 class="card-title text-2xl mb-4">ℹ️ Description</h2>
                     <p class="text-gray-700">
-                        Le Raspberry Pi 5 gère tous les capteurs IoT et dispositifs connectés. Il collecte les données
-                        des capteurs de température, humidité, mouvement et communique avec les systèmes domotiques.
+                        Le Raspberry Pi 5 surveille l'ouverture des valves du système. Les valeurs représentent le pourcentage d'ouverture
+                        de chaque valve (0% = fermée, 100% = ouverte complètement).
                     </p>
-                    <div class="alert alert-success mt-4">
+                    <div class="alert alert-info mt-4">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span>Services actifs: MQTT, Node-RED, Home Assistant</span>
+                        <span>Système en lecture seule - Surveillance uniquement</span>
                     </div>
                 </div>
             </div>
@@ -88,5 +76,106 @@
             </div>
         </div>
     </div>
+
+    <script>
+        const socket = io();
+
+        // Rejoindre la room pi5
+        socket.emit('join-pi5');
+
+        // Gestion de la connexion
+        socket.on('connect', () =>
+        {
+            console.log('Connecté au serveur Socket.IO');
+            document.getElementById('connection-status').textContent = 'Connecté';
+            document.getElementById('connection-status').className = 'badge badge-success badge-lg';
+        });
+
+        socket.on('disconnect', () =>
+        {
+            console.log('Déconnecté du serveur Socket.IO');
+            document.getElementById('connection-status').textContent = 'Déconnecté';
+            document.getElementById('connection-status').className = 'badge badge-error badge-lg';
+        });
+
+        // Recevoir les données initiales
+        socket.on('mqtt-initial-data-pi5', (data) =>
+        {
+            console.log('Données initiales Pi 5:', data);
+            updateAllData(data);
+        });
+
+        // Recevoir les mises à jour en temps réel
+        socket.on('mqtt-data-pi5', (data) =>
+        {
+            console.log('Mise à jour Pi 5:', data);
+            updateValue(data.key, data.value, data.timestamp);
+        });
+
+        // Fonction pour mettre à jour toutes les données
+        function updateAllData(data)
+        {
+            const container = document.getElementById('mqtt-data-container');
+            container.innerHTML = '';
+
+            for (const [key, value] of Object.entries(data))
+            {
+                createDataCard(key, value);
+            }
+        }
+
+        // Fonction pour créer une carte de données
+        function createDataCard(key, value, timestamp = null)
+        {
+            const container = document.getElementById('mqtt-data-container');
+            let card = document.getElementById(`data-card-${key}`);
+
+            // Formater le nom d'affichage
+            let displayName = key;
+            if (key === 'Ouverture_PB') displayName = 'Ouverture PB';
+            if (key === 'Ouverture_GB') displayName = 'Ouverture GB';
+
+            // Déterminer la couleur du badge selon le pourcentage
+            let badgeClass = 'badge-error'; // Rouge par défaut (fermée)
+            if (value >= 75)
+            {
+                badgeClass = 'badge-success'; // Vert (ouverte)
+            }
+            else if (value >= 30)
+            {
+                badgeClass = 'badge-warning'; // Orange (partiellement ouverte)
+            }
+
+            if (!card)
+            {
+                card = document.createElement('div');
+                card.id = `data-card-${key}`;
+                card.className = 'card bg-accent/10 border-l-4 border-accent';
+                container.appendChild(card);
+            }
+
+            card.innerHTML = `
+                <div class="card-body p-4">
+                    <h3 class="card-title text-lg">${displayName}</h3>
+                    <div class="flex items-center gap-3 mt-2">
+                        <div class="radial-progress text-accent" style="--value:${value}; --size:4rem;">
+                            <span class="text-lg font-bold">${value}%</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="badge ${badgeClass} badge-lg w-full">${value}% ouvert</div>
+                            ${timestamp ? `<p class="text-xs text-gray-500 mt-2">Mis à jour: ${timestamp}</p>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Fonction pour mettre à jour une valeur
+        function updateValue(key, value, timestamp)
+        {
+            createDataCard(key, value, timestamp);
+        }
+
+    </script>
 </body>
 </html>
