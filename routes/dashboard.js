@@ -31,20 +31,8 @@ router.post('/dashboard', async function (req, res, next)
                 niveau: data.niveau
             };
 
-            switch (data.niveau)
-            {
-                case "0":
-                    return res.render('pages/userNiveau0', renderData);
-                case "1":
-                    return res.render('pages/userNiveau1', renderData);
-                case "2":
-                    return res.render('pages/userNiveau2', renderData);
-                case "3":
-                    return res.render('pages/userNiveau3', renderData);
-                default:
-                    console.log('Niveau inconnu:', data.niveau);
-                    return res.redirect('/');
-            }
+            // Utiliser la page dashboard commune pour tous les niveaux
+            return res.render('pages/dashboard', renderData);
         });
     }
     catch (err)
@@ -72,19 +60,8 @@ router.get('/dashboard', async function (req, res, next)
         niveau: niveau
     };
 
-    switch (niveau)
-    {
-        case "0":
-            return res.render('pages/userNiveau0', renderData);
-        case "1":
-            return res.render('pages/userNiveau1', renderData);
-        case "2":
-            return res.render('pages/userNiveau2', renderData);
-        case "3":
-            return res.render('pages/userNiveau3', renderData);
-        default:
-            return res.redirect('/');
-    }
+    // Utiliser la page dashboard commune pour tous les niveaux
+    return res.render('pages/dashboard', renderData);
 });
 
 // Routes RaspberryPi

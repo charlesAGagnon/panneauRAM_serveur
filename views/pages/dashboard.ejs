@@ -1,0 +1,273 @@
+<!--
+* @file dashboard.ejs
+* @author charles-Antoine Gagnon
+* @version 1
+* @date 10/11/2025
+* @brief Page dashboard commune avec données MQTT en temps réel
+-->
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <%- include('../partials/head') %>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header Card -->
+            <div class="card bg-base-100 shadow-2xl mb-6 border-t-4 border-primary">
+                <div class="card-body">
+                    <div class="flex items-center justify-between flex-wrap gap-4">
+                        <div>
+                            <h1 class="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                                Tableau de bord - <%= user %>
+                            </h1>
+                            <p class="text-gray-600 mt-2"><%= typeAcces %> - Niveau <%= niveau %></p>
+                        </div>
+                        <div class="badge badge-primary badge-lg">
+                            <span id="connection-status" class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-gray-400"></span>
+                                Connexion...
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Données MQTT en temps réel -->
+            <div class="card bg-base-100 shadow-2xl mb-6">
+                <div class="card-body">
+                    <h2 class="card-title text-2xl mb-6">📊 État du système en temps réel</h2>
+
+                    <!-- Niveaux et Température -->
+                    <div class="grid md:grid-cols-3 gap-4 mb-6">
+                        <div class="stat bg-info/10 rounded-lg">
+                            <div class="stat-title">Niveau Grand Bassin</div>
+                            <div class="stat-value text-info" id="nivgb">--%</div>
+                            <div class="stat-desc">NivGB</div>
+                        </div>
+                        <div class="stat bg-info/10 rounded-lg">
+                            <div class="stat-title">Niveau Petit Bassin</div>
+                            <div class="stat-value text-info" id="nivpb">--%</div>
+                            <div class="stat-desc">NivPB</div>
+                        </div>
+                        <div class="stat bg-warning/10 rounded-lg">
+                            <div class="stat-title">Température PB</div>
+                            <div class="stat-value text-warning" id="tmppb">--°C</div>
+                            <div class="stat-desc">TmpPB</div>
+                        </div>
+                    </div>
+
+                    <!-- Valves -->
+                    <h3 class="text-xl font-semibold mb-4">🔧 Valves (ouverture en %)</h3>
+                    <div class="grid md:grid-cols-4 gap-4 mb-6">
+                        <div class="stat bg-success/10 rounded-lg">
+                            <div class="stat-title">Valve GB</div>
+                            <div class="stat-value text-success text-2xl" id="valvegb">--%</div>
+                        </div>
+                        <div class="stat bg-success/10 rounded-lg">
+                            <div class="stat-title">Valve PB</div>
+                            <div class="stat-value text-success text-2xl" id="valvepb">--%</div>
+                        </div>
+                        <div class="stat bg-success/10 rounded-lg">
+                            <div class="stat-title">Valve EC</div>
+                            <div class="stat-value text-success text-2xl" id="valveec">--%</div>
+                        </div>
+                        <div class="stat bg-success/10 rounded-lg">
+                            <div class="stat-title">Valve EF</div>
+                            <div class="stat-value text-success text-2xl" id="valveef">--%</div>
+                        </div>
+                    </div>
+
+                    <!-- États ON/OFF -->
+                    <h3 class="text-xl font-semibold mb-4">⚡ États des équipements</h3>
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div class="stat bg-base-200 rounded-lg">
+                            <div class="stat-title">Valve EEC</div>
+                            <div class="stat-value text-2xl">
+                                <span id="valveeec" class="badge badge-lg badge-ghost">OFF</span>
+                            </div>
+                        </div>
+                        <div class="stat bg-base-200 rounded-lg">
+                            <div class="stat-title">Valve EEF</div>
+                            <div class="stat-value text-2xl">
+                                <span id="valveeef" class="badge badge-lg badge-ghost">OFF</span>
+                            </div>
+                        </div>
+                        <div class="stat bg-base-200 rounded-lg">
+                            <div class="stat-title">Pompe</div>
+                            <div class="stat-value text-2xl">
+                                <span id="pompe" class="badge badge-lg badge-ghost">OFF</span>
+                            </div>
+                        </div>
+                        <div class="stat bg-base-200 rounded-lg">
+                            <div class="stat-title">Mode</div>
+                            <div class="stat-value text-2xl">
+                                <span id="mode" class="badge badge-lg badge-primary">AUTO</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accès Raspberry Pi -->
+            <div class="card bg-base-100 shadow-2xl mb-6">
+                <div class="card-body">
+                    <h2 class="card-title text-2xl mb-4">🖥️ Raspberry Pi disponibles</h2>
+                    <div id="raspberry-pi-container">
+                        <!-- Généré dynamiquement selon le niveau -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bouton déconnexion -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <div class="card-actions justify-end">
+                        <a href="/" class="btn btn-outline btn-error gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            Déconnexion
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+
+    <script>
+        const socket = io();
+        const niveau = '<%= niveau %>';
+        const user = '<%= user %>';
+        const typeAcces = '<%= typeAcces %>';
+
+        // Gestion de la connexion Socket.IO
+        socket.on('connect', () =>
+        {
+            console.log('Connecté à Socket.IO');
+            document.getElementById('connection-status').innerHTML = `
+                <span class="w-3 h-3 rounded-full bg-success animate-pulse"></span>
+                En ligne
+            `;
+        });
+
+        socket.on('disconnect', () =>
+        {
+            console.log('Déconnecté de Socket.IO');
+            document.getElementById('connection-status').innerHTML = `
+                <span class="w-3 h-3 rounded-full bg-error"></span>
+                Hors ligne
+            `;
+        });
+
+        // Recevoir les données initiales
+        socket.on('mqtt-initial-data', (data) =>
+        {
+            console.log('Données initiales:', data);
+            updateAllData(data);
+        });
+
+        // Recevoir les mises à jour en temps réel
+        socket.on('mqtt-data', (data) =>
+        {
+            console.log('Mise à jour:', data);
+            updateValue(data.key, data.value);
+        });
+
+        // Fonction pour mettre à jour une valeur
+        function updateValue(key, value)
+        {
+            const elementId = key.toLowerCase();
+            const element = document.getElementById(elementId);
+
+            if (element)
+            {
+                if (typeof value === 'number')
+                {
+                    if (key.startsWith('Valve') && !key.includes('EE'))
+                    {
+                        element.textContent = value + '%';
+                    }
+                    else if (key === 'TmpPB')
+                    {
+                        element.textContent = value + '°C';
+                    }
+                    else if (key.startsWith('Niv'))
+                    {
+                        element.textContent = value + '%';
+                    }
+                }
+                else
+                {
+                    // Pour le Mode (auto/manuel)
+                    if (key === 'Mode')
+                    {
+                        const isAuto = value.toLowerCase() === 'auto';
+                        element.className = `badge badge-lg ${isAuto ? 'badge-primary' : 'badge-warning'}`;
+                        element.textContent = value.toUpperCase();
+                    }
+                    // Pour les valeurs ON/OFF
+                    else
+                    {
+                        const isOn = value.toLowerCase() === 'on';
+                        element.className = `badge badge-lg ${isOn ? 'badge-success' : 'badge-ghost'}`;
+                        element.textContent = value.toUpperCase();
+                    }
+                }
+            }
+        }
+
+        // Fonction pour mettre à jour toutes les données
+        function updateAllData(data)
+        {
+            Object.keys(data).forEach(key =>
+            {
+                updateValue(key, data[key]);
+            });
+        }
+
+        // Générer les liens Raspberry Pi selon le niveau
+        const accessRules = {
+            '0': [],
+            '1': ['1', '2'],
+            '2': ['1', '2', '3', '4', '5'],
+            '3': ['1', '2', '3', '4', '5', '6']
+        };
+
+        const piColors = ['info', 'success', 'warning', 'secondary', 'accent', 'error'];
+        const container = document.getElementById('raspberry-pi-container');
+        const allowedPis = accessRules[niveau] || [];
+
+        if (allowedPis.length === 0)
+        {
+            container.innerHTML = '<p class="text-gray-500">Aucun accès Raspberry Pi pour votre niveau.</p>';
+        }
+        else
+        {
+            const grid = document.createElement('div');
+            grid.className = `grid grid-cols-2 md:grid-cols-${Math.min(allowedPis.length, 3)} gap-3`;
+
+            allowedPis.forEach(piNum =>
+            {
+                const color = piColors[parseInt(piNum) - 1];
+                const link = document.createElement('a');
+                link.href = `/raspberrypi${piNum}?niveau=${niveau}&user=${user}&typeAcces=${typeAcces}`;
+                link.className = `btn btn-outline btn-${color} gap-2`;
+                link.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                    </svg>
+                    Pi ${piNum}
+                `;
+                grid.appendChild(link);
+            });
+
+            container.appendChild(grid);
+        }
+
+    </script>
+</body>
+</html>
