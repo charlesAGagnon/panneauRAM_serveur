@@ -106,6 +106,18 @@ class Request
             }
         });
     }
+    setUserPassword(nom, newPassword)
+    {
+        const sql = 'UPDATE user SET password = ? WHERE nom = ?;';
+        return new Promise(function (resolve, reject)
+        {
+            database.connection.query(sql, [newPassword, nom], function (err, results)
+            {
+                if (err) return reject(err);
+                resolve(results.affectedRows > 0);
+            });
+        });
+    }
 }
 
 module.exports = new Request();

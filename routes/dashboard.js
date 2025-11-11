@@ -64,4 +64,13 @@ router.get('/dashboard', async function (req, res, next)
     return res.render('pages/dashboard', renderData);
 });
 
+router.post('/dashboard/changePassword', async function (req, res, next)
+{
+
+    const username = req.body.user;
+    const newPassword = req.body.newPassword;
+    await requete.setUserPassword(username, newPassword);
+    res.redirect(`/dashboard?user=${encodeURIComponent(username)}&niveau=3&typeAcces=Administrateur`);
+});
+
 module.exports = router;

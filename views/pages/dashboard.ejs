@@ -250,7 +250,14 @@
             </form>
 
             <% } %>
-
+            <% if(niveau === '3') { %>
+            <p>
+                <form id="change-password" class="password-form" method="POST" action="/dashboard/changePassword">
+                    <input type="password" id="new-password" class=".form-group input" placeholder="new password" required>
+                    <button type="submit" class="submit-btn">Changer le mot de passe</button>
+                </form>
+            </p>
+            <% } %>
             <!-- Accès Raspberry Pi -->
             <div class="card bg-base-100 shadow-2xl mb-6">
                 <div class="card-body">
