@@ -73,4 +73,115 @@ router.post('/dashboard/changePassword', async function (req, res, next)
     res.redirect(`/dashboard?user=${encodeURIComponent(username)}&niveau=3&typeAcces=Administrateur`);
 });
 
+// Route GET pour la page Granulaires
+router.get('/granulaires', async function (req, res, next)
+{
+    const user = req.query.user;
+    const niveau = req.query.niveau;
+    const typeAcces = req.query.typeAcces;
+
+    if (!user || !niveau || !typeAcces)
+    {
+        return res.redirect('/');
+    }
+
+    const renderData = {
+        title: 'Granulaires',
+        user: user,
+        typeAcces: typeAcces,
+        niveau: niveau
+    };
+
+    return res.render('pages/granulaires', renderData);
+});
+
+// Route GET pour la page Home (Accueil)
+router.get('/home', async function (req, res, next)
+{
+    const user = req.query.user;
+    const niveau = req.query.niveau;
+    const typeAcces = req.query.typeAcces;
+
+    if (!user || !niveau || !typeAcces)
+    {
+        return res.redirect('/');
+    }
+
+    const renderData = {
+        title: 'Accueil',
+        user: user,
+        typeAcces: typeAcces,
+        niveau: niveau
+    };
+
+    return res.render('pages/home', renderData);
+});
+
+// Route GET pour la page Journal
+router.get('/journal', async function (req, res, next)
+{
+    const user = req.query.user;
+    const niveau = req.query.niveau;
+    const typeAcces = req.query.typeAcces;
+
+    if (!user || !niveau || !typeAcces)
+    {
+        return res.redirect('/');
+    }
+
+    const renderData = {
+        title: 'Journal',
+        user: user,
+        typeAcces: typeAcces,
+        niveau: niveau
+    };
+
+    return res.render('pages/journal', renderData);
+});
+
+// Route GET pour la page Alertes
+router.get('/alertes', async function (req, res, next)
+{
+    const user = req.query.user;
+    const niveau = req.query.niveau;
+    const typeAcces = req.query.typeAcces;
+
+    if (!user || !niveau || !typeAcces)
+    {
+        return res.redirect('/');
+    }
+
+    const renderData = {
+        title: 'Alertes',
+        user: user,
+        typeAcces: typeAcces,
+        niveau: niveau
+    };
+
+    return res.render('pages/alertes', renderData);
+});
+
+// Route GET pour la page Comptes (stub)
+router.get('/comptes', async function (req, res, next)
+{
+    const user = req.query.user;
+    const niveau = req.query.niveau;
+    const typeAcces = req.query.typeAcces;
+
+    if (!user || !niveau || !typeAcces || niveau === '0')
+    {
+        return res.redirect('/');
+    }
+
+    const renderData = {
+        title: 'Comptes',
+        user: user,
+        typeAcces: typeAcces,
+        niveau: niveau
+    };
+
+    // Pour l'instant, on affiche une page d'accueil
+    return res.render('pages/home', renderData);
+});
+
 module.exports = router;

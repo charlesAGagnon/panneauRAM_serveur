@@ -179,6 +179,24 @@ function initializeSocketIO(socketIO)
             }
         });
 
+        // Écouter les publications MQTT génériques (depuis granulaires, dashboard, etc)
+        socket.on('mqtt-publish', async (data) =>
+        {
+            console.log('mqtt-publish reçu - Topic:', data.topic, 'Message:', data.message);
+            if (data.topic && data.message !== undefined)
+            {
+                try
+                {
+                    await publish(data.topic, data.message);
+                    console.log(`✅ Message publié avec succès: ${data.topic} = ${data.message}`);
+                }
+                catch (error)
+                {
+                    console.error(`❌ Erreur lors de la publication: ${error.message}`);
+                }
+            }
+        });
+
         socket.on('disconnect', () =>
         {
             console.log('Client Socket.IO déconnecté:', socket.id);

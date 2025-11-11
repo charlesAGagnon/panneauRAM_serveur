@@ -1,0 +1,774 @@
+/* ============================================
+   MODERN DESIGN SYSTEM - PanneauRAM
+   Clean, professional, contemporary
+   ============================================ */
+
+:root {
+    --primary: #0d6efd;
+    --success: #198754;
+    --danger: #dc3545;
+    --warning: #ffc107;
+    --info: #0dcaf0;
+    --dark: #212529;
+    --light: #f8f9fa;
+    --gray-100: #f8f9fa;
+    --gray-200: #e9ecef;
+    --gray-300: #dee2e6;
+    --gray-400: #adb5bd;
+    --gray-500: #6c757d;
+    --gray-600: #495057;
+    --gray-700: #343a40;
+    --gray-800: #212529;
+    --border-radius: 8px;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--gray-700);
+    background: var(--light);
+}
+
+/* ============================================
+   NAVBAR - Modern top bar
+   ============================================ */
+
+.navbar-modern {
+    background: white;
+    border-bottom: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 0;
+}
+
+.navbar-modern-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    height: 60px;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.navbar-brand-modern {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.navbar-brand-modern:hover {
+    color: #0a58ca;
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+    flex: 1;
+    margin: 0 32px;
+}
+
+.navbar-menu-item {
+    position: relative;
+}
+
+.navbar-menu-link {
+    display: flex;
+    align-items: center;
+    height: 60px;
+    padding: 0 4px;
+    text-decoration: none;
+    color: var(--gray-600);
+    font-weight: 500;
+    font-size: 13px;
+    transition: color 0.3s;
+    border-bottom: 2px solid transparent;
+}
+
+.navbar-menu-link:hover,
+.navbar-menu-link.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-left: auto;
+}
+
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--gray-600);
+}
+
+.navbar-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--info);
+    color: white;
+}
+
+.navbar-logout {
+    font-size: 12px;
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.navbar-logout:hover {
+    color: #0a58ca;
+}
+
+/* ============================================
+   CARD - Reusable card component
+   ============================================ */
+
+.card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--gray-300);
+}
+
+.card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--gray-200);
+    background: linear-gradient(135deg, var(--primary) 0%, #0a58ca 100%);
+    color: white;
+}
+
+.card-header-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.card-body {
+    padding: 16px 20px;
+}
+
+.card-body-small {
+    padding: 12px 16px;
+}
+
+.card-footer {
+    padding: 12px 20px;
+    border-top: 1px solid var(--gray-200);
+    background: var(--gray-100);
+}
+
+/* ============================================
+   BUTTON - Modern buttons
+   ============================================ */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: #0a58ca;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: var(--gray-200);
+    color: var(--gray-700);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: var(--gray-300);
+}
+
+.btn-success {
+    background: var(--success);
+    color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+    background: #157347;
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: #bb2d3b;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.btn-lg {
+    padding: 12px 24px;
+    font-size: 14px;
+}
+
+/* ============================================
+   GRID LAYOUT - Responsive columns
+   ============================================ */
+
+.grid {
+    display: grid;
+    gap: 24px;
+}
+
+.grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.grid-cols-1 {
+    grid-template-columns: 1fr;
+}
+
+.grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* ============================================
+   FORM ELEMENTS
+   ============================================ */
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-700);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-control,
+.form-select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: 6px;
+    font-size: 13px;
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+.form-control:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+    background: var(--gray-100);
+    color: var(--gray-500);
+    cursor: not-allowed;
+}
+
+input[type="range"] {
+    width: 100%;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--gray-300);
+    border-radius: 3px;
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--primary);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: #0a58ca;
+    box-shadow: var(--shadow-md);
+    transform: scale(1.1);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--primary);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+/* ============================================
+   JUMBOTRON - Hero section
+   ============================================ */
+
+.jumbotron {
+    background: linear-gradient(135deg, var(--primary) 0%, #0a58ca 100%);
+    color: white;
+    padding: 60px 24px;
+    border-radius: var(--border-radius);
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.jumbotron-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.jumbotron-subtitle {
+    font-size: 18px;
+    opacity: 0.9;
+    margin-bottom: 24px;
+}
+
+.jumbotron-cta {
+    display: inline-flex;
+    gap: 12px;
+}
+
+/* ============================================
+   ALERT / BADGE / STATUS
+   ============================================ */
+
+.alert {
+    padding: 12px 16px;
+    border-radius: var(--border-radius);
+    border-left: 4px solid;
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+
+.alert-info {
+    background: #cfe2ff;
+    color: #084298;
+    border-left-color: #0d6efd;
+}
+
+.alert-success {
+    background: #d1e7dd;
+    color: #0f5132;
+    border-left-color: #198754;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    color: #664d03;
+    border-left-color: #ffc107;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    color: #842029;
+    border-left-color: #dc3545;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.badge-success {
+    background: var(--success);
+    color: white;
+}
+
+.badge-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.badge-warning {
+    background: var(--warning);
+    color: black;
+}
+
+.badge-info {
+    background: var(--info);
+    color: white;
+}
+
+/* ============================================
+   STAT CARD - Display metrics
+   ============================================ */
+
+.stat-card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--border-radius);
+    padding: 12px 16px;
+    text-align: center;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary);
+}
+
+.stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    order: 1;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+    order: 2;
+    line-height: 1;
+}
+
+.stat-unit {
+    font-size: 10px;
+    color: var(--gray-500);
+    order: 3;
+}
+
+/* ============================================
+   VIDEO / CANVAS PLACEHOLDER
+   ============================================ */
+
+.video-container {
+    position: relative;
+    background: #000;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: var(--danger);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.video-overlay::before {
+    content: '●';
+    display: inline-block;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+    .navbar-menu {
+        gap: 16px;
+        margin: 0 16px;
+    }
+
+    .navbar-menu-link {
+        font-size: 12px;
+    }
+
+    .navbar-right {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+    }
+
+    .jumbotron {
+        padding: 40px 16px;
+    }
+
+    .jumbotron-title {
+        font-size: 24px;
+    }
+
+    .jumbotron-subtitle {
+        font-size: 14px;
+    }
+
+    .grid-cols-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+.mt-0 {
+    margin-top: 0;
+}
+
+.mt-1 {
+    margin-top: 8px;
+}
+
+.mt-2 {
+    margin-top: 16px;
+}
+
+.mt-3 {
+    margin-top: 24px;
+}
+
+.mt-4 {
+    margin-top: 32px;
+}
+
+.mb-0 {
+    margin-bottom: 0;
+}
+
+.mb-1 {
+    margin-bottom: 8px;
+}
+
+.mb-2 {
+    margin-bottom: 16px;
+}
+
+.mb-3 {
+    margin-bottom: 24px;
+}
+
+.mb-4 {
+    margin-bottom: 32px;
+}
+
+.p-0 {
+    padding: 0;
+}
+
+.p-1 {
+    padding: 8px;
+}
+
+.p-2 {
+    padding: 16px;
+}
+
+.p-3 {
+    padding: 24px;
+}
+
+.p-4 {
+    padding: 32px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-primary {
+    color: var(--primary);
+}
+
+.text-success {
+    color: var(--success);
+}
+
+.text-danger {
+    color: var(--danger);
+}
+
+.text-gray {
+    color: var(--gray-600);
+}
+
+.fw-600 {
+    font-weight: 600;
+}
+
+.fw-700 {
+    font-weight: 700;
+}
+
+.fs-12 {
+    font-size: 12px;
+}
+
+.fs-14 {
+    font-size: 14px;
+}
+
+.fs-16 {
+    font-size: 16px;
+}
+
+.fs-18 {
+    font-size: 18px;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.gap-1 {
+    gap: 8px;
+}
+
+.gap-2 {
+    gap: 16px;
+}
+
+.gap-3 {
+    gap: 24px;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.h-100 {
+    height: 100%;
+}
+
+.rounded {
+    border-radius: var(--border-radius);
+}
+
+.shadow {
+    box-shadow: var(--shadow-md);
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.opacity-50 {
+    opacity: 0.5;
+}

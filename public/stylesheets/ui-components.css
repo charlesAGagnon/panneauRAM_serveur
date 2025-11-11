@@ -1,0 +1,411 @@
+/* ============================================
+   UI COMPONENTS - Cylindres, Sliders, Boutons
+   Optimisé pour affichage compact
+   ============================================ */
+
+/* CYLINDRE D'EAU */
+.water-cylinder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.cylinder-container {
+    position: relative;
+    width: 60px;
+    height: 150px;
+    border: 2px solid #4f46e5;
+    border-radius: 12px 12px 4px 4px;
+    background: linear-gradient(to right, rgba(79, 70, 229, 0.1), transparent);
+    overflow: hidden;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cylinder-water {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: linear-gradient(to bottom,
+            rgba(59, 130, 246, 0.8),
+            rgba(30, 58, 138, 0.9));
+    transition: height 0.3s ease;
+    border-top: 2px solid rgba(96, 165, 250, 0.6);
+}
+
+.cylinder-label {
+    font-weight: 600;
+    color: #374151;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    text-align: center;
+}
+
+.cylinder-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #4f46e5;
+    min-width: 45px;
+    text-align: center;
+}
+
+.cylinder-unit {
+    font-size: 10px;
+    color: #6b7280;
+    text-transform: uppercase;
+}
+
+/* SLIDER LATÉRAL (barre côté) */
+.side-slider-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+}
+
+.side-slider-container:hover {
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+}
+
+.side-slider-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.slider-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.slider-vertical {
+    width: 100%;
+    height: 150px;
+    -webkit-appearance: slider-vertical;
+    appearance: slider-vertical;
+    writing-mode: bt-lr;
+    cursor: pointer;
+}
+
+input[type="range"].slider-vertical {
+    width: 30px;
+    height: 150px;
+    border-radius: 15px;
+    background: linear-gradient(to top, #4f46e5, #818cf8);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+input[type="range"].slider-vertical::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #4f46e5;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.4);
+    transition: all 0.2s ease;
+}
+
+input[type="range"].slider-vertical::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 3px 10px rgba(79, 70, 229, 0.6);
+}
+
+input[type="range"].slider-vertical::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #4f46e5;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.4);
+    transition: all 0.2s ease;
+}
+
+input[type="range"].slider-vertical::-moz-range-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 3px 10px rgba(79, 70, 229, 0.6);
+}
+
+.slider-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    min-width: 70px;
+}
+
+.slider-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+    min-width: 60px;
+}
+
+.slider-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #4f46e5;
+    min-width: 35px;
+    text-align: right;
+}
+
+.slider-unit {
+    font-size: 10px;
+    color: #6b7280;
+    text-transform: uppercase;
+}
+
+/* BOUTON ON/OFF */
+.on-off-button {
+    padding: 8px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+    color: #6b7280;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: auto;
+}
+
+.on-off-button:hover:not(:disabled) {
+    border-color: #4f46e5;
+    color: #4f46e5;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
+}
+
+.on-off-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.on-off-button.active {
+    background: #4f46e5;
+    color: white;
+    border-color: #4f46e5;
+}
+
+.on-off-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.on-off-button.on::before {
+    content: "●";
+    font-size: 10px;
+    color: #10b981;
+}
+
+.on-off-button.on.active::before {
+    color: #10b981;
+}
+
+.on-off-button.off::before {
+    content: "●";
+    font-size: 10px;
+    color: #ef4444;
+}
+
+.on-off-button.off.active::before {
+    color: #ef4444;
+}
+
+/* CONTENEUR D'ÉNERGIE */
+.energy-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.energy-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-left: 3px solid #4f46e5;
+    border-radius: 6px;
+    padding: 10px 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+}
+
+.energy-card:hover {
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.energy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.energy-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.energy-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #4f46e5;
+}
+
+.energy-unit {
+    font-size: 10px;
+    color: #9ca3af;
+}
+
+/* GRILLE DE DISPOSITION */
+.grid-valves {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.grid-cylinders {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 12px;
+    align-items: start;
+    margin-top: 12px;
+}
+
+.grid-energy {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 6px;
+}
+
+/* SECTION CONTAINER */
+.section-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+/* ROW POUR SECTIONS CÔTE À CÔTE */
+.sections-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.sections-row .section-container {
+    margin-bottom: 0;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+    .grid-valves {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-energy {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sections-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .grid-valves {
+        grid-template-columns: 1fr;
+    }
+
+    .grid-cylinders {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .cylinder-container {
+        width: 50px;
+        height: 130px;
+    }
+
+    .cylinder-value {
+        font-size: 16px;
+    }
+
+    .side-slider-container {
+        flex-direction: column;
+    }
+
+    input[type="range"].slider-vertical {
+        width: 140px;
+        height: 30px;
+        writing-mode: lr-tb;
+    }
+
+    input[type="range"].slider-vertical::-webkit-slider-thumb {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-container {
+        padding: 12px;
+    }
+
+    .grid-cylinders {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .cylinder-container {
+        width: 55px;
+        height: 140px;
+        margin: 0 auto;
+    }
+
+    .cylinder-value {
+        font-size: 16px;
+    }
+
+    .on-off-button {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 12px;
+    }
+
+    .section-title {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+}

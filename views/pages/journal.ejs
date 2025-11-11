@@ -1,0 +1,89 @@
+<!--
+* @file journal.ejs
+* @author charles-Antoine Gagnon
+* @version 1 - Journal page
+* @date 11/11/2025
+* @brief Page Journal (stub)
+-->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PanneauRAM - Journal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/modern.css">
+</head>
+<body style="margin: 0; padding: 0; background: #f8f9fa;">
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar-modern">
+        <div class="navbar-modern-container">
+            <a href="/home?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-brand-modern">
+                🎛️ PanneauRAM
+            </a>
+            <ul class="navbar-menu">
+                <li class="navbar-menu-item">
+                    <a href="/home?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link">
+                        🏠 Accueil
+                    </a>
+                </li>
+                <li class="navbar-menu-item">
+                    <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link">
+                        📊 RAM
+                    </a>
+                </li>
+                <li class="navbar-menu-item">
+                    <a href="/granulaires?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link">
+                        🌾 Granudoseur
+                    </a>
+                </li>
+                <li class="navbar-menu-item">
+                    <a href="/journal?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link active">
+                        📋 Journal
+                    </a>
+                </li>
+                <li class="navbar-menu-item">
+                    <a href="/alertes?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link">
+                        🔔 Alertes
+                    </a>
+                </li>
+                <% if (niveau !== '0') { %>
+                <li class="navbar-menu-item">
+                    <a href="/comptes?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link">
+                        👥 Comptes
+                    </a>
+                </li>
+                <% } %>
+            </ul>
+            <div class="navbar-right">
+                <div class="navbar-user">
+                    <span class="navbar-badge" style="background-color: #198754;">En ligne</span>
+                    <span style="margin-left: 8px;">
+                        <strong><%= user %></strong> • <%= typeAcces %> (L<%= niveau %>)
+                    </span>
+                </div>
+                <a href="/" class="navbar-logout">Déconnexion</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== CONTENU ===== -->
+    <div style="padding: 32px 24px;">
+        <div style="max-width: 1400px; margin: 0 auto;">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-header-title">📋 Journal des Événements</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>ℹ️ Page en développement</strong><br>
+                        Le journal des événements sera disponible prochainement. Cette section affichera l'historique complet des actions et événements du système.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
