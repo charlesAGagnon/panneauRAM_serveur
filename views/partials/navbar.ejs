@@ -1,6 +1,4 @@
-<!-- views/partials/header.ejs -->
-
-<!-- Navigation Bar -->
+<!-- Navigation Bar Partial -->
 <nav class="navbar-modern">
     <div class="navbar-modern-container">
         <a href="/home?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-brand-modern">
@@ -8,23 +6,23 @@
         </a>
         <ul class="navbar-menu">
             <li class="navbar-menu-item">
-                <a href="/home?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'active' : '' %>">🏠 Accueil</a>
+                <a href="/home?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= currentPage === 'home' ? 'active' : '' %>">🏠 Accueil</a>
             </li>
             <li class="navbar-menu-item">
-                <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'dashboard' ? 'active' : '' %>">📊 RAM</a>
+                <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= currentPage === 'dashboard' ? 'active' : '' %>">📊 RAM</a>
             </li>
             <li class="navbar-menu-item">
-                <a href="/granulaires?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'granulaires' ? 'active' : '' %>">🌾 Granudoseur</a>
+                <a href="/granulaires?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= currentPage === 'granulaires' ? 'active' : '' %>">🌾 Granudoseur</a>
             </li>
             <li class="navbar-menu-item">
-                <a href="/journal?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'journal' ? 'active' : '' %>">📋 Journal</a>
+                <a href="/journal?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= currentPage === 'journal' ? 'active' : '' %>">📋 Journal</a>
             </li>
             <li class="navbar-menu-item">
-                <a href="/alertes?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'alertes' ? 'active' : '' %>">🔔 Alertes</a>
+                <a href="/alertes?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= currentPage === 'alertes' ? 'active' : '' %>">🔔 Alertes</a>
             </li>
             <% if (niveau !== '0') { %>
             <li class="navbar-menu-item">
-                <a href="/comptes?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'comptes' ? 'active' : '' %>">👥 Comptes</a>
+                <a href="/comptes?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= currentPage === 'comptes' ? 'active' : '' %>">👥 Comptes</a>
             </li>
             <% } %>
         </ul>

@@ -1,87 +1,593 @@
+<!--
+* @file dashboard.ejs
+* @author charles-Antoine Gagnon
+* @version 4 - Modern 3-column layout
+* @date 11/11/2025
+* @brief RAM Panel - 3 Columns: Graph | Reservoir Status & Controls | Power Meter
+-->
 <!DOCTYPE html>
-<html lang="fr" data-theme="light">
+<html lang="fr">
 <head>
-    <%- include('../partials/head') %>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PanneauRAM - Dashboard (Administrateur)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/modern.css">
+    <link rel="stylesheet" href="/stylesheets/ui-components.css">
+    <script src="/socket.io/socket.io.js"></script>
 </head>
-<body>
-    <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto">
-            <!-- Header Card -->
-            <div class="card bg-base-100 shadow-2xl mb-6 border-t-4">
-                <div class="card-body">
-                    <div class="flex items-center justify-between flex-wrap gap-4">
-                        <div>
-                            <h1 class="text-5xl font-bold bg-gradient-to-r from-error to-pink-600 bg-clip-text text-transparent">
-                                Bonjour, <%= user %> ! 👑
-                            </h1>
-                            <p class="text-gray-600 mt-2">Tableau de bord - <%= typeAcces || 'Administrateur' %></p>
-                        </div>
-                        <div class="badge badge-lg gap-2 animate-pulse">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-4 h-4 stroke-current">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                            </svg>
-                            <%= typeAcces || 'Administrateur' %>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<body style="margin: 0; padding: 0; background: #f8f9fa;">
 
-            <!-- Alert Danger -->
-            <div class="alert shadow-lg mb-6">
-                <div>
-                    <div>
-                        <h3 class="font-bold">Accès Administrateur - Lecture et Écriture complète</h3>
-                        <div class="text-xs">En tant qu'administrateur, vous pouvez consulter et modifier tous les Raspberry Pi sans restriction.</div>
-                    </div>
-                </div>
-            </div>
+        <%- include('../partials/header', { currentPage: 'dashboard', user, niveau, typeAcces }) %>
 
-            <!-- Raspberry Pi Access -->
-            <div class="card bg-base-100 shadow-2xl mb-6">
-                <div class="card-body">
-                    <h2 class="card-title text-3xl mb-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>
-                        Accès aux Raspberry Pi (Lecture + Écriture)
-                    </h2>
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-                        <a href="/raspberrypi1?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-error gap-2 hover:scale-105">
-                            Balance
-                        </a>
-                        <a href="/raspberrypi2?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-error gap-2 hover:scale-105">
-                            Pi Mélangeur
-                        </a>
-                        <a href="/raspberrypi3?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-error gap-2 hover:scale-105">
-                            Pi 3
-                        </a>
-                        <a href="/raspberrypi4?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-error gap-2 hover:scale-105">
-                            Pi 4
-                        </a>
-                        <a href="/raspberrypi5?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-error gap-2 hover:scale-105">
-                            Pi 5
-                        </a>
-                        <a href="/raspberrypi6?niveau=<%= niveau %>&user=<%= user %>&typeAcces=<%= typeAcces %>" class="btn btn-outline btn-error gap-2 hover:scale-105">
-                            Pi 6
-                        </a>
-                    </div>
-                </div>
-            </div>
+    <!-- MAIN CONTENT: 3 COLUMNS -->
+    <div style="padding: 24px; display: grid; grid-template-columns: 2fr 1.5fr 1fr; gap: 24px;">
 
-            <!-- Action Buttons -->
-            <div class="card bg-base-100 shadow-xl">
-                <div class="card-body">
-                    <div class="card-actions justify-end">
-                        <a href="/" class="btn btn-outline btn-error gap-2 hover:scale-105 transition-transform">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                            Déconnexion
-                        </a>
-                    </div>
+        <!-- COLUMN 1: GRAPH & MONITORING -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-header-title">📈 Monitoring Temps Réel</h2>
+            </div>
+            <div class="card-body">
+                <div style="height: 300px; background: #f3f4f6; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-size: 14px;">
+                    Graphique (placeholder)
+                </div>
+                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                    <p style="font-size: 12px; color: #6b7280; margin: 0;">
+                        <strong>Réservoirs :</strong> GB: <span id="legend-gb">--</span>% | PB: <span id="legend-pb">--</span>%
+                    </p>
+                    <p style="font-size: 12px; color: #6b7280; margin: 4px 0 0 0;">
+                        <strong>Température :</strong> <span id="legend-temp">--</span>°C
+                    </p>
                 </div>
             </div>
         </div>
+
+        <!-- COLUMN 2: STATUS & CONTROLS -->
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+
+            <!-- RESERVOIRS STATUS - VISUAL CYLINDERS -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-header-title">🏺 Réservoirs</h3>
+                </div>
+                <div class="card-body" style="display: flex; justify-content: space-around; align-items: flex-end; gap: 12px; min-height: 200px;">
+                    <!-- Cylindre GB -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                        <div style="font-size: 10px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">GB</div>
+                        <div style="position: relative; width: 50px; height: 120px; border: 2px solid #0d6efd; border-radius: 6px; background: #f0f4ff; overflow: hidden;">
+                            <div id="cylinder-gb-fill" style="position: absolute; bottom: 0; width: 100%; height: 0%; background: linear-gradient(180deg, #0d6efd, #0a58ca); transition: height 0.3s ease; border-radius: 4px;"></div>
+                        </div>
+                        <div style="font-weight: 700; font-size: 16px; color: #0d6efd;" id="val-gb">0%</div>
+                    </div>
+
+                    <!-- Cylindre PB -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                        <div style="font-size: 10px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">PB</div>
+                        <div style="position: relative; width: 50px; height: 120px; border: 2px solid #0d6efd; border-radius: 6px; background: #f0f4ff; overflow: hidden;">
+                            <div id="cylinder-pb-fill" style="position: absolute; bottom: 0; width: 100%; height: 0%; background: linear-gradient(180deg, #0d6efd, #0a58ca); transition: height 0.3s ease; border-radius: 4px;"></div>
+                        </div>
+                        <div style="font-weight: 700; font-size: 16px; color: #0d6efd;" id="val-pb">0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONSIGNES RESERVOIRS -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-header-title">🏺 Consignes Réservoirs</h3>
+                </div>
+                <div class="card-body">
+                    <!-- ConsNivGB (0-100%) - Niveau GB Consigne -->
+                    <div style="margin-bottom: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label class="form-label" style="margin: 0;">Niveau GB</label>
+                            <span style="font-weight: 700; font-size: 12px; color: #0d6efd;"><span id="val-slider-gb">0</span>%</span>
+                        </div>
+                        <input type="range" class="form-control" id="slider-gb" min="0" max="100" value="0">
+                    </div>
+
+                    <!-- ConsNivPB (0-100%) - Niveau PB Consigne -->
+                    <div style="margin-bottom: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label class="form-label" style="margin: 0;">Niveau PB</label>
+                            <span style="font-weight: 700; font-size: 12px; color: #0d6efd;"><span id="val-slider-pb">0</span>%</span>
+                        </div>
+                        <input type="range" class="form-control" id="slider-pb" min="0" max="100" value="0">
+                    </div>
+
+                    <!-- ConsTmpPB (0-100°C) - Température PB Consigne -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label class="form-label" style="margin: 0;">Température PB</label>
+                            <span style="font-weight: 700; font-size: 12px; color: #0d6efd;"><span id="val-slider-tmpb">0</span>°C</span>
+                        </div>
+                        <input type="range" class="form-control" id="slider-tmpb" min="0" max="100" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONSIGNES VANNES -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-header-title">⚙️ Consignes Vannes</h3>
+                </div>
+                <div class="card-body">
+                    <!-- ValveGB (0-100%) -->
+                    <div style="margin-bottom: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label class="form-label" style="margin: 0;">Valve GB</label>
+                            <span style="font-weight: 700; font-size: 12px; color: #0d6efd;"><span id="val-slider-gb-valve">0</span>%</span>
+                        </div>
+                        <input type="range" class="form-control" id="slider-gb-valve" min="0" max="100" value="0">
+                    </div>
+
+                    <!-- ValvePB (0-100%) -->
+                    <div style="margin-bottom: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label class="form-label" style="margin: 0;">Valve PB</label>
+                            <span style="font-weight: 700; font-size: 12px; color: #0d6efd;"><span id="val-slider-pb-valve">0</span>%</span>
+                        </div>
+                        <input type="range" class="form-control" id="slider-pb-valve" min="0" max="100" value="0">
+                    </div>
+
+                    <!-- ValveEC (0-100) -->
+                    <div style="margin-bottom: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label class="form-label" style="margin: 0;">Valve EC</label>
+                            <span style="font-weight: 700; font-size: 12px; color: #0d6efd;"><span id="val-slider-ec">0</span>%</span>
+                        </div>
+                        <input type="range" class="form-control" id="slider-ec" min="0" max="100" value="0">
+                    </div>
+
+                    <!-- ValveEF (0-100) -->
+                    <div style="margin-bottom: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label class="form-label" style="margin: 0;">Valve EF</label>
+                            <span style="font-weight: 700; font-size: 12px; color: #0d6efd;"><span id="val-slider-ef">0</span>%</span>
+                        </div>
+                        <input type="range" class="form-control" id="slider-ef" min="0" max="100" value="0">
+                    </div>
+
+                    <!-- ValveEEC (ON/OFF) -->
+                    <div style="margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #f3f4f6; border-radius: 6px;">
+                        <label style="font-weight: 500; color: #212529; margin: 0;">Valve EEC</label>
+                        <button id="btn-eec" class="btn btn-primary" style="min-width: 60px; padding: 6px 12px; font-size: 12px;">OFF</button>
+                    </div>
+
+                    <!-- ValveEEF (ON/OFF) -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #f3f4f6; border-radius: 6px;">
+                        <label style="font-weight: 500; color: #212529; margin: 0;">Valve EEF</label>
+                        <button id="btn-eef" class="btn btn-primary" style="min-width: 60px; padding: 6px 12px; font-size: 12px;">OFF</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODE & PUMP -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-header-title">🎮 Commandes</h3>
+                </div>
+                <div class="card-body">
+                    <div style="margin-bottom: 12px;">
+                        <label class="form-label">Mode Système</label>
+                        <select id="select-mode" class="form-select">
+                            <option value="auto">AUTO</option>
+                            <option value="manuel">MANUEL</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Pompe</label>
+                        <button id="btn-pompe" class="btn btn-primary" style="width: 100%;">
+                            OFF
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- COLUMN 3: POWER METER -->
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+
+            <!-- POWER METER STATS -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-header-title">⚡ Power Meter</h3>
+                </div>
+                <div class="card-body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <div class="stat-card">
+                        <div class="stat-label">Van</div>
+                        <div class="stat-value" id="stat-van" style="font-size: 20px;">--</div>
+                        <div class="stat-unit">V</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Vbn</div>
+                        <div class="stat-value" id="stat-vbn" style="font-size: 20px;">--</div>
+                        <div class="stat-unit">V</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Vab</div>
+                        <div class="stat-value" id="stat-vab" style="font-size: 20px;">--</div>
+                        <div class="stat-unit">V</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Ia</div>
+                        <div class="stat-value" id="stat-ia" style="font-size: 20px;">--</div>
+                        <div class="stat-unit">A</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Ib</div>
+                        <div class="stat-value" id="stat-ib" style="font-size: 20px;">--</div>
+                        <div class="stat-unit">A</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">KW</div>
+                        <div class="stat-value" id="stat-kw" style="font-size: 20px;">--</div>
+                        <div class="stat-unit">kW</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">KWh</div>
+                        <div class="stat-value" id="stat-kwh" style="font-size: 20px;">--</div>
+                        <div class="stat-unit">kWh</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">FP</div>
+                        <div class="stat-value" id="stat-fp" style="font-size: 20px;">--</div>
+                        <div class="stat-unit"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TEMPERATURE -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-header-title">🌡️ Température</h3>
+                </div>
+                <div class="card-body">
+                    <div class="stat-card">
+                        <div class="stat-label">Temp PB</div>
+                        <div class="stat-value" id="stat-temp" style="font-size: 28px;">--</div>
+                        <div class="stat-unit">°C</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
-    <%- include('../partials/footer') %>
+    <!-- FOOTER -->
+    <footer style="background: white; border-top: 1px solid #e5e7eb; padding: 16px 24px; text-align: center; margin-top: 24px; color: #6b7280; font-size: 12px;">
+        <%- include('../partials/footer') %>
+    </footer>
+
+        <script>document.body.dataset.niveau = '3';</script><script src="/scripts/dashboard-script.js"></script></body></html> = io();
+        const niveau = '<%= niveau %>';
+        const canWrite = niveau !== '0';
+
+        let sensorData = {
+            NivGB: 0,
+            NivPB: 0,
+            TmpPB: 0,
+            ValveEC: 0,
+            ValveEF: 0,
+            ValveEEC: 0,
+            ValveEEF: 0,
+            Pompe: 'off',
+            Mode: 'auto'
+        };
+
+        let energyData = {
+            Van: 0,
+            Vbn: 0,
+            Vab: 0,
+            Ia: 0,
+            Ib: 0,
+            KW: 0,
+            KWh: 0,
+            FP: 0
+        };
+
+        // CONNECTION STATUS
+        socket.on('connect', () =>
+        {
+            console.log('✅ Connected to Socket.IO');
+            const badge = document.getElementById('connection-status');
+            if (badge)
+            {
+                badge.textContent = 'En ligne';
+                badge.style.backgroundColor = '#198754';
+            }
+        });
+
+        socket.on('disconnect', () =>
+        {
+            const badge = document.getElementById('connection-status');
+            if (badge)
+            {
+                badge.textContent = 'Hors ligne';
+                badge.style.backgroundColor = '#ef4444';
+            }
+        });
+
+        // PANNEAU DATA (Pi Main)
+        socket.on('mqtt-initial-data', (data) =>
+        {
+            Object.assign(sensorData, data);
+            updateSensorDisplay();
+        });
+
+        socket.on('mqtt-data', (msg) =>
+        {
+            if (msg.key && msg.value !== undefined)
+            {
+                sensorData[msg.key] = msg.value;
+                updateSensorDisplay();
+            }
+        });
+
+        // ENERGY DATA (Pi 3)
+        socket.on('mqtt-initial-data-pi3', (data) =>
+        {
+            Object.assign(energyData, data);
+            updateEnergyDisplay();
+        });
+
+        socket.on('mqtt-data-pi3', (msg) =>
+        {
+            if (msg.key && msg.value !== undefined)
+            {
+                energyData[msg.key] = msg.value;
+                updateEnergyDisplay();
+            }
+        });
+
+        function updateSensorDisplay()
+        {
+            // Reservoirs - CYLINDERS
+            if (sensorData.NivGB !== undefined)
+            {
+                const val = document.getElementById('val-gb');
+                if (val) val.textContent = sensorData.NivGB + '%';
+                const fill = document.getElementById('cylinder-gb-fill');
+                if (fill) fill.style.height = sensorData.NivGB + '%';
+                const legend = document.getElementById('legend-gb');
+                if (legend) legend.textContent = sensorData.NivGB;
+            }
+            if (sensorData.NivPB !== undefined)
+            {
+                const val = document.getElementById('val-pb');
+                if (val) val.textContent = sensorData.NivPB + '%';
+                const fill = document.getElementById('cylinder-pb-fill');
+                if (fill) fill.style.height = sensorData.NivPB + '%';
+                const legend = document.getElementById('legend-pb');
+                if (legend) legend.textContent = sensorData.NivPB;
+            }
+            if (sensorData.TmpPB !== undefined)
+            {
+                const val = document.getElementById('stat-temp');
+                if (val) val.textContent = (parseFloat(sensorData.TmpPB) || 0).toFixed(1);
+                const legend = document.getElementById('legend-temp');
+                if (legend) legend.textContent = (parseFloat(sensorData.TmpPB) || 0).toFixed(1);
+            }
+
+            // Sliders (0-100)
+            updateSlider('slider-gb', 'val-slider-gb', sensorData.ValveGB);
+            updateSlider('slider-pb', 'val-slider-pb', sensorData.ValvePB);
+            updateSlider('slider-ec', 'val-slider-ec', sensorData.ValveEC);
+            updateSlider('slider-ef', 'val-slider-ef', sensorData.ValveEF);
+
+            // Switches (ON/OFF)
+            updateSwitch('btn-eec', sensorData.ValveEEC);
+            updateSwitch('btn-eef', sensorData.ValveEEF);
+
+            // Pompe & Mode
+            if (sensorData.Pompe !== undefined)
+            {
+                const btn = document.getElementById('btn-pompe');
+                if (btn)
+                {
+                    btn.textContent = sensorData.Pompe.toUpperCase();
+                    btn.classList.toggle('btn-danger', sensorData.Pompe === 'on');
+                    btn.classList.toggle('btn-primary', sensorData.Pompe === 'off');
+                }
+            }
+            if (sensorData.Mode !== undefined)
+            {
+                const sel = document.getElementById('select-mode');
+                if (sel) sel.value = sensorData.Mode || 'auto';
+            }
+        }
+
+        function updateEnergyDisplay()
+        {
+            if (energyData.Van !== undefined)
+            {
+                const el = document.getElementById('stat-van');
+                if (el) el.textContent = (parseFloat(energyData.Van) || 0).toFixed(1);
+            }
+            if (energyData.Vbn !== undefined)
+            {
+                const el = document.getElementById('stat-vbn');
+                if (el) el.textContent = (parseFloat(energyData.Vbn) || 0).toFixed(1);
+            }
+            if (energyData.Vab !== undefined)
+            {
+                const el = document.getElementById('stat-vab');
+                if (el) el.textContent = (parseFloat(energyData.Vab) || 0).toFixed(1);
+            }
+            if (energyData.Ia !== undefined)
+            {
+                const el = document.getElementById('stat-ia');
+                if (el) el.textContent = (parseFloat(energyData.Ia) || 0).toFixed(2);
+            }
+            if (energyData.Ib !== undefined)
+            {
+                const el = document.getElementById('stat-ib');
+                if (el) el.textContent = (parseFloat(energyData.Ib) || 0).toFixed(2);
+            }
+            if (energyData.KW !== undefined)
+            {
+                const el = document.getElementById('stat-kw');
+                if (el) el.textContent = (parseFloat(energyData.KW) || 0).toFixed(2);
+            }
+            if (energyData.KWh !== undefined)
+            {
+                const el = document.getElementById('stat-kwh');
+                if (el) el.textContent = (parseFloat(energyData.KWh) || 0).toFixed(2);
+            }
+            if (energyData.FP !== undefined)
+            {
+                const el = document.getElementById('stat-fp');
+                if (el) el.textContent = (parseFloat(energyData.FP) || 0).toFixed(2);
+            }
+        }
+
+        function updateSlider(sliderId, valId, value)
+        {
+            const slider = document.getElementById(sliderId);
+            if (slider) slider.value = value;
+            const display = document.getElementById(valId);
+            if (display) display.textContent = value;
+        }
+
+        function updateSwitch(btnId, value)
+        {
+            const btn = document.getElementById(btnId);
+            if (btn)
+            {
+                const isOn = value === 'on' || value === true || value === 1;
+                btn.textContent = isOn ? 'ON' : 'OFF';
+                btn.classList.toggle('btn-danger', isOn);
+                btn.classList.toggle('btn-primary', !isOn);
+            }
+        }
+
+        // EVENT LISTENERS - CONSIGNES RESERVOIRS
+        // Sliders: GB, PB, TmpPB
+        const consignesReservoirs = {
+            gb:
+            {
+                id: 'slider-gb',
+                display: 'val-slider-gb',
+                topic: 'RAM/panneau/cmd/ConsNivGB'
+            },
+            pb:
+            {
+                id: 'slider-pb',
+                display: 'val-slider-pb',
+                topic: 'RAM/panneau/cmd/ConsNivPB'
+            },
+            tmpb:
+            {
+                id: 'slider-tmpb',
+                display: 'val-slider-tmpb',
+                topic: 'RAM/panneau/cmd/ConsTmpPB'
+            }
+        };
+
+        Object.entries(consignesReservoirs).forEach(([key, config]) =>
+        {
+            const slider = document.getElementById(config.id);
+            if (slider)
+            {
+                slider.addEventListener('input', (e) =>
+                {
+                    const display = document.getElementById(config.display);
+                    if (display) display.textContent = e.target.value;
+                    socket.emit('mqtt-publish',
+                    {
+                        topic: config.topic,
+                        message: e.target.value
+                    });
+                });
+            }
+        });
+
+        // EVENT LISTENERS - CONSIGNES VANNES
+        // Sliders (0-100%): GB, PB, EC, EF
+        ['gb', 'pb', 'ec', 'ef'].forEach(valve =>
+        {
+            const sliderId = valve === 'gb' || valve === 'pb' ? `slider-${valve}-valve` : `slider-${valve}`;
+            const displayId = valve === 'gb' || valve === 'pb' ? `val-slider-${valve}-valve` : `val-slider-${valve}`;
+
+            const slider = document.getElementById(sliderId);
+            if (slider)
+            {
+                slider.addEventListener('input', (e) =>
+                {
+                    const display = document.getElementById(displayId);
+                    if (display) display.textContent = e.target.value;
+                    socket.emit('mqtt-publish',
+                    {
+                        topic: `RAM/panneau/cmd/Valve${valve.toUpperCase()}`,
+                        message: e.target.value
+                    });
+                });
+            }
+        });
+
+        // Switches (ON/OFF): EEC, EEF
+        ['eec', 'eef'].forEach(valve =>
+        {
+            const btn = document.getElementById(`btn-${valve}`);
+            if (btn)
+            {
+                btn.addEventListener('click', () =>
+                {
+                    const currentState = sensorData[`Valve${valve.toUpperCase()}`] === 'on' || sensorData[`Valve${valve.toUpperCase()}`] === true;
+                    const newState = currentState ? 'off' : 'on';
+
+                    // Update local state immediately for UI
+                    sensorData[`Valve${valve.toUpperCase()}`] = newState;
+                    updateSwitch(`btn-${valve}`, newState);
+
+                    // Publish to MQTT
+                    socket.emit('mqtt-publish',
+                    {
+                        topic: `RAM/panneau/cmd/Valve${valve.toUpperCase()}`,
+                        message: newState
+                    });
+                });
+            }
+        });
+
+        // POMPE BUTTON
+        const btnPompe = document.getElementById('btn-pompe');
+        if (btnPompe)
+        {
+            btnPompe.addEventListener('click', () =>
+            {
+                const newState = sensorData.Pompe === 'off' ? 'on' : 'off';
+
+                // Update local state immediately
+                sensorData.Pompe = newState;
+                updateSensorDisplay();
+
+                socket.emit('mqtt-publish',
+                {
+                    topic: 'RAM/panneau/cmd/Pompe',
+                    message: newState
+                });
+            });
+        }
+
+        // MODE SELECT
+        const selectMode = document.getElementById('select-mode');
+        if (selectMode)
+        {
+            selectMode.addEventListener('change', (e) =>
+            {
+                socket.emit('mqtt-publish',
+                {
+                    topic: 'RAM/panneau/cmd/Mode',
+                    message: e.target.value
+                });
+            });
+        }
+
+    </script>
+
 </body>
 </html>

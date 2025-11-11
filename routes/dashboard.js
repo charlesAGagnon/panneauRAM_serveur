@@ -31,8 +31,8 @@ router.post('/dashboard', async function (req, res, next)
                 niveau: data.niveau
             };
 
-            // Utiliser la page dashboard commune pour tous les niveaux
-            return res.render('pages/dashboard', renderData);
+            // Rediriger vers la page userNiveau appropriée
+            return res.render(`pages/userNiveau${data.niveau}`, renderData);
         });
     }
     catch (err)
@@ -60,8 +60,8 @@ router.get('/dashboard', async function (req, res, next)
         niveau: niveau
     };
 
-    // Utiliser la page dashboard commune pour tous les niveaux
-    return res.render('pages/dashboard', renderData);
+    // Rediriger vers la page userNiveau appropriée
+    return res.render(`pages/userNiveau${niveau}`, renderData);
 });
 
 router.post('/dashboard/changePassword', async function (req, res, next)
@@ -71,6 +71,28 @@ router.post('/dashboard/changePassword', async function (req, res, next)
     const newPassword = req.body.newPassword;
     await requete.setUserPassword(username, newPassword);
     res.redirect(`/dashboard?user=${encodeURIComponent(username)}&niveau=3&typeAcces=Administrateur`);
+});
+
+// Route GET pour la page Panneau RAM (dashboard technique)
+router.get('/ram', async function (req, res, next)
+{
+    const user = req.query.user;
+    const niveau = req.query.niveau;
+    const typeAcces = req.query.typeAcces;
+
+    if (!user || !niveau || !typeAcces)
+    {
+        return res.redirect('/');
+    }
+
+    const renderData = {
+        title: 'Panneau RAM',
+        user: user,
+        typeAcces: typeAcces,
+        niveau: niveau
+    };
+
+    return res.render('pages/dashboard', renderData);
 });
 
 // Route GET pour la page Granulaires

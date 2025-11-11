@@ -1,0 +1,224 @@
+/* Granulaires Page Specific Styles */
+
+.granulaires-grid {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 24px;
+}
+
+.section-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* État Display */
+.status-display {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #f3f4f6;
+    border-radius: 8px;
+}
+
+.status-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.status-value {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+/* Motors Section */
+.motors-section {
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 12px;
+}
+
+.section-title {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 0 0 10px 0;
+    font-weight: 600;
+}
+
+.motors-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.motor-btn {
+    width: 100%;
+    padding: 8px;
+    font-size: 13px;
+}
+
+.motors-status-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+}
+
+.motor-status-card {
+    padding: 10px;
+    background: #f3f4f6;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.motor-status-label {
+    margin: 0 0 6px 0;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.motor-status-badge {
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.motor-status-badge.on {
+    background: #198754;
+}
+
+.motor-status-badge.off {
+    background: #ef4444;
+}
+
+/* Recipe Form */
+.recipe-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.form-control {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+
+.form-control:disabled {
+    background: #f3f4f6;
+    cursor: not-allowed;
+}
+
+/* Cylinder Levels */
+.cylinder-item {
+    margin-bottom: 12px;
+}
+
+.cylinder-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.cylinder-progress-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cylinder-progress-bar {
+    flex: 1;
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.cylinder-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0dcaf0, #0ba5e9);
+    transition: width 0.3s ease;
+}
+
+.cylinder-value {
+    font-weight: 700;
+    font-size: 14px;
+    color: #0dcaf0;
+    min-width: 40px;
+    text-align: right;
+}
+
+/* Buttons */
+.btn-motor-off {
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+}
+
+.btn-motor-on {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+.btn-success {
+    background-color: #198754;
+    border-color: #198754;
+    color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+    background-color: #157347;
+    border-color: #146c43;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background-color: #bb2d3b;
+    border-color: #b02a37;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .granulaires-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .motors-status-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .motors-status-grid {
+        grid-template-columns: 1fr;
+    }
+}

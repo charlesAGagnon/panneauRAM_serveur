@@ -1,7 +1,7 @@
 <!--
 * @file granulaires.ejs
 * @author charles-Antoine Gagnon
-* @version 3 - Modern responsive 2-column layout
+* @version 4 - Simplifié avec jQuery et partials
 * @date 11/11/2025
 * @brief Granudoseur Control - Mélangeur & Aspirateur
 -->
@@ -14,128 +14,79 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/stylesheets/modern.css">
     <link rel="stylesheet" href="/stylesheets/ui-components.css">
+    <link rel="stylesheet" href="/stylesheets/granulaires.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body style="margin: 0; padding: 0; background: #f8f9fa;">
 
-    <!-- NAVBAR -->
-    <nav class="navbar-modern">
-        <div class="navbar-modern-container">
-            <a href="/home?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-brand-modern">
-                🎛️ PanneauRAM
-            </a>
-            <ul class="navbar-menu">
-                <li class="navbar-menu-item">
-                    <a href="/home?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link">🏠 Accueil</a>
-                </li>
-                <li class="navbar-menu-item">
-                    <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link">📊 RAM</a>
-                </li>
-                <li class="navbar-menu-item">
-                    <a href="/granulaires?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link active">🌾 Granudoseur</a>
-                </li>
-                <li class="navbar-menu-item">
-                    <a href="/journal?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link">📋 Journal</a>
-                </li>
-                <li class="navbar-menu-item">
-                    <a href="/alertes?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link">🔔 Alertes</a>
-                </li>
-                <% if (niveau !== '0') { %>
-                <li class="navbar-menu-item">
-                    <a href="/comptes?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link">👥 Comptes</a>
-                </li>
-                <% } %>
-            </ul>
-            <div class="navbar-right">
-                <div class="navbar-user">
-                    <span id="connection-status" class="navbar-badge" style="background-color: #ef4444;">Hors ligne</span>
-                    <span style="margin-left: 8px;">
-                        <strong><%= user %></strong> • <%= typeAcces %> (L<%= niveau %>)
-                        <% if (niveau === '0') { %>
-                        <span style="display: inline-block; margin-left: 8px; background: #0dcaf0; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">🔒 R/O</span>
-                        <% } %>
-                    </span>
-                </div>
-                <a href="/" class="navbar-logout">Déconnexion</a>
-            </div>
-        </div>
-    </nav>
+    <%- include('../partials/navbar', { currentPage: 'granulaires', user, niveau, typeAcces }) %>
 
     <!-- MAIN CONTENT: 2 COLUMNS -->
-    <div style="padding: 24px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px;">
+    <div class="granulaires-grid">
 
         <!-- COLUMN 1: MELANGEUR -->
-        <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="section-column">
 
-            <!-- STATE -->
+            <!-- État Mélangeur -->
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-header-title">🎛️ État Mélangeur</h2>
                 </div>
                 <div class="card-body">
-                    <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f3f4f6; border-radius: 8px;">
-                        <span style="font-size: 14px; font-weight: 500; color: #6b7280;">Recette Actuelle :</span>
-                        <span id="recette-status" style="font-weight: 700; font-size: 16px; color: #0d6efd;">Aucune</span>
+                    <div class="status-display">
+                        <span class="status-label">Recette Actuelle :</span>
+                        <span id="recette-status" class="status-value" style="color: #0d6efd;">Aucune</span>
                     </div>
                 </div>
             </div>
 
-            <!-- MOTORS -->
+            <!-- Moteurs -->
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-header-title">⚙️ Moteurs</h2>
                 </div>
                 <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
-                    <!-- SECTION 1: BOUTONS DE COMMANDE -->
-                    <div style="border-bottom: 2px solid #e5e7eb; padding-bottom: 12px;">
-                        <p style="font-size: 12px; color: #6b7280; margin: 0 0 10px 0; font-weight: 600;">📤 COMMANDES (Envoyer l'ordre)</p>
-                        <div style="display: flex; flex-direction: column; gap: 8px;">
-                            <button id="btn-motA" class="btn btn-primary" style="width: 100%; padding: 8px; font-size: 13px;" <% if (niveau === '0') { %>disabled<% } %>>Moteur A - ✗ OFF</button>
-                            <button id="btn-motB" class="btn btn-primary" style="width: 100%; padding: 8px; font-size: 13px;" <% if (niveau === '0') { %>disabled<% } %>>Moteur B - ✗ OFF</button>
-                            <button id="btn-motC" class="btn btn-primary" style="width: 100%; padding: 8px; font-size: 13px;" <% if (niveau === '0') { %>disabled<% } %>>Moteur C - ✗ OFF</button>
+                    <!-- Commandes -->
+                    <div class="motors-section">
+                        <p class="section-title">📤 COMMANDES (Envoyer l'ordre)</p>
+                        <div class="motors-buttons">
+                            <% ['A', 'B', 'C'].forEach(motor => { %>
+                            <button id="btn-mot<%= motor %>" class="btn btn-primary motor-btn" data-motor="<%= motor.toLowerCase() %>" <% if (niveau === '0') { %>disabled<% } %>>
+                                Moteur <%= motor %> - ✗ OFF
+                            </button>
+                            <% }); %>
                         </div>
                     </div>
 
-                    <!-- SECTION 2: ÉTATS (MQTT en direct) -->
+                    <!-- États MQTT -->
                     <div>
-                        <p style="font-size: 12px; color: #6b7280; margin: 0 0 10px 0; font-weight: 600;">📥 ÉTATS (Reçus du système)</p>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                            <div style="padding: 10px; background: #f3f4f6; border-radius: 6px; text-align: center;">
-                                <p style="margin: 0 0 6px 0; font-size: 12px; color: #6b7280;">Moteur A</p>
-                                <span style="font-size: 14px; font-weight: 700; color: white; background: #ef4444; padding: 6px 10px; border-radius: 4px; display: inline-block;" id="status-motA">OFF</span>
+                        <p class="section-title">📥 ÉTATS (Reçus du système)</p>
+                        <div class="motors-status-grid">
+                            <% ['A', 'B', 'C'].forEach(motor => { %>
+                            <div class="motor-status-card">
+                                <p class="motor-status-label">Moteur <%= motor %></p>
+                                <span class="motor-status-badge off" id="status-mot<%= motor %>">OFF</span>
                             </div>
-                            <div style="padding: 10px; background: #f3f4f6; border-radius: 6px; text-align: center;">
-                                <p style="margin: 0 0 6px 0; font-size: 12px; color: #6b7280;">Moteur B</p>
-                                <span style="font-size: 14px; font-weight: 700; color: white; background: #ef4444; padding: 6px 10px; border-radius: 4px; display: inline-block;" id="status-motB">OFF</span>
-                            </div>
-                            <div style="padding: 10px; background: #f3f4f6; border-radius: 6px; text-align: center;">
-                                <p style="margin: 0 0 6px 0; font-size: 12px; color: #6b7280;">Moteur C</p>
-                                <span style="font-size: 14px; font-weight: 700; color: white; background: #ef4444; padding: 6px 10px; border-radius: 4px; display: inline-block;" id="status-motC">OFF</span>
-                            </div>
+                            <% }); %>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- RECIPE FORM -->
+            <!-- Recette -->
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-header-title">📝 Recette Personnalisée</h2>
                 </div>
                 <div class="card-body">
-                    <form id="recipe-form" style="display: flex; flex-direction: column; gap: 12px;">
+                    <form id="recipe-form" class="recipe-form">
+                        <% for(let i = 1; i <= 3; i++) { %>
                         <div class="form-group">
-                            <label class="form-label">Ingrédient 1</label>
-                            <input type="number" class="form-control" id="ing1" placeholder="0" min="0" max="100" <% if (niveau === '0') { %>disabled<% } %>>
+                            <label class="form-label">Ingrédient <%= i %></label>
+                            <input type="number" class="form-control" id="ing<%= i %>" placeholder="0" min="0" max="100" <% if (niveau === '0') { %>disabled<% } %>>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Ingrédient 2</label>
-                            <input type="number" class="form-control" id="ing2" placeholder="0" min="0" max="100" <% if (niveau === '0') { %>disabled<% } %>>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Ingrédient 3</label>
-                            <input type="number" class="form-control" id="ing3" placeholder="0" min="0" max="100" <% if (niveau === '0') { %>disabled<% } %>>
-                        </div>
+                        <% } %>
                         <button type="submit" class="btn btn-success" <% if (niveau === '0') { %>disabled<% } %>>✓ Valider Recette</button>
                     </form>
                 </div>
@@ -144,58 +95,42 @@
         </div>
 
         <!-- COLUMN 2: ASPIRATEUR -->
-        <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="section-column">
 
-            <!-- STATE -->
+            <!-- État Aspirateur -->
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-header-title">💨 État Aspirateur</h2>
                 </div>
                 <div class="card-body">
-                    <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f3f4f6; border-radius: 8px;">
-                        <span style="font-size: 14px; font-weight: 500; color: #6b7280;">Sequence :</span>
-                        <span id="aspirateur-status" style="font-weight: 700; font-size: 16px; color: #198754;">OFF</span>
+                    <div class="status-display">
+                        <span class="status-label">Sequence :</span>
+                        <span id="aspirateur-status" class="status-value" style="color: #198754;">OFF</span>
                     </div>
                 </div>
             </div>
 
-            <!-- LEVELS -->
+            <!-- Niveaux Cylindres -->
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-header-title">🏺 Niveaux Cylindres</h2>
                 </div>
-                <div class="card-body" style="display: flex; flex-direction: column; gap: 12px;">
-                    <div>
-                        <div style="font-size: 11px; font-weight: 600; color: #6b7280; margin-bottom: 4px;">Cylindre A</div>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <div style="flex: 1; height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden;">
-                                <div id="progress-cyl-a" style="height: 100%; background: linear-gradient(90deg, #0dcaf0, #0ba5e9); width: 0%;"></div>
+                <div class="card-body">
+                    <% ['A', 'B', 'C'].forEach(cyl => { %>
+                    <div class="cylinder-item">
+                        <div class="cylinder-label">Cylindre <%= cyl %></div>
+                        <div class="cylinder-progress-container">
+                            <div class="cylinder-progress-bar">
+                                <div id="progress-cyl-<%= cyl.toLowerCase() %>" class="cylinder-progress-fill" style="width: 0%;"></div>
                             </div>
-                            <span style="font-weight: 700; font-size: 14px; color: #0dcaf0; min-width: 40px; text-align: right;" id="val-cyl-a">0%</span>
+                            <span class="cylinder-value" id="val-cyl-<%= cyl.toLowerCase() %>">0%</span>
                         </div>
                     </div>
-                    <div>
-                        <div style="font-size: 11px; font-weight: 600; color: #6b7280; margin-bottom: 4px;">Cylindre B</div>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <div style="flex: 1; height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden;">
-                                <div id="progress-cyl-b" style="height: 100%; background: linear-gradient(90deg, #0dcaf0, #0ba5e9); width: 0%;"></div>
-                            </div>
-                            <span style="font-weight: 700; font-size: 14px; color: #0dcaf0; min-width: 40px; text-align: right;" id="val-cyl-b">0%</span>
-                        </div>
-                    </div>
-                    <div>
-                        <div style="font-size: 11px; font-weight: 600; color: #6b7280; margin-bottom: 4px;">Cylindre C</div>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <div style="flex: 1; height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden;">
-                                <div id="progress-cyl-c" style="height: 100%; background: linear-gradient(90deg, #0dcaf0, #0ba5e9); width: 0%;"></div>
-                            </div>
-                            <span style="font-weight: 700; font-size: 14px; color: #0dcaf0; min-width: 40px; text-align: right;" id="val-cyl-c">0%</span>
-                        </div>
-                    </div>
+                    <% }); %>
                 </div>
             </div>
 
-            <!-- FORCE BUTTON -->
+            <!-- Commandes -->
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-header-title">🎮 Commandes</h2>
@@ -221,236 +156,179 @@
         const niveau = '<%= niveau %>';
         const canWrite = niveau !== '0';
 
-        // DONNÉES LOCALES - ce qu'on a ENVOYÉ aux moteurs
-        let localMotorState = {
+        // État local des moteurs (ce qu'on a envoyé)
+        const localMotorState = {
             motA: 'off',
             motB: 'off',
             motC: 'off'
         };
 
-        // DONNÉES MQTT - ce que le système REÇOIT et ENVOIE
-        let melangeurData = {
-            motA: 'off',
-            motB: 'off',
-            motC: 'off',
-            mode: 'auto',
-            recetteStatus: 'AUCUNE'
+        // Données MQTT
+        const mqttData = {
+            melangeur:
+            {
+                motA: 'off',
+                motB: 'off',
+                motC: 'off',
+                recetteStatut: 'AUCUNE'
+            },
+            aspirateur:
+            {
+                sequence: 'off',
+                NivA: 0,
+                NivB: 0,
+                NivC: 0
+            }
         };
 
-        let aspirteurData = {
-            sequence: 'off',
-            cylA: 0,
-            cylB: 0,
-            cylC: 0
-        };
-
-        // CONNECTION STATUS
+        // ===== SOCKET.IO EVENTS =====
         socket.on('connect', () =>
         {
-            console.log('✅ Connected to Socket.IO');
-            const badge = document.getElementById('connection-status');
-            if (badge)
-            {
-                badge.textContent = 'En ligne';
-                badge.style.backgroundColor = '#198754';
-            }
-
-            // IMPORTANT: Rejoindre les rooms pour recevoir les données initiales
+            console.log('✅ Connecté');
+            updateConnectionStatus(true);
             socket.emit('join-pi2');
             socket.emit('join-pi4');
         });
 
-        socket.on('disconnect', () =>
-        {
-            const badge = document.getElementById('connection-status');
-            if (badge)
-            {
-                badge.textContent = 'Hors ligne';
-                badge.style.backgroundColor = '#ef4444';
-            }
-        });
+        socket.on('disconnect', () => updateConnectionStatus(false));
 
-        // MELANGEUR DATA (Pi 2)
+        // MELANGEUR (Pi 2)
         socket.on('mqtt-initial-data-pi2', (data) =>
         {
-            Object.assign(melangeurData, data);
-            updateMelangeurDisplay();
+            $.extend(mqttData.melangeur, data);
+            updateMelangeur();
         });
 
         socket.on('mqtt-data-pi2', (msg) =>
         {
-            if (msg.key && msg.value !== undefined)
+            if (msg.key)
             {
-                melangeurData[msg.key] = msg.value;
-                updateMelangeurDisplay();
+                mqttData.melangeur[msg.key] = msg.value;
+                updateMelangeur();
             }
         });
 
-        // ASPIRATEUR DATA (Pi 4)
+        // ASPIRATEUR (Pi 4)
         socket.on('mqtt-initial-data-pi4', (data) =>
         {
-            Object.assign(aspirteurData, data);
-            updateAspirateurDisplay();
+            $.extend(mqttData.aspirateur, data);
+            updateAspirateur();
         });
 
         socket.on('mqtt-data-pi4', (msg) =>
         {
-            if (msg.key && msg.value !== undefined)
+            if (msg.key)
             {
-                aspirteurData[msg.key] = msg.value;
-                updateAspirateurDisplay();
+                mqttData.aspirateur[msg.key] = msg.value;
+                updateAspirateur();
             }
         });
 
-        function updateMelangeurDisplay()
+        // ===== UPDATE FUNCTIONS =====
+        function updateConnectionStatus(connected)
         {
-            // Motors
-            ['A', 'B', 'C'].forEach(motor =>
-            {
-                const key = `mot${motor}`; // motA, motB, motC
-                const btn = document.getElementById(`btn-mot${motor}`);
-                const status = document.getElementById(`status-mot${motor}`);
-
-                // Update BUTTON - affiche l'état LOCAL (ce qu'on a envoyé)
-                if (btn && localMotorState[key] !== undefined)
-                {
-                    btn.textContent = `Moteur ${motor} - ${localMotorState[key].toUpperCase()}`;
-                    btn.classList.toggle('btn-danger', localMotorState[key] === 'on');
-                    btn.classList.toggle('btn-primary', localMotorState[key] === 'off');
-
-                    if (localMotorState[key] === 'on')
-                    {
-                        btn.style.backgroundColor = '#dc3545 !important';
-                        btn.style.borderColor = '#dc3545 !important';
-                    }
-                    else
-                    {
-                        btn.style.backgroundColor = '#0d6efd !important';
-                        btn.style.borderColor = '#0d6efd !important';
-                    }
-                }
-
-                // Update BADGE - affiche l'état MQTT uniquement (reçu du système)
-                if (status && melangeurData[key] !== undefined)
-                {
-                    status.textContent = melangeurData[key].toUpperCase();
-                    status.style.backgroundColor = melangeurData[key] === 'on' ? '#198754' : '#ef4444';
-                    status.style.color = 'white';
-                }
-            });
-
-            // Recipe Status
-            if (melangeurData.recetteStatus !== undefined)
-            {
-                const el = document.getElementById('recette-status');
-                if (el)
-                {
-                    el.textContent = melangeurData.recetteStatus || 'Aucune';
-                    el.style.color = melangeurData.recetteStatus === 'AUCUNE' ? '#0d6efd' :
-                        melangeurData.recetteStatus.includes('FINISH') ? '#198754' : '#ffc107';
-                }
-            }
+            $('#connection-status')
+                .text(connected ? 'En ligne' : 'Hors ligne')
+                .css('background-color', connected ? '#198754' : '#ef4444');
         }
 
-        function updateAspirateurDisplay()
+        function updateMelangeur()
         {
-            // Sequence Status
-            if (aspirteurData.sequence !== undefined)
+            // Mise à jour des boutons (état local)
+            ['A', 'B', 'C'].forEach(m =>
             {
-                const el = document.getElementById('aspirateur-status');
-                if (el)
-                {
-                    el.textContent = (aspirteurData.sequence || 'OFF').toUpperCase();
-                    el.style.color = aspirteurData.sequence === 'off' ? '#ef4444' : '#198754';
-                }
-            }
+                const key = `mot${m}`;
+                const btn = $(`#btn-mot${m}`);
+                const state = localMotorState[key];
+                btn.text(`Moteur ${m} - ${state.toUpperCase()}`)
+                    .removeClass('btn-motor-off btn-motor-on')
+                    .addClass(state === 'on' ? 'btn-motor-on' : 'btn-motor-off');
+            });
 
-            // Cylinder Levels
-            ['A', 'B', 'C'].forEach(cyl =>
+            // Mise à jour des badges (état MQTT)
+            ['A', 'B', 'C'].forEach(m =>
             {
-                const key = `cyl${cyl}`.toLowerCase();
-                const val = aspirteurData[key];
-                if (val !== undefined)
-                {
-                    const display = document.getElementById(`val-cyl-${cyl.toLowerCase()}`);
-                    if (display) display.textContent = val + '%';
-                    const prog = document.getElementById(`progress-cyl-${cyl.toLowerCase()}`);
-                    if (prog) prog.style.width = val + '%';
-                }
+                const key = `mot${m}`;
+                const badge = $(`#status-mot${m}`);
+                const state = mqttData.melangeur[key] || 'off';
+                badge.text(state.toUpperCase())
+                    .removeClass('on off')
+                    .addClass(state === 'on' ? 'on' : 'off');
+            });
+
+            // Recette status
+            const status = mqttData.melangeur.recetteStatut || 'Aucune';
+            $('#recette-status')
+                .text(status)
+                .css('color', status === 'AUCUNE' ? '#0d6efd' :
+                    status.includes('FINISH') ? '#198754' : '#ffc107');
+        }
+
+        function updateAspirateur()
+        {
+            // Sequence
+            const seq = (mqttData.aspirateur.sequence || 'OFF').toUpperCase();
+            $('#aspirateur-status')
+                .text(seq)
+                .css('color', seq === 'OFF' ? '#ef4444' : '#198754');
+
+            // Cylindres
+            ['A', 'B', 'C'].forEach(c =>
+            {
+                const key = `Niv${c}`;
+                const val = mqttData.aspirateur[key] || 0;
+                $(`#val-cyl-${c.toLowerCase()}`).text(val + '%');
+                $(`#progress-cyl-${c.toLowerCase()}`).css('width', val + '%');
             });
         }
 
-        // EVENT LISTENERS - MOTOR BUTTONS
-        ['A', 'B', 'C'].forEach(motor =>
+        // ===== EVENT HANDLERS =====
+        // Moteurs
+        $('.motor-btn').click(function()
         {
-            const btn = document.getElementById(`btn-mot${motor}`);
-            if (btn)
+            if (!canWrite) return;
+
+            const motor = $(this).data('motor'); // 'a', 'b', 'c'
+            const key = `mot${motor.toUpperCase()}`;
+            const currentState = localMotorState[key];
+            const newState = currentState === 'off' ? 'on' : 'off';
+
+            localMotorState[key] = newState;
+            updateMelangeur();
+
+            // FIX: Utiliser le bon événement socket
+            socket.emit('mqtt-command-pi2-motor',
             {
-                btn.addEventListener('click', () =>
-                {
-                    if (!canWrite) return;
-
-                    const key = `mot${motor}`; // motA, motB, motC
-                    // Get CURRENT state from LOCAL state (ce qu'on a envoyé)
-                    const currentState = localMotorState[key] || 'off';
-                    const newState = currentState === 'off' ? 'on' : 'off';
-
-                    // Update localMotorState (l'état LOCAL que NOUS contrôlons)
-                    localMotorState[key] = newState;
-
-                    // Update UI immediately - le bouton affiche notre commande
-                    updateMelangeurDisplay();
-
-                    // Publish the command to MQTT (envoyer au système)
-                    socket.emit('mqtt-publish',
-                    {
-                        topic: `RAM/melangeur/cmd/mot${motor}`,
-                        message: newState
-                    });
-                });
-            }
+                motor: key,
+                value: newState
+            });
         });
 
-        // FORCE BUTTON - ASPIRATEUR
-        const btnForce = document.getElementById('btn-force');
-        if (btnForce)
+        // Force
+        $('#btn-force').click(() =>
         {
-            btnForce.addEventListener('click', () =>
+            if (!canWrite) return;
+            socket.emit('mqtt-command-pi4-force',
             {
-                socket.emit('mqtt-publish',
-                {
-                    topic: 'RAM/aspirateur/cmd/force',
-                    message: '1'
-                });
+                value: '1'
             });
-        }
+        });
 
-        // RECIPE FORM
-        const recipeForm = document.getElementById('recipe-form');
-        if (recipeForm)
+        // Recette
+        $('#recipe-form').submit(function(e)
         {
-            recipeForm.addEventListener('submit', (e) =>
+            e.preventDefault();
+            if (!canWrite) return;
+
+            const recipe = [1, 2, 3].map(i => $(`#ing${i}`).val() || '0').join(',');
+            socket.emit('mqtt-command-pi2-recette',
             {
-                e.preventDefault();
-                if (!canWrite) return;
-
-                const ing1 = document.getElementById('ing1').value || '0';
-                const ing2 = document.getElementById('ing2').value || '0';
-                const ing3 = document.getElementById('ing3').value || '0';
-                const recipe = `${ing1},${ing2},${ing3}`;
-
-                socket.emit('mqtt-publish',
-                {
-                    topic: 'RAM/melangeur/cmd/recette',
-                    message: recipe
-                });
-
-                // Clear form
-                document.getElementById('ing1').value = '';
-                document.getElementById('ing2').value = '';
-                document.getElementById('ing3').value = '';
+                value: recipe
             });
-        }
+
+            // Clear form
+            $(this).trigger('reset');
+        });
 
     </script>
 
