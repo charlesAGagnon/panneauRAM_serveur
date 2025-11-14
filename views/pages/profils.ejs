@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PanneauRAM - Profils</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/modern.css">
+    <link rel="stylesheet" href="/stylesheets/profils.css">
+</head>
+<body style="margin: 0; padding: 0; background: #f8f9fa;">
+
+    <%- include('../partials/header', { currentPage: 'profils', user, niveau, typeAcces }) %>
+
+    <div class="profils-container">
+        <!-- Formulaire de création/modification -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-header-title">👤 <span id="form-title">Créer un utilisateur</span></h2>
+            </div>
+            <div class="card-body">
+                <div class="profils-content">
+                    <input type="hidden" id="user-id" value="">
+                    <div class="form-group">
+                        <label class="form-label">Nom d'utilisateur *</label>
+                        <input type="text" class="form-control" id="username" placeholder="Entrez le nom d'utilisateur" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mot de passe *</label>
+                        <input type="password" class="form-control" id="password" placeholder="Entrez le mot de passe" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Niveau d'accès *</label>
+                        <select class="form-control" id="niveau" required>
+                            <option value="0">Invité (Lecture seule)</option>
+                            <option value="1">Utilisateur</option>
+                            <option value="2">Modérateur</option>
+                            <option value="3">Administrateur</option>
+                        </select>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-primary" id="save-profile">💾 Enregistrer</button>
+                        <button class="btn btn-secondary" id="cancel-edit" style="display: none;">❌ Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des utilisateurs -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-header-title">📋 Liste des utilisateurs</h2>
+            </div>
+            <div class="card-body">
+                <div id="users-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="background: white; border-top: 1px solid #e5e7eb; padding: 16px 24px; text-align: center; margin-top: 24px; color: #6b7280; font-size: 12px;">
+        <%- include('../partials/footer') %>
+    </footer>
+
+    <script src="/scripts/profils-script.js"></script>
+
+</body>
+</html>

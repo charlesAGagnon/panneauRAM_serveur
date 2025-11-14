@@ -118,6 +118,63 @@ class Request
             });
         });
     }
+
+    // renvoie Promise<Array<{id, nom, niveauAcces, typeAcces}>> — tous les utilisateurs
+    getAllUsers()
+    {
+        const sql = 'SELECT id, nom, niveauAcces, typeAcces FROM user ORDER BY nom';
+        return new Promise(function (resolve, reject)
+        {
+            database.connection.query(sql, function (err, results)
+            {
+                if (err) return reject(err);
+                console.log(results);
+                resolve(results || []);
+            });
+        });
+    }
+
+    // renvoie Promise<boolean> — true si l'utilisateur a été créé
+    createUser(nom, password, niveauAcces, typeAcces)
+    {
+        const sql = 'INSERT INTO user (nom, password, niveauAcces, typeAcces) VALUES (?, ?, ?, ?)';
+        return new Promise(function (resolve, reject)
+        {
+            database.connection.query(sql, [nom, password, niveauAcces, typeAcces], function (err, results)
+            {
+                if (err) return reject(err);
+                resolve(results.affectedRows > 0);
+            });
+        });
+    }
+
+    // renvoie Promise<boolean> — true si l'utilisateur a été mis à jour
+    updateUser(id, nom, password, niveauAcces, typeAcces)
+    {
+        const sql = 'UPDATE user SET nom = ?, password = ?, niveauAcces = ?, typeAcces = ? WHERE id = ?';
+        return new Promise(function (resolve, reject)
+        {
+            database.connection.query(sql, [nom, password, niveauAcces, typeAcces, id], function (err, results)
+            {
+                if (err) return reject(err);
+                resolve(results.affectedRows > 0);
+            });
+        });
+    }
+
+    // renvoie Promise<boolean> — true si l'utilisateur a été supprimé
+    deleteUser(id)
+    {
+        const sql = 'DELETE FROM user WHERE id = ?';
+        return new Promise(function (resolve, reject)
+        {
+            database.connection.query(sql, [id], function (err, results)
+            {
+                if (err) return reject(err);
+                resolve(results.affectedRows > 0);
+            });
+        });
+    }
 }
 
 module.exports = new Request();

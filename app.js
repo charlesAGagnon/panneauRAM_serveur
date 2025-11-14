@@ -10,6 +10,21 @@ var express = require('express');
 const http = require('http');
 
 var app = express();
+const server = http.createServer(app);
+
+// Initialiser le flux vidéo RTSP
+const videoStream = require('./models/videoStream');
+const
+{
+    scriptUrl
+} = videoStream.initializeVideoStream(app, server);
+
+// Rendre scriptUrl disponible pour les routes
+app.set('rtspRelay',
+{
+    scriptUrl
+});
+
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
@@ -19,8 +34,8 @@ app.use(express.urlencoded(
 {
     extended: false
 }));
-// Créer server et io AVANT de charger les routes
-const server = http.createServer(app);
+
+// Créer Socket.IO
 const io = require('socket.io')(server);
 
 // Initialiser MQTT avec Socket.IO - Dashboard principal
@@ -53,6 +68,7 @@ app.use(require('./routes/index'));
 app.use(require('./routes/contacts'));
 app.use(require('./routes/dashBoard'));
 app.use(require('./routes/raspberrypi'));
+app.use(require('./routes/camera'));
 app.use(function (req, res, next)
 {
     res.status(404)

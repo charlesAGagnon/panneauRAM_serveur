@@ -3,28 +3,34 @@
 <!-- Navigation Bar -->
 <nav class="navbar-modern">
     <div class="navbar-modern-container">
-        <a href="/home?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-brand-modern">
-            🎛️ PanneauRAM
+        <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-brand-modern">
+            PanneauRAM
         </a>
         <ul class="navbar-menu">
             <li class="navbar-menu-item">
-                <a href="/home?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'active' : '' %>">🏠 Accueil</a>
+                <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'dashboard' ? 'active' : '' %>"> RAM</a>
             </li>
             <li class="navbar-menu-item">
-                <a href="/dashboard?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'dashboard' ? 'active' : '' %>">📊 RAM</a>
-            </li>
-            <li class="navbar-menu-item">
-                <a href="/granulaires?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'granulaires' ? 'active' : '' %>">🌾 Granudoseur</a>
-            </li>
-            <li class="navbar-menu-item">
-                <a href="/journal?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'journal' ? 'active' : '' %>">📋 Journal</a>
-            </li>
-            <li class="navbar-menu-item">
-                <a href="/alertes?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'alertes' ? 'active' : '' %>">🔔 Alertes</a>
+                <a href="/granulaires?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'granulaires' ? 'active' : '' %>"> Granudoseur</a>
             </li>
             <% if (niveau !== '0') { %>
             <li class="navbar-menu-item">
-                <a href="/comptes?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'comptes' ? 'active' : '' %>">👥 Comptes</a>
+                <a href="/camera?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'camera' ? 'active' : '' %>"> Caméra</a>
+            </li>
+            <% } %>
+            <% if (niveau === '3') { %>
+            <li class="navbar-menu-item">
+                <a href="/journal?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'journal' ? 'active' : '' %>"> Journal</a>
+            </li>
+            <% } %>
+            <% if (niveau >= '2') { %>
+            <li class="navbar-menu-item">
+                <a href="/alertes?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'alertes' ? 'active' : '' %>"> Alertes</a>
+            </li>
+            <% } %>
+            <% if (niveau === '3') { %>
+            <li class="navbar-menu-item">
+                <a href="/profils?user=<%= user %>&niveau=<%= niveau %>&typeAcces=<%= typeAcces %>" class="navbar-menu-link <%= typeof currentPage !== 'undefined' && currentPage === 'profils' ? 'active' : '' %>"> Profils</a>
             </li>
             <% } %>
         </ul>
@@ -34,7 +40,7 @@
                 <span style="margin-left: 8px;">
                     <strong><%= user %></strong> • <%= typeAcces %> (L<%= niveau %>)
                     <% if (niveau === '0') { %>
-                    <span style="display: inline-block; margin-left: 8px; background: #0dcaf0; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">🔒 R/O</span>
+                    <span style="display: inline-block; margin-left: 8px; background: #0dcaf0; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;"> R/O</span>
                     <% } %>
                 </span>
             </div>
