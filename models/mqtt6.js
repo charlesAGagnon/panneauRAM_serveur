@@ -11,12 +11,7 @@ const mqtt = require('mqtt');
 // Connexion au broker MQTT
 const client = mqtt.connect('mqtt://localhost:1883');
 
-// Topics de lecture pour Pi 6 (à remplir avec vos topics spécifiques)
-const topics = [
-    // Exemple: 'pi6/temperature',
-    // Exemple: 'pi6/humidity',
-    // Exemple: 'pi6/status',
-];
+const topics = [];
 
 // Topic d'écriture pour Pi 6
 const WRITE_TOPIC = 'pi/write6';
