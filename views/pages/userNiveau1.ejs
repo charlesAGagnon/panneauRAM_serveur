@@ -20,57 +20,11 @@
 
     <%- include('../partials/header', { currentPage: 'dashboard', user, niveau, typeAcces }) %>
 
-    <!-- MAIN CONTENT: 3 COLUMNS -->
-    <div style="padding: 24px; display: grid; grid-template-columns: 2fr 1.5fr 1fr; gap: 24px;">
+    <!-- MAIN CONTENT: 2 COLUMNS -->
+    <div style="padding: 24px; display: grid; grid-template-columns: 1fr 1.5fr; gap: 24px;">
 
-        <!-- COLUMN 1: GRAPH & MONITORING -->
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-header-title">📈 Monitoring Temps Réel</h2>
-            </div>
-            <div class="card-body">
-                <div style="height: 300px; background: #f3f4f6; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-size: 14px;">
-                    Graphique (placeholder)
-                </div>
-                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                    <p style="font-size: 12px; color: #6b7280; margin: 0;">
-                        <strong>Réservoirs :</strong> GB: <span id="legend-gb">--</span>% | PB: <span id="legend-pb">--</span>%
-                    </p>
-                    <p style="font-size: 12px; color: #6b7280; margin: 4px 0 0 0;">
-                        <strong>Température :</strong> <span id="legend-temp">--</span>°C
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- COLUMN 2: STATUS & CONTROLS -->
+        <!-- COLUMN 1: CONTROLS (CONSIGNES) -->
         <div style="display: flex; flex-direction: column; gap: 16px;">
-
-            <!-- RESERVOIRS STATUS - VISUAL CYLINDERS -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-header-title">🏺 Réservoirs</h3>
-                </div>
-                <div class="card-body" style="display: flex; justify-content: space-around; align-items: flex-end; gap: 12px; min-height: 200px;">
-                    <!-- Cylindre GB -->
-                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                        <div style="font-size: 10px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">GB</div>
-                        <div style="position: relative; width: 50px; height: 120px; border: 2px solid #0d6efd; border-radius: 6px; background: #f0f4ff; overflow: hidden;">
-                            <div id="cylinder-gb-fill" style="position: absolute; bottom: 0; width: 100%; height: 0%; background: linear-gradient(180deg, #0d6efd, #0a58ca); transition: height 0.3s ease; border-radius: 4px;"></div>
-                        </div>
-                        <div style="font-weight: 700; font-size: 16px; color: #0d6efd;" id="val-gb">0%</div>
-                    </div>
-
-                    <!-- Cylindre PB -->
-                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                        <div style="font-size: 10px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">PB</div>
-                        <div style="position: relative; width: 50px; height: 120px; border: 2px solid #0d6efd; border-radius: 6px; background: #f0f4ff; overflow: hidden;">
-                            <div id="cylinder-pb-fill" style="position: absolute; bottom: 0; width: 100%; height: 0%; background: linear-gradient(180deg, #0d6efd, #0a58ca); transition: height 0.3s ease; border-radius: 4px;"></div>
-                        </div>
-                        <div style="font-weight: 700; font-size: 16px; color: #0d6efd;" id="val-pb">0%</div>
-                    </div>
-                </div>
-            </div>
 
             <!-- CONSIGNES RESERVOIRS -->
             <div class="card">
@@ -187,8 +141,48 @@
 
         </div>
 
-        <!-- COLUMN 3: POWER METER -->
+        <!-- COLUMN 2: STATUS & POWER METER -->
         <div style="display: flex; flex-direction: column; gap: 16px;">
+
+            <!-- RESERVOIRS STATUS - VISUAL CYLINDERS -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-header-title">🏺 Réservoirs</h3>
+                </div>
+                <div class="card-body" style="display: flex; justify-content: space-around; align-items: flex-end; gap: 12px; min-height: 200px;">
+                    <!-- Cylindre GB -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                        <div style="font-size: 10px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">GB</div>
+                        <div style="position: relative; width: 50px; height: 120px; border: 2px solid #0d6efd; border-radius: 6px; background: #f0f4ff; overflow: hidden;">
+                            <div id="cylinder-gb-fill" style="position: absolute; bottom: 0; width: 100%; height: 0%; background: linear-gradient(180deg, #0d6efd, #0a58ca); transition: height 0.3s ease; border-radius: 4px;"></div>
+                        </div>
+                        <div style="font-weight: 700; font-size: 16px; color: #0d6efd;" id="val-gb">0%</div>
+                    </div>
+
+                    <!-- Cylindre PB -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                        <div style="font-size: 10px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">PB</div>
+                        <div style="position: relative; width: 50px; height: 120px; border: 2px solid #0d6efd; border-radius: 6px; background: #f0f4ff; overflow: hidden;">
+                            <div id="cylinder-pb-fill" style="position: absolute; bottom: 0; width: 100%; height: 0%; background: linear-gradient(180deg, #0d6efd, #0a58ca); transition: height 0.3s ease; border-radius: 4px;"></div>
+                        </div>
+                        <div style="font-weight: 700; font-size: 16px; color: #0d6efd;" id="val-pb">0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TEMPERATURE -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-header-title">🌡️ Température</h3>
+                </div>
+                <div class="card-body">
+                    <div class="stat-card">
+                        <div class="stat-label">Temp PB</div>
+                        <div class="stat-value" id="stat-temp" style="font-size: 28px;">--</div>
+                        <div class="stat-unit">°C</div>
+                    </div>
+                </div>
+            </div>
 
             <!-- POWER METER STATS -->
             <div class="card">
@@ -239,20 +233,6 @@
                 </div>
             </div>
 
-            <!-- TEMPERATURE -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-header-title">🌡️ Température</h3>
-                </div>
-                <div class="card-body">
-                    <div class="stat-card">
-                        <div class="stat-label">Temp PB</div>
-                        <div class="stat-value" id="stat-temp" style="font-size: 28px;">--</div>
-                        <div class="stat-unit">°C</div>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
     </div>
@@ -268,4 +248,5 @@
     </script>
     <script src="/scripts/dashboard-script.js"></script>
 
-</body></html>
+</body>
+</html>

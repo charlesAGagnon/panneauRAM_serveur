@@ -20,30 +20,10 @@
 
     <%- include('../partials/header', { currentPage: 'dashboard', user, niveau, typeAcces }) %>
 
-    <!-- MAIN CONTENT: 3 COLUMNS (NO CONTROLS, ONLY DATA DISPLAY) -->
-    <div style="padding: 24px; display: grid; grid-template-columns: 2fr 1.5fr 1fr; gap: 24px;">
+    <!-- MAIN CONTENT: 2 COLUMNS (NO CONTROLS, ONLY DATA DISPLAY) -->
+    <div style="padding: 24px; display: grid; grid-template-columns: 1fr 1.5fr; gap: 24px;">
 
-        <!-- COLUMN 1: GRAPH & MONITORING -->
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-header-title">📈 Monitoring Temps Réel</h2>
-            </div>
-            <div class="card-body">
-                <div style="height: 300px; background: #f3f4f6; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-size: 14px;">
-                    Graphique (placeholder)
-                </div>
-                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                    <p style="font-size: 12px; color: #6b7280; margin: 0;">
-                        <strong>Réservoirs :</strong> GB: <span id="legend-gb">--</span>% | PB: <span id="legend-pb">--</span>%
-                    </p>
-                    <p style="font-size: 12px; color: #6b7280; margin: 4px 0 0 0;">
-                        <strong>Température :</strong> <span id="legend-temp">--</span>°C
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- COLUMN 2: STATUS ONLY (NO CONTROLS) -->
+        <!-- COLUMN 1: STATUS ONLY (NO CONTROLS) -->
         <div style="display: flex; flex-direction: column; gap: 16px;">
 
             <!-- RESERVOIRS STATUS - VISUAL CYLINDERS -->
@@ -74,7 +54,7 @@
 
         </div>
 
-        <!-- COLUMN 3: POWER METER -->
+        <!-- COLUMN 2: POWER METER -->
         <div style="display: flex; flex-direction: column; gap: 16px;">
 
             <!-- POWER METER STATS -->
