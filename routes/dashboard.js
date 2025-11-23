@@ -144,6 +144,100 @@ router.get('/journal', async function (req, res, next)
     return res.render('pages/journal', renderData);
 });
 
+// ===== API Routes pour le journal =====
+const journalModel = require('../models/journal');
+
+// GET - Récupérer la liste des utilisateurs
+router.get('/api/users', async function (req, res)
+{
+    try
+    {
+        const users = await requete.getAllUsers();
+        return res.json(
+        {
+            success: true,
+            users: users
+        });
+    }
+    catch (err)
+    {
+        console.error('Erreur récupération utilisateurs:', err);
+        return res.json(
+        {
+            success: false,
+            error: err.message
+        });
+    }
+});
+
+// GET - Récupérer les entrées du journal avec filtres
+router.get('/api/journal', function (req, res)
+{
+    const filters = {
+        startDate: req.query.startDate || null,
+        endDate: req.query.endDate || null,
+        userLogin: req.query.userLogin || null,
+        type: req.query.type || null
+    };
+
+    journalModel.getJournalEntries(filters, (err, results) =>
+    {
+        if (err)
+        {
+            console.error('Erreur récupération journal:', err);
+            return res.json(
+            {
+                success: false,
+                message: 'Erreur lors de la récupération du journal'
+            });
+        }
+
+        res.json(
+        {
+            success: true,
+            entries: results
+        });
+    });
+});
+
+// GET - Exporter le journal en CSV
+router.get('/api/journal/export', function (req, res)
+{
+    const filters = {
+        startDate: req.query.startDate || null,
+        endDate: req.query.endDate || null,
+        userLogin: req.query.userLogin || null,
+        type: req.query.type || null
+    };
+
+    journalModel.getJournalEntries(filters, (err, results) =>
+    {
+        if (err)
+        {
+            console.error('Erreur export journal:', err);
+            return res.status(500).send('Erreur lors de l\'export');
+        }
+
+        // Créer le CSV
+        let csv = 'LogID,Type,Utilisateur,Date/Heure,Information\n';
+        results.forEach(entry =>
+        {
+            const row = [
+                entry.LogID,
+                entry.Type,
+                entry.UserLogin,
+                entry.ReqTime,
+                `"${entry.Info.replace(/"/g, '""')}"`
+            ].join(',');
+            csv += row + '\n';
+        });
+
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+        res.setHeader('Content-Disposition', 'attachment; filename=journal_export.csv');
+        res.send('\uFEFF' + csv); // BOM pour UTF-8
+    });
+});
+
 // Route GET pour la page Alertes (Tous niveaux, mais lecture seule pour < 2)
 router.get('/alertes', async function (req, res, next)
 {

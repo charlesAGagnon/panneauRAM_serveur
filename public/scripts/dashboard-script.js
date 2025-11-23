@@ -3,6 +3,10 @@ const socket = io();
 const niveau = document.body.dataset.niveau || '0';
 const canWrite = niveau !== '0';
 
+// Récupérer l'utilisateur depuis les paramètres URL
+const urlParams = new URLSearchParams(window.location.search);
+const currentUser = urlParams.get('user') || 'Anonyme';
+
 // MESURES/ÉTATS - Données reçues via MQTT (lecture seule)
 let mesures = {
     NivGB: 0,
@@ -275,7 +279,8 @@ if (canWrite)
                 socket.emit('mqtt-publish',
                 {
                     topic: config.topic,
-                    message: value
+                    message: value,
+                    user: currentUser
                 });
             });
         }
@@ -303,7 +308,8 @@ if (canWrite)
                 socket.emit('mqtt-publish',
                 {
                     topic: `RAM/panneau/cmd/Valve${valve.toUpperCase()}`,
-                    message: value
+                    message: value,
+                    user: currentUser
                 });
             });
         }
@@ -330,7 +336,8 @@ if (canWrite)
                 socket.emit('mqtt-publish',
                 {
                     topic: `RAM/panneau/cmd/${valveKey}`,
-                    message: newState
+                    message: newState,
+                    user: currentUser
                 });
             });
         }

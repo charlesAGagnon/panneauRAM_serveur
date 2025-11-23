@@ -8,9 +8,11 @@
 
 const socket = io();
 
-// Récupérer le niveau d'accès
+// Récupérer le niveau d'accès et l'utilisateur
 const niveau = document.body.dataset.niveau || '0';
 const canWrite = (niveau === '2' || niveau === '3');
+const urlParams = new URLSearchParams(window.location.search);
+const currentUser = urlParams.get('user') || 'Anonyme';
 
 // Configuration des topics vers les IDs des inputs
 const topicToInputId = {
@@ -151,8 +153,11 @@ function updateAlarmBadge(topic, value)
 function showAlarmNotification(alarmKey)
 {
     const label = ALARM_LABELS[alarmKey] || alarmKey;
+    const reqTime = new Date().toISOString();
     const notification = document.createElement('div');
     notification.className = 'alarm-notification';
+    notification.setAttribute('data-alarm-key', alarmKey);
+    notification.setAttribute('data-req-time', reqTime);
     notification.innerHTML = `
         <div style="background: #dc2626; color: white; padding: 16px; border-radius: 8px; margin: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); animation: slideIn 0.3s ease-out;">
             <div style="display: flex; align-items: center; gap: 12px;">
@@ -162,6 +167,7 @@ function showAlarmNotification(alarmKey)
                     <div style="font-size: 14px; margin-top: 4px;">${label}</div>
                     <div style="font-size: 12px; margin-top: 4px; opacity: 0.9;">Le système va tenter de corriger automatiquement</div>
                 </div>
+                <button onclick="acknowledgeAlarm('${alarmKey}')" style="background: rgba(255,255,255,0.3); border: none; color: white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 14px;">Reconnaître</button>
                 <button onclick="this.parentElement.parentElement.remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 14px;">X</button>
             </div>
         </div>
@@ -184,6 +190,31 @@ function showAlarmNotification(alarmKey)
     {
         notification.remove();
     }, 10000);
+}
+
+// Reconnaître une alarme
+function acknowledgeAlarm(alarmKey)
+{
+    const notifications = document.querySelectorAll(`[data-alarm-key="${alarmKey}"]`);
+    if (notifications.length === 0) return;
+
+    notifications.forEach(notification =>
+    {
+        const reqTime = notification.getAttribute('data-req-time');
+
+        // Envoyer la reconnaissance au serveur
+        socket.emit('mqtt-acknowledge-alarm',
+        {
+            alarmType: alarmKey,
+            user: currentUser,
+            reqTime: reqTime
+        });
+
+        // Retirer la notification
+        notification.remove();
+    });
+
+    console.log(`Alarme ${alarmKey} reconnue par ${currentUser}`);
 }
 
 // Mettre à jour le statut de connexion
@@ -215,7 +246,8 @@ function sendConfig(inputId)
             socket.emit('mqtt-command-alarmes',
             {
                 topic: topic,
-                value: value
+                value: value,
+                user: currentUser
             });
         }
     }

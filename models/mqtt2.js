@@ -7,6 +7,7 @@
  */
 
 const mqtt = require('mqtt');
+const journalModel = require('./journal');
 
 // Connexion au broker MQTT
 //const client = mqtt.connect('mqtt://172.17.15.91:1883');
@@ -153,6 +154,10 @@ function initializeSocketIO(socketIO)
         socket.on('mqtt-command-pi2-mode', (data) =>
         {
             console.log('Pi 2 - Commande mode reçue:', data.value);
+            if (data.user)
+            {
+                journalModel.logCommand(data.user, 'mode', data.value.toString());
+            }
             publish(CMD_TOPICS.mode, data.value).catch(err =>
             {
                 socket.emit('mqtt-error-pi2',
@@ -183,6 +188,10 @@ function initializeSocketIO(socketIO)
         socket.on('mqtt-command-pi2-recette', (data) =>
         {
             console.log('Pi 2 - Commande recette reçue:', data.value);
+            if (data.user)
+            {
+                journalModel.logCommand(data.user, 'recette', data.value.toString());
+            }
             publish(CMD_TOPICS.recette, data.value).catch(err =>
             {
                 socket.emit('mqtt-error-pi2',
@@ -196,6 +205,10 @@ function initializeSocketIO(socketIO)
         socket.on('mqtt-command-pi2-recetteGo', (data) =>
         {
             console.log('Pi 2 - Commande recetteGo reçue:', data.value);
+            if (data.user)
+            {
+                journalModel.logCommand(data.user, 'recetteGo', data.value.toString());
+            }
             publish(CMD_TOPICS.recetteGo, data.value).catch(err =>
             {
                 socket.emit('mqtt-error-pi2',

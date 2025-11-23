@@ -7,6 +7,7 @@
  */
 
 const mqtt = require('mqtt');
+const journalModel = require('./journal');
 
 // Connexion au broker MQTT
 //const client = mqtt.connect('mqtt://172.17.15.91:1883');
@@ -287,12 +288,19 @@ function initializeSocketIO(socketIO)
         // Gérer les commandes de configuration depuis l'UI (Seuils)
         socket.on('mqtt-command-alarmes', async (data) =>
         {
-            // data = { topic: 'RAM/alarmes/cmd/NivLhGB', value: 50 }
+            // data = { topic: 'RAM/alarmes/cmd/NivLhGB', value: 50, user: 'username' }
             if (data.topic && data.value !== undefined)
             {
                 console.log(`Config UI reçue: ${data.topic} = ${data.value}`);
                 try
                 {
+                    // Enregistrer dans le journal
+                    if (data.user && data.topic.includes('/cmd/'))
+                    {
+                        const configType = data.topic.split('/').pop();
+                        journalModel.logCommand(data.user, configType, data.value.toString());
+                    }
+
                     await publish(data.topic, data.value);
                     socket.emit('mqtt-command-success-alarmes',
                     {
@@ -307,6 +315,19 @@ function initializeSocketIO(socketIO)
                         error: error.message
                     });
                 }
+            }
+        });
+
+        // Gérer la reconnaissance d'alarme
+        socket.on('mqtt-acknowledge-alarm', (data) =>
+        {
+            // data = { alarmType: 'ALR_GB_OVF', user: 'username', reqTime: '2025-11-23T...' }
+            if (data.alarmType && data.user && data.reqTime)
+            {
+                const alarmKey = data.alarmType.split('/').pop();
+                const alarmLevel = systemState.alarms[alarmKey] || 'N/A';
+                journalModel.logAlarm(data.user, alarmKey, alarmLevel, data.reqTime);
+                console.log(`Alarme ${alarmKey} reconnue par ${data.user}`);
             }
         });
 

@@ -128,8 +128,11 @@ client.on('message', function (topic, message)
 
 client.on('error', function (error)
 {
-    console.error('Erreur MQTT:', error);
+    console.error('Erreur de connexion MQTT:', error);
 });
+
+// Importer le module journal
+const journalModel = require('./journal');
 
 // Fonction pour publier un message
 function publish(topic, message)
@@ -200,6 +203,12 @@ function initializeSocketIO(socketIO)
             console.log('Commande superviseur reçue:', data);
             if (data.topic && data.value !== undefined)
             {
+                // Enregistrer dans le journal
+                if (data.user && data.topic.includes('/cmd/'))
+                {
+                    const commandType = data.topic.split('/').pop();
+                    journalModel.logCommand(data.user, commandType, data.value.toString());
+                }
                 publish(data.topic, data.value);
             }
         });
@@ -212,6 +221,13 @@ function initializeSocketIO(socketIO)
             {
                 try
                 {
+                    // Enregistrer dans le journal
+                    if (data.user && data.topic.includes('/cmd/'))
+                    {
+                        const commandType = data.topic.split('/').pop();
+                        journalModel.logCommand(data.user, commandType, data.message.toString());
+                    }
+
                     await publish(data.topic, data.message);
                     console.log(`Message publié avec succès: ${data.topic} = ${data.message}`);
                 }

@@ -229,6 +229,66 @@ body {
     cursor: not-allowed;
 }
 
+/* ============================================
+   TABLE STYLES (pour journal)
+   ============================================ */
+
+table tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 0.15s;
+}
+
+table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+table tbody td {
+    padding: 12px;
+}
+
+/* BADGES POUR LE JOURNAL */
+.badge-info {
+    background: #3b82f6;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-warning {
+    background: #f59e0b;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* FORM CONTROLS */
+.form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
 .btn-secondary {
     background: var(--gray-200);
     color: var(--gray-700);

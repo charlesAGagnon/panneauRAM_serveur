@@ -20,20 +20,82 @@
 
     <!-- ===== CONTENU ===== -->
     <div style="padding: 32px 24px;">
-        <div style="max-width: 1400px; margin: 0 auto;">
+        <div style="max-width: 1600px; margin: 0 auto;">
+
+            <!-- Filtres -->
+            <div class="card" style="margin-bottom: 24px;">
+                <div class="card-header">
+                    <h3 class="card-header-title">Filtres de recherche</h3>
+                </div>
+                <div class="card-body">
+                    <form id="filter-form">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                            <div>
+                                <label class="form-label">Date début</label>
+                                <input type="datetime-local" id="start-date" class="form-control">
+                            </div>
+                            <div>
+                                <label class="form-label">Date fin</label>
+                                <input type="datetime-local" id="end-date" class="form-control">
+                            </div>
+                            <div>
+                                <label class="form-label">Utilisateur</label>
+                                <select id="user-filter" class="form-control">
+                                    <option value="">-- Tous les utilisateurs --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label">Type</label>
+                                <select id="type-filter" class="form-control">
+                                    <option value="">Tous</option>
+                                    <option value="LOG_CMD">Commandes</option>
+                                    <option value="LOG_ALARME">Alarmes</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 12px; margin-top: 16px;">
+                            <button type="submit" class="btn btn-primary">Filtrer</button>
+                            <button type="button" id="btn-reset" class="btn">Réinitialiser</button>
+                            <button type="button" id="btn-export" class="btn">Exporter CSV</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Table du journal -->
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-header-title">Journal des Événements</h2>
                 </div>
-                <div class="card-body">
-                    <div class="alert alert-info">
-                        <strong>Page en développement</strong><br>
-                        Le journal des événements sera disponible prochainement. Cette section affichera l'historique complet des actions et événements du système.
-                    </div>
+                <div class="card-body" style="padding: 0; overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                            <tr>
+                                <th style="padding: 12px; text-align: left; font-weight: 600; width: 80px;">ID</th>
+                                <th style="padding: 12px; text-align: left; font-weight: 600; width: 120px;">Type</th>
+                                <th style="padding: 12px; text-align: left; font-weight: 600; width: 150px;">Utilisateur</th>
+                                <th style="padding: 12px; text-align: left; font-weight: 600; width: 180px;">Date/Heure</th>
+                                <th style="padding: 12px; text-align: left; font-weight: 600;">Information</th>
+                            </tr>
+                        </thead>
+                        <tbody id="journal-tbody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 40px; color: #6b7280;">
+                                    Chargement...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+
+    <footer style="background: white; border-top: 1px solid #e5e7eb; padding: 16px 24px; text-align: center; margin-top: 24px; color: #6b7280; font-size: 12px;">
+        <%- include('../partials/footer') %>
+    </footer>
+
+    <script src="/scripts/journal-script.js"></script>
 
 </body>
 </html>
