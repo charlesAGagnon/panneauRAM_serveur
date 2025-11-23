@@ -772,3 +772,90 @@ input[type="range"]::-moz-range-thumb {
 .opacity-50 {
     opacity: 0.5;
 }
+
+/* ============================================
+   ALERTES PAGE - Specific Styles
+   ============================================ */
+
+.data-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.data-row:last-child {
+    border-bottom: none;
+}
+
+.data-label {
+    font-weight: 500;
+    color: var(--gray-700);
+    font-size: 14px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.control-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.control-label {
+    font-weight: 600;
+    color: var(--gray-700);
+    font-size: 13px;
+}
+
+.control-input {
+    padding: 10px 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: 6px;
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.control-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+
+.control-input:disabled {
+    background: var(--gray-100);
+    cursor: not-allowed;
+}
+
+.alert {
+    padding: 16px;
+    border-radius: 6px;
+    margin: 16px 0;
+}
+
+.alert-info {
+    background: #cfe2ff;
+    border: 1px solid #b6d4fe;
+    color: #084298;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    border: 1px solid #ffecb5;
+    color: #664d03;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    border: 1px solid #f5c2c7;
+    color: #842029;
+}
+
+.mb-4 {
+    margin-bottom: 24px;
+}

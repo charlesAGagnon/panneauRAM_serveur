@@ -9,8 +9,8 @@
 const mqtt = require('mqtt');
 
 // Connexion au broker MQTT
-const client = mqtt.connect('mqtt://127.0.0.1:1883');
-
+//const client = mqtt.connect('mqtt://172.17.15.91:1883');
+const client = mqtt.connect('mqtt://localhost:1883');
 // Topics de lecture pour Pi 2 - Mélangeur (états)
 const topics = [
     'RAM/melangeur/etats/recetteStatut',

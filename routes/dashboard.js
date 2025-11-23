@@ -144,14 +144,14 @@ router.get('/journal', async function (req, res, next)
     return res.render('pages/journal', renderData);
 });
 
-// Route GET pour la page Alertes (Niveaux 2,3 seulement)
+// Route GET pour la page Alertes (Tous niveaux, mais lecture seule pour < 2)
 router.get('/alertes', async function (req, res, next)
 {
     const user = req.query.user;
     const niveau = req.query.niveau;
     const typeAcces = req.query.typeAcces;
 
-    if (!user || !niveau || !typeAcces || niveau < '2')
+    if (!user || !niveau || !typeAcces)
     {
         return res.render('pages/403',
         {

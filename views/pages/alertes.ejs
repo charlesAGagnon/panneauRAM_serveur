@@ -1,9 +1,9 @@
 <!--
 * @file alertes.ejs
 * @author charles-Antoine Gagnon
-* @version 1 - Alertes page
+* @version 2 - Alertes page with configuration
 * @date 11/11/2025
-* @brief Page Alertes/Alarmes (stub)
+* @brief Page Alertes/Alarmes
 -->
 <!DOCTYPE html>
 <html lang="fr">
@@ -13,27 +13,162 @@
     <title>PanneauRAM - Alertes</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/stylesheets/modern.css">
+    <link rel="stylesheet" href="/stylesheets/ui-components.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/scripts/alertes-script.js" defer></script>
 </head>
-<body style="margin: 0; padding: 0; background: #f8f9fa;">
+<body style="margin: 0; padding: 0; background: #f8f9fa;" data-niveau="<%= niveau %>">
 
     <%- include('../partials/header', { currentPage: 'alertes', user, niveau, typeAcces }) %>
 
     <!-- ===== CONTENU ===== -->
     <div style="padding: 32px 24px;">
         <div style="max-width: 1400px; margin: 0 auto;">
-            <div class="card">
+
+            <% if (niveau >= 2) { %>
+            <!-- Section États des Alarmes (Niveaux 2-3 seulement) -->
+            <div class="card mb-4" style="margin-bottom: 24px;">
                 <div class="card-header">
-                    <h2 class="card-header-title">🔔 Alertes et Alarmes</h2>
+                    <h2 class="card-header-title">🚨 État des Alarmes</h2>
+                    <span id="connection-status" style="font-size: 14px;">⚪ Connexion...</span>
                 </div>
                 <div class="card-body">
-                    <div class="alert alert-info">
-                        <strong>ℹ️ Page en développement</strong><br>
-                        La gestion des alertes et des seuils d'alarme sera disponible prochainement. Cette section permettra de consulter, configurer et reconnaître les alertes système.
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                        <!-- Grand Bassin -->
+                        <div>
+                            <h3 style="margin-top: 0; color: #475569;">Grand Bassin (GB)</h3>
+                            <div class="data-row">
+                                <span class="data-label">Débordement (OVF)</span>
+                                <span id="badge-ALR_GB_OVF" class="status-badge status-ok">Normal</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Niveau Max</span>
+                                <span id="badge-ALR_GB_NIV_MAX" class="status-badge status-ok">Normal</span>
+                            </div>
+                        </div>
+
+                        <!-- Petit Bassin -->
+                        <div>
+                            <h3 style="margin-top: 0; color: #475569;">Petit Bassin (PB)</h3>
+                            <div class="data-row">
+                                <span class="data-label">Débordement (OVF)</span>
+                                <span id="badge-ALR_PB_OVF" class="status-badge status-ok">Normal</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Niveau Max</span>
+                                <span id="badge-ALR_PB_NIV_MAX" class="status-badge status-ok">Normal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e5e7eb;">
+                        <h3 style="margin-top: 0; color: #475569;">Alarmes de Connexion</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div class="data-row">
+                                <span class="data-label">Balance</span>
+                                <span id="badge-ALR_CNX_BAL" class="status-badge status-ok">Normal</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Power Meter</span>
+                                <span id="badge-ALR_CNX_POW" class="status-badge status-ok">Normal</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <% } else { %>
+            <!-- Message pour niveau 0 et 1 -->
+            <div class="card mb-4" style="margin-bottom: 24px;">
+                <div class="card-header">
+                    <h2 class="card-header-title">🚨 Alertes</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>ℹ️ Accès restreint</strong><br>
+                        Vous devez être de niveau 2 ou 3 pour visualiser et configurer les alarmes.
+                    </div>
+                </div>
+            </div>
+            <% } %>
+
+            <% if (niveau >= 2) { %>
+            <!-- Section Configuration des Seuils (Niveaux 2-3 seulement) -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-header-title">⚙️ Configuration des Seuils</h2>
+                    <span class="status-badge status-ok">Modification Activée</span>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+
+                        <!-- Config Grand Bassin -->
+                        <div class="control-group">
+                            <h3 style="margin-top: 0; color: #475569;">Grand Bassin (GB)</h3>
+
+                            <div class="control-item">
+                                <label class="control-label">Niveau Seuil Haut (NivLhGB) - %</label>
+                                <input type="number" id="input-NivLhGB" class="control-input" min="0" max="100" step="1" placeholder="Ex: 90">
+                                <small style="color: #64748b; font-size: 12px;">Valeur entre 0 et 100%</small>
+                            </div>
+
+                            <div class="control-item">
+                                <label class="control-label">Temps de Garde (TgNivGB) - secondes</label>
+                                <input type="number" id="input-TgNivGB" class="control-input" min="0" step="1" placeholder="Ex: 5">
+                                <small style="color: #64748b; font-size: 12px;">Durée en secondes avant déclenchement</small>
+                            </div>
+
+                            <div class="control-item">
+                                <label class="control-label">Temps de Retard (TrNivGB) - secondes</label>
+                                <input type="number" id="input-TrNivGB" class="control-input" min="0" step="1" placeholder="Ex: 2">
+                                <small style="color: #64748b; font-size: 12px;">Délai de réaction en secondes</small>
+                            </div>
+                        </div>
+
+                        <!-- Config Petit Bassin -->
+                        <div class="control-group">
+                            <h3 style="margin-top: 0; color: #475569;">Petit Bassin (PB)</h3>
+
+                            <div class="control-item">
+                                <label class="control-label">Niveau Seuil Haut (NivLhPB) - %</label>
+                                <input type="number" id="input-NivLhPB" class="control-input" min="0" max="100" step="1" placeholder="Ex: 90">
+                                <small style="color: #64748b; font-size: 12px;">Valeur entre 0 et 100%</small>
+                            </div>
+
+                            <div class="control-item">
+                                <label class="control-label">Temps de Garde (TgNivPB) - secondes</label>
+                                <input type="number" id="input-TgNivPB" class="control-input" min="0" step="1" placeholder="Ex: 5">
+                                <small style="color: #64748b; font-size: 12px;">Durée en secondes avant déclenchement</small>
+                            </div>
+
+                            <div class="control-item">
+                                <label class="control-label">Temps de Retard (TrNivPB) - secondes</label>
+                                <input type="number" id="input-TrNivPB" class="control-input" min="0" step="1" placeholder="Ex: 2">
+                                <small style="color: #64748b; font-size: 12px;">Délai de réaction en secondes</small>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e5e7eb;">
+                        <div class="alert alert-info">
+                            <strong>ℹ️ Fonctionnement des alarmes</strong><br>
+                            <ul style="margin: 8px 0 0 20px; padding: 0;">
+                                <li><strong>Débordement (OVF)</strong> : Réduit automatiquement la consigne au seuil haut configuré</li>
+                                <li><strong>Niveau Max</strong> : Réduit automatiquement la consigne de 10%</li>
+                                <li><strong>Connexion</strong> : Notification uniquement, pas de correction automatique</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+
         </div>
     </div>
+
+    <footer style="background: white; border-top: 1px solid #e5e7eb; padding: 16px 24px; text-align: center; margin-top: 24px; color: #6b7280; font-size: 12px;">
+        <%- include('../partials/footer') %>
+    </footer>
 
 </body>
 </html>
