@@ -31,7 +31,7 @@
             <!-- État Mélangeur -->
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-header-title">🎛️ État Mélangeur</h2>
+                    <h2 class="card-header-title"> État Mélangeur</h2>
                 </div>
                 <div class="card-body">
                     <div class="status-display">
@@ -44,12 +44,12 @@
             <!-- Moteurs -->
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-header-title">⚙️ Moteurs</h2>
+                    <h2 class="card-header-title"> Moteurs</h2>
                 </div>
                 <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
                     <!-- Commandes -->
                     <div class="motors-section">
-                        <p class="section-title">📤 COMMANDES (Envoyer l'ordre)</p>
+                        <p class="section-title"> COMMANDES (Envoyer l'ordre)</p>
                         <div class="motors-buttons">
                             <% ['A', 'B', 'C'].forEach(motor => { %>
                             <button id="btn-mot<%= motor %>" class="btn btn-primary motor-btn" data-motor="<%= motor.toLowerCase() %>" <% if (niveau === '0') { %>disabled<% } %>>
@@ -61,7 +61,7 @@
 
                     <!-- États MQTT -->
                     <div>
-                        <p class="section-title">📥 ÉTATS (Reçus du système)</p>
+                        <p class="section-title"> ÉTATS (Reçus du système)</p>
                         <div class="motors-status-grid">
                             <% ['A', 'B', 'C'].forEach(motor => { %>
                             <div class="motor-status-card">
@@ -77,7 +77,7 @@
             <!-- Recette -->
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-header-title">📝 Recette Personnalisée</h2>
+                    <h2 class="card-header-title"> Recette Personnalisée</h2>
                 </div>
                 <div class="card-body">
                     <form id="recipe-form" class="recipe-form">
@@ -87,7 +87,7 @@
                             <input type="number" class="form-control" id="ing<%= i %>" placeholder="0" min="0" max="100" <% if (niveau === '0') { %>disabled<% } %>>
                         </div>
                         <% } %>
-                        <button type="submit" class="btn btn-success" <% if (niveau === '0') { %>disabled<% } %>>✓ Valider Recette</button>
+                        <button type="submit" class="btn btn-success" <% if (niveau === '0') { %>disabled<% } %>> Valider Recette</button>
                     </form>
                 </div>
             </div>
@@ -100,7 +100,7 @@
             <!-- État Aspirateur -->
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-header-title">💨 État Aspirateur</h2>
+                    <h2 class="card-header-title"> État Aspirateur</h2>
                 </div>
                 <div class="card-body">
                     <div class="status-display">
@@ -113,7 +113,7 @@
             <!-- Niveaux Cylindres -->
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-header-title">🏺 Niveaux Cylindres</h2>
+                    <h2 class="card-header-title"> Niveaux Cylindres</h2>
                 </div>
                 <div class="card-body">
                     <% ['A', 'B', 'C'].forEach(cyl => { %>
@@ -133,11 +133,11 @@
             <!-- Commandes -->
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-header-title">🎮 Commandes</h2>
+                    <h2 class="card-header-title"> Commandes</h2>
                 </div>
                 <div class="card-body">
                     <button id="btn-force" class="btn btn-danger" style="width: 100%;" <% if (niveau === '0') { %>disabled<% } %>>
-                        💪 Force
+                        Force
                     </button>
                 </div>
             </div>

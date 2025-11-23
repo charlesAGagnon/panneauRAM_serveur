@@ -9,7 +9,7 @@
 const mqtt = require('mqtt');
 
 // Connexion au broker MQTT
-const client = mqtt.connect('mqtt://172.17.15.184:1883');
+const client = mqtt.connect('mqtt://172.17.15.91:1883');
 
 const topics = [
     'RAM/panneau/etats/NivGB',

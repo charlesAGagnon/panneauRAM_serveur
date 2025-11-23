@@ -9,7 +9,7 @@
 const mqtt = require('mqtt');
 
 // Connexion au broker MQTT
-const client = mqtt.connect('mqtt://172.17.15.184:1883');
+const client = mqtt.connect('mqtt://127.0.0.1:1883');
 
 // Topics de lecture pour Pi 3 - Power Meter
 const topics = [
