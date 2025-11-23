@@ -73,6 +73,15 @@ socket.on('mqtt-initial-data', (data) =>
     updateMesuresDisplay();
 });
 
+// PANNEAU COMMANDS - Recevoir les dernières commandes envoyées
+socket.on('mqtt-initial-commands', (data) =>
+{
+    console.log('Dernières consignes reçues:', data);
+    Object.assign(consignes, data);
+    // Mettre à jour l'UI avec les consignes sauvegardées
+    updateConsignesUI();
+});
+
 socket.on('mqtt-data', (msg) =>
 {
     if (msg.key && msg.value !== undefined)
@@ -178,6 +187,47 @@ function updateSwitch(btnId, value)
         btn.textContent = isOn ? 'ON' : 'OFF';
         btn.classList.toggle('btn-danger', isOn);
         btn.classList.toggle('btn-primary', !isOn);
+    }
+}
+
+// Fonction pour restaurer l'UI avec les consignes sauvegardées
+function updateConsignesUI()
+{
+    console.log('Restauration des consignes dans l\'UI');
+
+    // Sliders
+    updateConsigneDisplay('slider-gb', 'val-slider-gb', consignes.ConsNivGB);
+    updateConsigneDisplay('slider-pb', 'val-slider-pb', consignes.ConsNivPB);
+    updateConsigneDisplay('slider-tmpb', 'val-slider-tmpb', consignes.ConsTmpPB);
+
+    // Vannes (sliders horizontaux ou autre)
+    if (document.getElementById('slider-valve-gb'))
+    {
+        updateConsigneDisplay('slider-valve-gb', 'val-valve-gb', consignes.ValveGB);
+    }
+    if (document.getElementById('slider-valve-pb'))
+    {
+        updateConsigneDisplay('slider-valve-pb', 'val-valve-pb', consignes.ValvePB);
+    }
+    if (document.getElementById('slider-valve-ec'))
+    {
+        updateConsigneDisplay('slider-valve-ec', 'val-valve-ec', consignes.ValveEC);
+    }
+    if (document.getElementById('slider-valve-ef'))
+    {
+        updateConsigneDisplay('slider-valve-ef', 'val-valve-ef', consignes.ValveEF);
+    }
+
+    // Switches
+    updateSwitch('btn-eec', consignes.ValveEEC);
+    updateSwitch('btn-eef', consignes.ValveEEF);
+    updateSwitch('btn-pompe', consignes.Pompe);
+
+    // Mode
+    const selMode = document.getElementById('select-mode');
+    if (selMode && consignes.Mode)
+    {
+        selMode.value = consignes.Mode;
     }
 }
 

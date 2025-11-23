@@ -14,10 +14,10 @@ loadPlayer(
     canvas: canvas,
     onDisconnect: function ()
     {
-        console.log('⚠️ Connexion caméra perdue');
+        console.log('Connexion caméra perdue');
     },
     onConnect: function ()
     {
-        console.log('✅ Connecté au flux caméra');
+        console.log('Connecté au flux caméra');
     }
 });

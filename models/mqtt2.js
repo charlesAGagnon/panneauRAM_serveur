@@ -31,12 +31,22 @@ const CMD_TOPICS = {
 
 let io = null;
 
-// Données actuelles pour Pi 2 - Mélangeur
+// Données actuelles pour Pi 2 - Mélangeur (états reçus)
 const currentData = {
     recetteStatut: 'FINISHED',
     motA: 'off',
     motB: 'off',
     motC: 'off'
+};
+
+// Dernières commandes envoyées (consignes)
+const lastCommands = {
+    mode: 'auto',
+    motA: 'off',
+    motB: 'off',
+    motC: 'off',
+    recette: '',
+    recetteGo: '0'
 };
 
 client.on('connect', function ()
@@ -104,6 +114,15 @@ function publish(topic, message)
             else
             {
                 console.log(`Pi 2 - Message publié sur ${topic}: ${message}`);
+
+                // Sauvegarder la commande envoyée
+                if (topic.includes('/cmd/'))
+                {
+                    const key = topic.split('/').pop(); // Ex: mode, motA, motB, motC, recette, recetteGo
+                    lastCommands[key] = message.toString();
+                    console.log(`Pi 2 - Consigne sauvegardée: ${key} = ${lastCommands[key]}`);
+                }
+
                 resolve();
             }
         });
@@ -125,8 +144,9 @@ function initializeSocketIO(socketIO)
             socket.join('pi2');
             console.log(`Pi 2 - Socket ${socket.id} a rejoint la room pi2`);
 
-            // Envoyer les données initiales
+            // Envoyer les données initiales (états) et les dernières commandes (consignes)
             socket.emit('mqtt-initial-data-pi2', currentData);
+            socket.emit('mqtt-initial-commands-pi2', lastCommands);
         });
 
         // Gérer les commandes - Mode
@@ -193,10 +213,16 @@ function initializeSocketIO(socketIO)
     });
 }
 
-// Obtenir les données actuelles
+// Obtenir les données actuelles (états)
 function getCurrentData()
 {
     return currentData;
+}
+
+// Obtenir les dernières commandes (consignes)
+function getLastCommands()
+{
+    return lastCommands;
 }
 
 // Obtenir les topics
@@ -216,6 +242,7 @@ module.exports = {
     publish,
     initializeSocketIO,
     getCurrentData,
+    getLastCommands,
     getTopics,
     getCmdTopics
 };

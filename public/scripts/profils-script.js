@@ -6,14 +6,14 @@
  * @brief Script pour la gestion des profils
  */
 
-console.log('🔧 profils-script.js chargé');
+console.log('profils-script.js chargé');
 
 let editMode = false;
 
 // Attendre que le DOM soit chargé
 document.addEventListener('DOMContentLoaded', function ()
 {
-    console.log('✅ DOM chargé, initialisation...');
+    console.log('DOM chargé, initialisation...');
 
     // Charger la liste des utilisateurs au démarrage
     loadUsers();
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function ()
     }
     else
     {
-        console.error('❌ Bouton save-profile introuvable');
+        console.error('Bouton save-profile introuvable');
     }
 
     // Bouton Annuler
@@ -47,7 +47,7 @@ function handleSave()
 
     if (!username || !password)
     {
-        alert('⚠️ Veuillez remplir tous les champs obligatoires');
+        alert('Veuillez remplir tous les champs obligatoires');
         return;
     }
 
@@ -84,19 +84,19 @@ function createUser(userData)
         {
             if (data.success)
             {
-                alert('✅ Utilisateur créé avec succès');
+                alert('Utilisateur créé avec succès');
                 resetForm();
                 loadUsers();
             }
             else
             {
-                alert('❌ Erreur: ' + (data.message || 'Impossible de créer l utilisateur'));
+                alert('Erreur: ' + (data.message || 'Impossible de créer l utilisateur'));
             }
         })
         .catch(error =>
         {
             console.error('Erreur:', error);
-            alert('❌ Erreur lors de la création de l utilisateur');
+            alert('Erreur lors de la création de l utilisateur');
         });
 }
 
@@ -117,59 +117,59 @@ function updateUser(userId, userData)
         {
             if (data.success)
             {
-                alert('✅ Utilisateur modifié avec succès');
+                alert('Utilisateur modifié avec succès');
                 resetForm();
                 loadUsers();
             }
             else
             {
-                alert('❌ Erreur: ' + (data.message || 'Impossible de modifier l utilisateur'));
+                alert('Erreur: ' + (data.message || 'Impossible de modifier l utilisateur'));
             }
         })
         .catch(error =>
         {
             console.error('Erreur:', error);
-            alert('❌ Erreur lors de la modification de l utilisateur');
+            alert('Erreur lors de la modification de l utilisateur');
         });
 }
 
 // Charger la liste des utilisateurs
 function loadUsers()
 {
-    console.log('🔄 Chargement des utilisateurs...');
+    console.log('Chargement des utilisateurs...');
     fetch('/api/users/list')
         .then(response =>
         {
-            console.log('📡 Réponse reçue:', response.status);
+            console.log('Réponse reçue:', response.status);
             return response.json();
         })
         .then(data =>
         {
-            console.log('📦 Données reçues:', data);
+            console.log('Données reçues:', data);
             if (data.success)
             {
                 displayUsers(data.users);
             }
             else
             {
-                console.error('❌ Échec:', data.message);
+                console.error('Échec:', data.message);
             }
         })
         .catch(error =>
         {
-            console.error('❌ Erreur fetch:', error);
+            console.error('Erreur fetch:', error);
         });
 }
 
 // Afficher la liste des utilisateurs
 function displayUsers(users)
 {
-    console.log('🖥️ Affichage de', users ? users.length : 0, 'utilisateurs');
+    console.log('Affichage de', users ? users.length : 0, 'utilisateurs');
     const usersList = document.getElementById('users-list');
 
     if (!usersList)
     {
-        console.error('❌ Élément users-list introuvable dans le DOM');
+        console.error('Élément users-list introuvable dans le DOM');
         return;
     }
 
@@ -193,13 +193,13 @@ function displayUsers(users)
                 <div class="user-meta">Niveau ${user.niveauAcces} - ${niveauLabels[user.niveauAcces]} | Type: ${user.typeAcces}</div>
             </div>
             <div class="user-actions">
-                <button class="btn-icon btn-edit" onclick="editUser(${user.id}, '${user.nom}', '${user.niveauAcces}')">✏️ Modifier</button>
-                <button class="btn-icon btn-delete" onclick="deleteUser(${user.id}, '${user.nom}')">🗑️ Supprimer</button>
+                <button class="btn-icon btn-edit" onclick="editUser(${user.id}, '${user.nom}', '${user.niveauAcces}')">Modifier</button>
+                <button class="btn-icon btn-delete" onclick="deleteUser(${user.id}, '${user.nom}')">Supprimer</button>
             </div>
         </div>
     `).join('');
 
-    console.log('✅ Liste affichée avec succès');
+    console.log('Liste affichée avec succès');
 }
 
 // Éditer un utilisateur
@@ -222,7 +222,7 @@ function editUser(id, username, niveau)
 // Supprimer un utilisateur
 function deleteUser(id, username)
 {
-    if (!confirm('⚠️ Êtes-vous sûr de vouloir supprimer l utilisateur \"' + username + '\" ?'))
+    if (!confirm('Êtes-vous sûr de vouloir supprimer l utilisateur "' + username + '" ?'))
     {
         return;
     }
@@ -236,18 +236,18 @@ function deleteUser(id, username)
         {
             if (data.success)
             {
-                alert('✅ Utilisateur supprimé avec succès');
+                alert('Utilisateur supprimé avec succès');
                 loadUsers();
             }
             else
             {
-                alert('❌ Erreur: ' + (data.message || 'Impossible de supprimer l utilisateur'));
+                alert('Erreur: ' + (data.message || 'Impossible de supprimer l utilisateur'));
             }
         })
         .catch(error =>
         {
             console.error('Erreur:', error);
-            alert('❌ Erreur lors de la suppression de l utilisateur');
+            alert('Erreur lors de la suppression de l utilisateur');
         });
 }
 

@@ -53,7 +53,7 @@
                         <div class="motors-buttons">
                             <% ['A', 'B', 'C'].forEach(motor => { %>
                             <button id="btn-mot<%= motor %>" class="btn btn-primary motor-btn" data-motor="<%= motor.toLowerCase() %>" <% if (niveau === '0') { %>disabled<% } %>>
-                                Moteur <%= motor %> - ✗ OFF
+                                Moteur <%= motor %> - OFF
                             </button>
                             <% }); %>
                         </div>
@@ -184,7 +184,7 @@
         // ===== SOCKET.IO EVENTS =====
         socket.on('connect', () =>
         {
-            console.log('✅ Connecté');
+            console.log('Connecté');
             updateConnectionStatus(true);
             socket.emit('join-pi2');
             socket.emit('join-pi4');
@@ -196,6 +196,21 @@
         socket.on('mqtt-initial-data-pi2', (data) =>
         {
             $.extend(mqttData.melangeur, data);
+            updateMelangeur();
+        });
+
+        // MELANGEUR - Recevoir les dernières commandes envoyées
+        socket.on('mqtt-initial-commands-pi2', (data) =>
+        {
+            console.log('Pi2 - Dernières consignes reçues:', data);
+            // Restaurer l'état local des moteurs
+            if (data.motA) localMotorState.motA = data.motA;
+            if (data.motB) localMotorState.motB = data.motB;
+            if (data.motC) localMotorState.motC = data.motC;
+
+            // Restaurer les inputs de recette
+            if (data.recette) $('#input-recette').val(data.recette);
+
             updateMelangeur();
         });
 

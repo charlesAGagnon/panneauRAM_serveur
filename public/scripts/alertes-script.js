@@ -45,20 +45,20 @@ const ALARM_LABELS = {
 // Connexion et initialisation
 socket.on('connect', () =>
 {
-    console.log('✅ Connecté au serveur Socket.IO (Alertes)');
+    console.log('Connecté au serveur Socket.IO (Alertes)');
     updateConnectionStatus(true);
 });
 
 socket.on('disconnect', () =>
 {
-    console.log('❌ Déconnecté du serveur Socket.IO (Alertes)');
+    console.log('Déconnecté du serveur Socket.IO (Alertes)');
     updateConnectionStatus(false);
 });
 
 // Réception des données initiales
 socket.on('mqtt-initial-data-alarmes', (data) =>
 {
-    console.log('📦 Données initiales reçues:', data);
+    console.log('Données initiales reçues:', data);
 
     // Mettre à jour les configurations (inputs)
     if (data.config)
@@ -86,7 +86,7 @@ socket.on('mqtt-initial-data-alarmes', (data) =>
 socket.on('mqtt-data-alarmes', (data) =>
 {
     // data = { topic, key, value, timestamp }
-    console.log('📨 Mise à jour alarme:', data);
+    console.log('Mise à jour alarme:', data);
 
     if (data.topic.includes('/cmd/'))
     {
@@ -156,13 +156,13 @@ function showAlarmNotification(alarmKey)
     notification.innerHTML = `
         <div style="background: #dc2626; color: white; padding: 16px; border-radius: 8px; margin: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); animation: slideIn 0.3s ease-out;">
             <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="font-size: 24px;">⚠️</span>
+                <span style="font-size: 24px;">!</span>
                 <div style="flex: 1;">
                     <strong style="font-size: 16px;">ALARME DÉCLENCHÉE</strong>
                     <div style="font-size: 14px; margin-top: 4px;">${label}</div>
                     <div style="font-size: 12px; margin-top: 4px; opacity: 0.9;">Le système va tenter de corriger automatiquement</div>
                 </div>
-                <button onclick="this.parentElement.parentElement.remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 14px;">✕</button>
+                <button onclick="this.parentElement.parentElement.remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 14px;">X</button>
             </div>
         </div>
     `;
@@ -192,7 +192,7 @@ function updateConnectionStatus(connected)
     const statusEl = document.getElementById('connection-status');
     if (statusEl)
     {
-        statusEl.textContent = connected ? '🟢 Connecté' : '🔴 Déconnecté';
+        statusEl.textContent = connected ? 'Connecté' : 'Déconnecté';
         statusEl.style.color = connected ? '#10b981' : '#ef4444';
     }
 }

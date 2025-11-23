@@ -27,11 +27,26 @@ const topics = [
 
 let io = null;
 
-// Données actuelles
+// Données actuelles (mesures/états reçus)
 const currentData = {
     NivGB: 0,
     NivPB: 0,
     TmpPB: 0,
+    ValveGB: 0,
+    ValvePB: 0,
+    ValveEC: 0,
+    ValveEF: 0,
+    ValveEEC: 'off',
+    ValveEEF: 'off',
+    Pompe: 'off',
+    Mode: 'auto'
+};
+
+// Dernières commandes envoyées (consignes)
+const lastCommands = {
+    ConsNivGB: 0,
+    ConsNivPB: 0,
+    ConsTmpPB: 0,
     ValveGB: 0,
     ValvePB: 0,
     ValveEC: 0,
@@ -130,6 +145,15 @@ function publish(topic, message)
             else
             {
                 console.log(`Message publié - Topic: ${topic}, Message: ${message}`);
+
+                // Sauvegarder la commande envoyée pour la rappeler après refresh
+                if (topic.includes('/cmd/'))
+                {
+                    const key = topic.split('/').pop(); // Ex: ConsNivGB, ValveGB, Pompe, Mode
+                    lastCommands[key] = isNaN(message) ? message.toString() : parseFloat(message);
+                    console.log(`Consigne sauvegardée: ${key} = ${lastCommands[key]}`);
+                }
+
                 resolve();
             }
         });
@@ -145,8 +169,9 @@ function initializeSocketIO(socketIO)
     {
         console.log('Client Socket.IO connecté:', socket.id);
 
-        // Envoyer les données actuelles au nouveau client
+        // Envoyer les données actuelles (mesures) et les dernières commandes (consignes) au nouveau client
         socket.emit('mqtt-initial-data', currentData);
+        socket.emit('mqtt-initial-commands', lastCommands);
 
         // Écouter les commandes du client
         socket.on('mqtt-command', async (data) =>
@@ -188,11 +213,11 @@ function initializeSocketIO(socketIO)
                 try
                 {
                     await publish(data.topic, data.message);
-                    console.log(`✅ Message publié avec succès: ${data.topic} = ${data.message}`);
+                    console.log(`Message publié avec succès: ${data.topic} = ${data.message}`);
                 }
                 catch (error)
                 {
-                    console.error(`❌ Erreur lors de la publication: ${error.message}`);
+                    console.error(`Erreur lors de la publication: ${error.message}`);
                 }
             }
         });
@@ -204,15 +229,22 @@ function initializeSocketIO(socketIO)
     });
 }
 
-// Obtenir les données actuelles
+// Obtenir les données actuelles (mesures)
 function getCurrentData()
 {
     return currentData;
+}
+
+// Obtenir les dernières commandes (consignes)
+function getLastCommands()
+{
+    return lastCommands;
 }
 
 module.exports = {
     client,
     publish,
     initializeSocketIO,
-    getCurrentData
+    getCurrentData,
+    getLastCommands
 };

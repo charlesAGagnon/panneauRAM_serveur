@@ -78,7 +78,7 @@ router.get('/camera/view', function (req, res)
             <canvas id="canvas"></canvas>
             <div id="status">● LIVE</div>
             <div id="error">
-                <h2>📹 Connexion perdue</h2>
+                <h2>Connexion perdue</h2>
                 <p>Tentative de reconnexion...</p>
             </div>
 
@@ -88,13 +88,13 @@ router.get('/camera/view', function (req, res)
                     url: 'ws://' + location.host + '/api/camera/stream',
                     canvas: document.getElementById('canvas'),
                     onDisconnect: function() {
-                        console.log('⚠️ Connexion perdue');
+                        console.log('Connexion perdue');
                         document.getElementById('status').style.background = 'rgba(108, 117, 125, 0.9)';
                         document.getElementById('status').textContent = '○ OFFLINE';
                         document.getElementById('error').style.display = 'block';
                     },
                     onConnect: function() {
-                        console.log('✅ Connecté au flux');
+                        console.log('Connecté au flux');
                         document.getElementById('status').style.background = 'rgba(220, 53, 69, 0.9)';
                         document.getElementById('status').textContent = '● LIVE';
                         document.getElementById('error').style.display = 'none';

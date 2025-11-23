@@ -31,7 +31,7 @@ function initializeVideoStream(app, server)
         transport: 'tcp',
     }));
 
-    console.log('📹 Flux vidéo RTSP configuré sur /api/camera/stream');
+    console.log('Flux vidéo RTSP configuré sur /api/camera/stream');
 
     return {
         scriptUrl

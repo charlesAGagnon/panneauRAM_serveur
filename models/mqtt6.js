@@ -104,7 +104,7 @@ client.on('message', function (topic, message)
         // Si l'alarme vient de s'activer (ON reçu et ce n'était pas déjà ON)
         if (valueStr.toUpperCase() === 'ON' && previousState !== 'ON')
         {
-            console.log(`⚠️ ALARME ACTIVÉE: ${key}`);
+            console.log(`ALARME ACTIVÉE: ${key}`);
             handleAlarmReaction(key);
         }
     }
@@ -155,7 +155,7 @@ function handleAlarmReaction(alarmKey)
             // Débordement -> Envoyer NivLhGB (la valeur seuil haute configurée)
             cmdTopic = 'RAM/panneau/cmd/ConsNivGB';
             newValue = systemState.config['NivLhGB'] || 90; // Utiliser le seuil configuré, ou 90 par défaut
-            console.log(`🔴 Réaction ${alarmKey}: Réduction GB à NivLhGB = ${newValue}%`);
+            console.log(`Réaction ${alarmKey}: Réduction GB à NivLhGB = ${newValue}%`);
             break;
 
         case 'ALR_GB_NIV_MAX':
@@ -163,14 +163,14 @@ function handleAlarmReaction(alarmKey)
             cmdTopic = 'RAM/panneau/cmd/ConsNivGB';
             currentVal = systemState.measures['NivGB'] || 0;
             newValue = Math.max(0, currentVal * (1.0 - REDUCTION_PERCENT));
-            console.log(`🟠 Réaction ${alarmKey}: Réduction GB de ${currentVal.toFixed(2)}% à ${newValue.toFixed(2)}%`);
+            console.log(`Réaction ${alarmKey}: Réduction GB de ${currentVal.toFixed(2)}% à ${newValue.toFixed(2)}%`);
             break;
 
         case 'ALR_PB_OVF':
             // Débordement -> Envoyer NivLhPB (la valeur seuil haute configurée)
             cmdTopic = 'RAM/panneau/cmd/ConsNivPB';
             newValue = systemState.config['NivLhPB'] || 90; // Utiliser le seuil configuré, ou 90 par défaut
-            console.log(`🔴 Réaction ${alarmKey}: Réduction PB à NivLhPB = ${newValue}%`);
+            console.log(`Réaction ${alarmKey}: Réduction PB à NivLhPB = ${newValue}%`);
             break;
 
         case 'ALR_PB_NIV_MAX':
@@ -178,18 +178,18 @@ function handleAlarmReaction(alarmKey)
             cmdTopic = 'RAM/panneau/cmd/ConsNivPB';
             currentVal = systemState.measures['NivPB'] || 0;
             newValue = Math.max(0, currentVal * (1.0 - REDUCTION_PERCENT));
-            console.log(`🟠 Réaction ${alarmKey}: Réduction PB de ${currentVal.toFixed(2)}% à ${newValue.toFixed(2)}%`);
+            console.log(`Réaction ${alarmKey}: Réduction PB de ${currentVal.toFixed(2)}% à ${newValue.toFixed(2)}%`);
             break;
 
         case 'ALR_CNX_BAL':
         case 'ALR_CNX_POW':
             // Alarmes de connexion -> Seulement notifier l'utilisateur, pas d'action automatique
-            console.log(`⚠️ Alarme ${alarmKey}: Notification utilisateur uniquement`);
+            console.log(`Alarme ${alarmKey}: Notification utilisateur uniquement`);
             shouldReact = false;
             break;
 
         default:
-            console.log(`ℹ️ Aucune réaction définie pour ${alarmKey}`);
+            console.log(`Aucune réaction définie pour ${alarmKey}`);
             shouldReact = false;
             break;
     }
@@ -204,11 +204,11 @@ function handleAlarmReaction(alarmKey)
         {
             if (err)
             {
-                console.error(`❌ Erreur publication correction ${alarmKey}:`, err);
+                console.error(`Erreur publication correction ${alarmKey}:`, err);
             }
             else
             {
-                console.log(`✅ Correction envoyée: ${cmdTopic} = ${newValue}`);
+                console.log(`Correction envoyée: ${cmdTopic} = ${newValue}`);
                 // Envoyer l'ACK après la correction réussie
                 sendAck(alarmKey);
             }
@@ -239,11 +239,11 @@ function sendAck(alarmKey)
     {
         if (err)
         {
-            console.error(`❌ Erreur envoi ACK pour ${alarmKey}:`, err);
+            console.error(`Erreur envoi ACK pour ${alarmKey}:`, err);
         }
         else
         {
-            console.log(`✅ ACK envoyé sur ${ackTopic}`);
+            console.log(`ACK envoyé sur ${ackTopic}`);
         }
     });
 }
@@ -260,12 +260,12 @@ function publish(topic, message)
         {
             if (err)
             {
-                console.error(`❌ Erreur publication ${topic}:`, err);
+                console.error(`Erreur publication ${topic}:`, err);
                 reject(err);
             }
             else
             {
-                console.log(`✅ Configuration publiée - Topic: ${topic}, Message: ${message}`);
+                console.log(`Configuration publiée - Topic: ${topic}, Message: ${message}`);
                 resolve();
             }
         });
@@ -290,7 +290,7 @@ function initializeSocketIO(socketIO)
             // data = { topic: 'RAM/alarmes/cmd/NivLhGB', value: 50 }
             if (data.topic && data.value !== undefined)
             {
-                console.log(`📤 Config UI reçue: ${data.topic} = ${data.value}`);
+                console.log(`Config UI reçue: ${data.topic} = ${data.value}`);
                 try
                 {
                     await publish(data.topic, data.value);
