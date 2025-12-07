@@ -179,3 +179,4 @@ module.exports = {
     getJournalEntries,
     getJournalStats
 };
+// Test nouveau chemin .ai/
