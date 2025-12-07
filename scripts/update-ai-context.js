@@ -13,7 +13,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const CONTEXT_FILE = path.join(ROOT, '.ai-context.md');
+const CONTEXT_FILE = path.join(ROOT, '.ai', 'context.md');
 
 /**
  * Analyse la structure du projet
