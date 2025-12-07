@@ -29,3 +29,4 @@ connection.connect(function (err)
 });
 
 exports.connection = connection;
+// Test final .ai/context.md
