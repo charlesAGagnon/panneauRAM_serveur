@@ -70,6 +70,26 @@ socket.on('disconnect', () =>
     }
 });
 
+// ALARMES - Pop-up pour niveaux 2 et 3
+socket.on('mqtt-data-alarmes', (data) =>
+{
+    // Vérifier si c'est une alarme qui s'active (niveau 2 ou 3)
+    if ((niveau === '2' || niveau === '3') && data.value && data.value.toUpperCase() === 'ON')
+    {
+        const alarmName = data.key || 'Alarme inconnue';
+        const alarmLabels = {
+            'ALR_GB_OVF': 'Grand Bassin - Débordement',
+            'ALR_GB_NIV_MAX': 'Grand Bassin - Niveau Maximum',
+            'ALR_PB_OVF': 'Petit Bassin - Débordement',
+            'ALR_PB_NIV_MAX': 'Petit Bassin - Niveau Maximum',
+            'ALR_CNX_BAL': 'Connexion Balance Perdue',
+            'ALR_CNX_POW': 'Connexion Power Meter Perdue'
+        };
+        const alarmMessage = alarmLabels[alarmName] || alarmName;
+        alert(`ALARME ACTIVÉE\n\n${alarmMessage}\n\nHeure: ${new Date().toLocaleString('fr-CA')}`);
+    }
+});
+
 // PANNEAU DATA (Pi Main) - Mise à jour des MESURES uniquement
 socket.on('mqtt-initial-data', (data) =>
 {
@@ -353,11 +373,17 @@ if (canWrite)
             const newState = consignes.Pompe === 'off' ? 'on' : 'off';
             consignes.Pompe = newState;
 
+            // Mettre à jour l'affichage immédiatement
+            btnPompe.textContent = newState.toUpperCase();
+            btnPompe.classList.toggle('btn-danger', newState === 'on');
+            btnPompe.classList.toggle('btn-primary', newState === 'off');
+
             // Envoyer la commande MQTT
             socket.emit('mqtt-publish',
             {
                 topic: 'RAM/panneau/cmd/Pompe',
-                message: newState
+                message: newState,
+                user: currentUser
             });
 
             console.log(`Pompe consigne: ${newState}`);
@@ -378,7 +404,8 @@ if (canWrite)
             socket.emit('mqtt-publish',
             {
                 topic: 'RAM/panneau/cmd/Mode',
-                message: value
+                message: value,
+                user: currentUser
             });
         });
     }

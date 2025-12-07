@@ -106,6 +106,10 @@ client.on('message', function (topic, message)
         if (valueStr.toUpperCase() === 'ON' && previousState !== 'ON')
         {
             console.log(`ALARME ACTIVÉE: ${key}`);
+
+            // Enregistrer l'alarme dans le journal (LOG_ALARME à la réception)
+            journalModel.logAlarmReceived(key, new Date().toISOString());
+
             handleAlarmReaction(key);
         }
     }

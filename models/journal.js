@@ -31,7 +31,34 @@ function logCommand(userLogin, commandType, commandValue)
 }
 
 /**
- * Ajouter une entrée d'alarme dans le journal
+ * Ajouter une entrée d'alarme reçue dans le journal (à la réception)
+ * @param {string} alarmType - Type d'alarme (ex: "ALR_GB_OVF")
+ * @param {string} reqTime - DateTime ISO de l'apparition de l'alarme
+ */
+function logAlarmReceived(alarmType, reqTime)
+{
+    const info = `Type: ${alarmType}`;
+    // Convertir ISO string en format MySQL DATETIME
+    const mysqlDateTime = new Date(reqTime).toISOString().slice(0, 19).replace('T', ' ');
+    const query = 'INSERT INTO journal (Type, UserLogin, ReqTime, Info) VALUES (?, ?, ?, ?)';
+
+    console.log(`[Journal] Tentative d'ajout alarme: ${alarmType} à ${mysqlDateTime}`);
+
+    db.connection.query(query, ['LOG_ALARME', 'SYSTEME', mysqlDateTime, info], (err, result) =>
+    {
+        if (err)
+        {
+            console.error('Erreur lors de l\'ajout de l\'alarme reçue au journal:', err);
+            console.error('Query:', query);
+            console.error('Params:', ['LOG_ALARME', 'SYSTEME', mysqlDateTime, info]);
+            return;
+        }
+        console.log(`Journal: Alarme reçue enregistrée - ${alarmType} (LogID: ${result.insertId})`);
+    });
+}
+
+/**
+ * Ajouter une entrée d'alarme dans le journal (reconnaissance par utilisateur)
  * @param {string} userLogin - Login de l'utilisateur qui a reconnu l'alarme
  * @param {string} alarmType - Type d'alarme (ex: "ALR_GB_OVF")
  * @param {string} alarmLevel - Niveau de dépassement
@@ -147,6 +174,7 @@ createTableIfNotExists();
 
 module.exports = {
     logCommand,
+    logAlarmReceived,
     logAlarm,
     getJournalEntries,
     getJournalStats
