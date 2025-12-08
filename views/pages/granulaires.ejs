@@ -184,13 +184,12 @@
         // ===== SOCKET.IO EVENTS =====
         socket.on('connect', () =>
         {
-            console.log('Connecté');
-            updateConnectionStatus(true);
+            console.log('Connecte');
             socket.emit('join-pi2');
             socket.emit('join-pi4');
         });
 
-        socket.on('disconnect', () => updateConnectionStatus(false));
+        socket.on('disconnect', () => console.log('Deconnecte'));
 
         // ALARMES - Pop-up pour niveaux 2 et 3
         socket.on('mqtt-data-alarmes', (data) =>
@@ -261,13 +260,6 @@
         });
 
         // ===== UPDATE FUNCTIONS =====
-        function updateConnectionStatus(connected)
-        {
-            $('#connection-status')
-                .text(connected ? 'En ligne' : 'Hors ligne')
-                .css('background-color', connected ? '#198754' : '#ef4444');
-        }
-
         function updateMelangeur()
         {
             // Mise à jour des boutons (état local)

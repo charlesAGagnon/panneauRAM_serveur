@@ -51,23 +51,12 @@ let energyData = {
 // CONNECTION STATUS
 socket.on('connect', () =>
 {
-    console.log(' Connected to Socket.IO');
-    const badge = document.getElementById('connection-status');
-    if (badge)
-    {
-        badge.textContent = 'En ligne';
-        badge.style.backgroundColor = '#198754';
-    }
+    console.log('Connected to Socket.IO');
 });
 
 socket.on('disconnect', () =>
 {
-    const badge = document.getElementById('connection-status');
-    if (badge)
-    {
-        badge.textContent = 'Hors ligne';
-        badge.style.backgroundColor = '#ef4444';
-    }
+    console.log('Disconnected from Socket.IO');
 });
 
 // ALARMES - Pop-up pour niveaux 2 et 3

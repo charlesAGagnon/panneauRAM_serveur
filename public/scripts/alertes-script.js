@@ -47,14 +47,12 @@ const ALARM_LABELS = {
 // Connexion et initialisation
 socket.on('connect', () =>
 {
-    console.log('Connecté au serveur Socket.IO (Alertes)');
-    updateConnectionStatus(true);
+    console.log('Connecte au serveur Socket.IO (Alertes)');
 });
 
 socket.on('disconnect', () =>
 {
-    console.log('Déconnecté du serveur Socket.IO (Alertes)');
-    updateConnectionStatus(false);
+    console.log('Deconnecte du serveur Socket.IO (Alertes)');
 });
 
 // Réception des données initiales
@@ -217,16 +215,7 @@ function acknowledgeAlarm(alarmKey)
     console.log(`Alarme ${alarmKey} reconnue par ${currentUser}`);
 }
 
-// Mettre à jour le statut de connexion
-function updateConnectionStatus(connected)
-{
-    const statusEl = document.getElementById('connection-status');
-    if (statusEl)
-    {
-        statusEl.textContent = connected ? 'Connecté' : 'Déconnecté';
-        statusEl.style.color = connected ? '#10b981' : '#ef4444';
-    }
-}
+
 
 // Gestion de l'envoi des configurations
 function sendConfig(inputId)
