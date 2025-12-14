@@ -26,6 +26,66 @@
         <!-- COLUMN 1: STATUS ONLY (NO CONTROLS) -->
         <div style="display: flex; flex-direction: column; gap: 16px;">
 
+            <!-- ETATS RECUS (MESURES) -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-header-title"> États Reçus (Mesures)</h3>
+                </div>
+                <div class="card-body" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                    <div class="stat-card">
+                        <div class="stat-label">Niv GB</div>
+                        <div class="stat-value" id="etat-nivgb" style="font-size: 18px;">--</div>
+                        <div class="stat-unit">%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Niv PB</div>
+                        <div class="stat-value" id="etat-nivpb" style="font-size: 18px;">--</div>
+                        <div class="stat-unit">%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Tmp PB</div>
+                        <div class="stat-value" id="etat-tmppb" style="font-size: 18px;">--</div>
+                        <div class="stat-unit">°C</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Valve GB</div>
+                        <div class="stat-value" id="etat-valvegb" style="font-size: 18px;">--</div>
+                        <div class="stat-unit">%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Valve PB</div>
+                        <div class="stat-value" id="etat-valvepb" style="font-size: 18px;">--</div>
+                        <div class="stat-unit">%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Valve EC</div>
+                        <div class="stat-value" id="etat-valveec" style="font-size: 18px;">--</div>
+                        <div class="stat-unit">%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Valve EF</div>
+                        <div class="stat-value" id="etat-valveef" style="font-size: 18px;">--</div>
+                        <div class="stat-unit">%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Valve EEC</div>
+                        <div class="stat-value" id="etat-valveeec" style="font-size: 14px; color: #6b7280;">--</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Valve EEF</div>
+                        <div class="stat-value" id="etat-valveeef" style="font-size: 14px; color: #6b7280;">--</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Pompe</div>
+                        <div class="stat-value" id="etat-pompe" style="font-size: 14px; color: #6b7280;">--</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Mode</div>
+                        <div class="stat-value" id="etat-mode" style="font-size: 14px; color: #6b7280; text-transform: uppercase;">--</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- RESERVOIRS STATUS - VISUAL CYLINDERS -->
             <div class="card">
                 <div class="card-header">

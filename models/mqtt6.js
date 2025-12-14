@@ -107,8 +107,8 @@ client.on('message', function (topic, message)
         {
             console.log(`ALARME ACTIVÉE: ${key}`);
 
-            // Enregistrer l'alarme dans le journal (LOG_ALARME à la réception)
-            journalModel.logAlarmReceived(key, new Date().toISOString());
+            // L'alarme sera loggée UNIQUEMENT quand un utilisateur l'acknowledge (ACK)
+            // Plus d'enregistrement automatique dans le journal
 
             handleAlarmReaction(key);
         }
@@ -330,8 +330,8 @@ function initializeSocketIO(socketIO)
             {
                 const alarmKey = data.alarmType.split('/').pop();
                 const alarmLevel = systemState.alarms[alarmKey] || 'N/A';
-                journalModel.logAlarm(data.user, alarmKey, alarmLevel, data.reqTime);
-                console.log(`Alarme ${alarmKey} reconnue par ${data.user}`);
+                journalModel.logAlarmAck(data.user, alarmKey, alarmLevel, data.reqTime);
+                console.log(`Alarme ${alarmKey} reconnue par ${data.user} - Enregistrée dans le journal`);
             }
         });
 

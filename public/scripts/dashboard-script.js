@@ -59,25 +59,88 @@ socket.on('disconnect', () =>
     console.log('Disconnected from Socket.IO');
 });
 
-// ALARMES - Pop-up pour niveaux 2 et 3
+// ALARMES - Notifications pour niveaux 2 et 3
 socket.on('mqtt-data-alarmes', (data) =>
 {
+    console.log('Event mqtt-data-alarmes recu:', data, 'Niveau utilisateur:', niveau);
     // Vérifier si c'est une alarme qui s'active (niveau 2 ou 3)
-    if ((niveau === '2' || niveau === '3') && data.value && data.value.toUpperCase() === 'ON')
+    if ((niveau === '2' || niveau === '3') && data.value && (data.value === 'ON' || data.value === '1' || data.value === 1))
     {
-        const alarmName = data.key || 'Alarme inconnue';
-        const alarmLabels = {
-            'ALR_GB_OVF': 'Grand Bassin - Débordement',
-            'ALR_GB_NIV_MAX': 'Grand Bassin - Niveau Maximum',
-            'ALR_PB_OVF': 'Petit Bassin - Débordement',
-            'ALR_PB_NIV_MAX': 'Petit Bassin - Niveau Maximum',
-            'ALR_CNX_BAL': 'Connexion Balance Perdue',
-            'ALR_CNX_POW': 'Connexion Power Meter Perdue'
-        };
-        const alarmMessage = alarmLabels[alarmName] || alarmName;
-        alert(`ALARME ACTIVÉE\n\n${alarmMessage}\n\nHeure: ${new Date().toLocaleString('fr-CA')}`);
+        console.log('Affichage notification alarme:', data.key);
+        window.showAlarmNotification(data.key);
     }
 });
+
+// Afficher une notification d'alarme avec bouton ACK - FONCTION GLOBALE
+window.showAlarmNotification = function (alarmKey)
+{
+    const alarmLabels = {
+        'ALR_GB_OVF': 'Grand Bassin - Débordement',
+        'ALR_GB_NIV_MAX': 'Grand Bassin - Niveau Maximum',
+        'ALR_PB_OVF': 'Petit Bassin - Débordement',
+        'ALR_PB_NIV_MAX': 'Petit Bassin - Niveau Maximum',
+        'ALR_CNX_BAL': 'Connexion Balance Perdue',
+        'ALR_CNX_POW': 'Connexion Power Meter Perdue'
+    };
+    const label = alarmLabels[alarmKey] || alarmKey;
+    const reqTime = new Date().toISOString();
+    const notification = document.createElement('div');
+    notification.className = 'alarm-notification';
+    notification.setAttribute('data-alarm-key', alarmKey);
+    notification.setAttribute('data-req-time', reqTime);
+    notification.innerHTML = `
+        <div style="background: #dc2626; color: white; padding: 16px; border-radius: 8px; margin: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 24px;">!</span>
+                <div style="flex: 1;">
+                    <strong style="font-size: 16px;">ALARME DÉCLENCHÉE</strong>
+                    <div style="font-size: 14px; margin-top: 4px;">${label}</div>
+                    <div style="font-size: 12px; margin-top: 4px; opacity: 0.9;">Le système va tenter de corriger automatiquement</div>
+                </div>
+                <button onclick="acknowledgeAlarm('${alarmKey}')" style="background: #f59e0b; border: none; color: white; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 600;">ACK</button>
+            </div>
+        </div>
+    `;
+
+    let container = document.getElementById('alarm-notifications');
+    if (!container)
+    {
+        container = document.createElement('div');
+        container.id = 'alarm-notifications';
+        container.style.cssText = 'position: fixed; top: 80px; right: 20px; z-index: 1000; max-width: 400px;';
+        document.body.appendChild(container);
+    }
+
+    container.appendChild(notification);
+
+    setTimeout(() =>
+    {
+        notification.remove();
+    }, 10000);
+};
+
+// Reconnaître une alarme - FONCTION GLOBALE pour onclick
+window.acknowledgeAlarm = function (alarmKey)
+{
+    const notifications = document.querySelectorAll(`[data-alarm-key="${alarmKey}"]`);
+    if (notifications.length === 0) return;
+
+    notifications.forEach(notification =>
+    {
+        const reqTime = notification.getAttribute('data-req-time');
+
+        socket.emit('mqtt-acknowledge-alarm',
+        {
+            alarmType: alarmKey,
+            user: currentUser,
+            reqTime: reqTime
+        });
+
+        notification.remove();
+    });
+
+    console.log(`Alarme ${alarmKey} reconnue par ${currentUser}`);
+};
 
 // PANNEAU DATA (Pi Main) - Mise à jour des MESURES uniquement
 socket.on('mqtt-initial-data', (data) =>
@@ -122,7 +185,74 @@ socket.on('mqtt-data-pi3', (msg) =>
 
 function updateMesuresDisplay()
 {
-    // ÉTATS/MESURES - Affichage des cylindres (états réels)
+    console.log('updateMesuresDisplay appele avec mesures:', mesures);
+
+    // ÉTATS REÇUS - Section dédiée aux états reçus via MQTT
+    if (mesures.NivGB !== undefined)
+    {
+        const etatNivGB = document.getElementById('etat-nivgb');
+        if (etatNivGB)
+        {
+            etatNivGB.textContent = mesures.NivGB;
+            console.log('etat-nivgb mis a jour:', mesures.NivGB);
+        }
+        else
+        {
+            console.log('Element etat-nivgb non trouve');
+        }
+    }
+    if (mesures.NivPB !== undefined)
+    {
+        const etatNivPB = document.getElementById('etat-nivpb');
+        if (etatNivPB) etatNivPB.textContent = mesures.NivPB;
+    }
+    if (mesures.TmpPB !== undefined)
+    {
+        const etatTmpPB = document.getElementById('etat-tmppb');
+        if (etatTmpPB) etatTmpPB.textContent = (parseFloat(mesures.TmpPB) || 0).toFixed(1);
+    }
+    if (mesures.ValveGB !== undefined)
+    {
+        const etatValveGB = document.getElementById('etat-valvegb');
+        if (etatValveGB) etatValveGB.textContent = mesures.ValveGB;
+    }
+    if (mesures.ValvePB !== undefined)
+    {
+        const etatValvePB = document.getElementById('etat-valvepb');
+        if (etatValvePB) etatValvePB.textContent = mesures.ValvePB;
+    }
+    if (mesures.ValveEC !== undefined)
+    {
+        const etatValveEC = document.getElementById('etat-valveec');
+        if (etatValveEC) etatValveEC.textContent = mesures.ValveEC;
+    }
+    if (mesures.ValveEF !== undefined)
+    {
+        const etatValveEF = document.getElementById('etat-valveef');
+        if (etatValveEF) etatValveEF.textContent = mesures.ValveEF;
+    }
+    if (mesures.ValveEEC !== undefined)
+    {
+        const etatValveEEC = document.getElementById('etat-valveeec');
+        if (etatValveEEC) etatValveEEC.textContent = mesures.ValveEEC.toUpperCase();
+    }
+    if (mesures.ValveEEF !== undefined)
+    {
+        const etatValveEEF = document.getElementById('etat-valveeef');
+        if (etatValveEEF) etatValveEEF.textContent = mesures.ValveEEF.toUpperCase();
+    }
+    if (mesures.Pompe !== undefined)
+    {
+        const etatPompe = document.getElementById('etat-pompe');
+        if (etatPompe) etatPompe.textContent = mesures.Pompe.toUpperCase();
+    }
+    if (mesures.Mode !== undefined)
+    {
+        const etatMode = document.getElementById('etat-mode');
+        if (etatMode) etatMode.textContent = mesures.Mode.toUpperCase();
+    }
+
+    // AFFICHAGE CYLINDRES (visualisation graphique)
     if (mesures.NivGB !== undefined)
     {
         const val = document.getElementById('val-gb');
@@ -140,13 +270,6 @@ function updateMesuresDisplay()
         if (fill) fill.style.height = mesures.NivPB + '%';
         const legend = document.getElementById('legend-pb');
         if (legend) legend.textContent = mesures.NivPB;
-    }
-    if (mesures.TmpPB !== undefined)
-    {
-        const val = document.getElementById('stat-temp');
-        if (val) val.textContent = (parseFloat(mesures.TmpPB) || 0).toFixed(1);
-        const legend = document.getElementById('legend-temp');
-        if (legend) legend.textContent = (parseFloat(mesures.TmpPB) || 0).toFixed(1);
     }
 
     // POMPE & MODE - Affichage de l'état actuel (pas la consigne)

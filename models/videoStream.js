@@ -6,7 +6,7 @@
  * @brief    Gestionnaire de flux vidéo RTSP
  */
 
-// URL de la caméra RTSP - Modifiez selon votre configuration
+// URL de la caméra RTSP 
 const RTSP_URL = 'rtsp://etudiant:Panneau_RAM@172.17.15.110:554/Streaming/Channels/101';
 
 /**

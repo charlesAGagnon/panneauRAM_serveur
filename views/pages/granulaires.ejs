@@ -110,6 +110,27 @@
                 </div>
             </div>
 
+            <!-- Balance (Pi 1) -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-header-title"> Balance</h2>
+                </div>
+                <div class="card-body" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    <div class="stat-card">
+                        <div class="stat-label">Poids</div>
+                        <div class="stat-value" id="etat-poids" style="font-size: 20px;">--</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Tare</div>
+                        <div class="stat-value" id="etat-tare" style="font-size: 20px;">--</div>
+                    </div>
+                    <div class="stat-card" style="grid-column: 1 / -1;">
+                        <div class="stat-label">Unité</div>
+                        <div class="stat-value" id="etat-unite" style="font-size: 18px; color: #6b7280;">--</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Niveaux Cylindres -->
             <div class="card">
                 <div class="card-header">
@@ -185,32 +206,99 @@
         socket.on('connect', () =>
         {
             console.log('Connecte');
+            socket.emit('join-pi1');
             socket.emit('join-pi2');
             socket.emit('join-pi4');
         });
 
         socket.on('disconnect', () => console.log('Deconnecte'));
 
-        // ALARMES - Pop-up pour niveaux 2 et 3
+        // ALARMES - Notifications pour niveaux 2 et 3
         socket.on('mqtt-data-alarmes', (data) =>
         {
             const niveau = '<%= niveau %>';
-            // Vérifier si c'est une alarme qui s'active (niveau 2 ou 3)
-            if ((niveau === '2' || niveau === '3') && data.value && data.value.toUpperCase() === 'ON')
+            if ((niveau === '2' || niveau === '3') && data.value && (data.value === 'ON' || data.value === '1' || data.value === 1))
             {
-                const alarmName = data.key || 'Alarme inconnue';
-                const alarmLabels = {
-                    'ALR_GB_OVF': 'Grand Bassin - Débordement',
-                    'ALR_GB_NIV_MAX': 'Grand Bassin - Niveau Maximum',
-                    'ALR_PB_OVF': 'Petit Bassin - Débordement',
-                    'ALR_PB_NIV_MAX': 'Petit Bassin - Niveau Maximum',
-                    'ALR_CNX_BAL': 'Connexion Balance Perdue',
-                    'ALR_CNX_POW': 'Connexion Power Meter Perdue'
-                };
-                const alarmMessage = alarmLabels[alarmName] || alarmName;
-                alert(`ALARME ACTIVÉE\n\n${alarmMessage}\n\nHeure: ${new Date().toLocaleString('fr-CA')}`);
+                showAlarmNotification(data.key);
             }
         });
+
+        function showAlarmNotification(alarmKey)
+        {
+            const alarmLabels = {
+                'ALR_GB_OVF': 'Grand Bassin - Débordement',
+                'ALR_GB_NIV_MAX': 'Grand Bassin - Niveau Maximum',
+                'ALR_PB_OVF': 'Petit Bassin - Débordement',
+                'ALR_PB_NIV_MAX': 'Petit Bassin - Niveau Maximum',
+                'ALR_CNX_BAL': 'Connexion Balance Perdue',
+                'ALR_CNX_POW': 'Connexion Power Meter Perdue'
+            };
+            const label = alarmLabels[alarmKey] || alarmKey;
+            const reqTime = new Date().toISOString();
+            const notification = $('<div>')
+                .addClass('alarm-notification')
+                .attr('data-alarm-key', alarmKey)
+                .attr('data-req-time', reqTime)
+                .html(`
+                    <div style="background: #dc2626; color: white; padding: 16px; border-radius: 8px; margin: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 24px;">!</span>
+                            <div style="flex: 1;">
+                                <strong style="font-size: 16px;">ALARME DÉCLENCHÉE</strong>
+                                <div style="font-size: 14px; margin-top: 4px;">${label}</div>
+                                <div style="font-size: 12px; margin-top: 4px; opacity: 0.9;">Le système va tenter de corriger automatiquement</div>
+                            </div>
+                            <button onclick="acknowledgeAlarmGranulaires('${alarmKey}')" style="background: #f59e0b; border: none; color: white; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 600;">ACK</button>
+                        </div>
+                    </div>
+                `);
+
+            let container = $('#alarm-notifications');
+            if (container.length === 0)
+            {
+                container = $('<div>')
+                    .attr('id', 'alarm-notifications')
+                    .css(
+                    {
+                        position: 'fixed',
+                        top: '80px',
+                        right: '20px',
+                        zIndex: 1000,
+                        maxWidth: '400px'
+                    });
+                $('body').append(container);
+            }
+
+            container.append(notification);
+
+            setTimeout(() =>
+            {
+                notification.remove();
+            }, 10000);
+        }
+
+        window.acknowledgeAlarmGranulaires = function(alarmKey)
+        {
+            const notifications = $(`.alarm-notification[data-alarm-key="${alarmKey}"]`);
+            if (notifications.length === 0) return;
+
+            notifications.each(function()
+            {
+                const reqTime = $(this).attr('data-req-time');
+                const currentUser = '<%= user %>';
+
+                socket.emit('mqtt-acknowledge-alarm',
+                {
+                    alarmType: alarmKey,
+                    user: currentUser,
+                    reqTime: reqTime
+                });
+
+                $(this).remove();
+            });
+
+            console.log(`Alarme ${alarmKey} reconnue par <%= user %>`);
+        };
 
         // MELANGEUR (Pi 2)
         socket.on('mqtt-initial-data-pi2', (data) =>
@@ -240,6 +328,24 @@
             {
                 mqttData.melangeur[msg.key] = msg.value;
                 updateMelangeur();
+            }
+        });
+
+        // BALANCE (Pi 1)
+        socket.on('mqtt-initial-data-pi1', (data) =>
+        {
+            console.log('Balance - Donnees initiales:', data);
+            updateBalance(data);
+        });
+
+        socket.on('mqtt-data-pi1', (msg) =>
+        {
+            console.log('Balance - Mise a jour:', msg);
+            if (msg.key && msg.value !== undefined)
+            {
+                const balanceData = {};
+                balanceData[msg.key] = msg.value;
+                updateBalance(balanceData);
             }
         });
 
@@ -290,6 +396,24 @@
                 .text(status)
                 .css('color', status === 'AUCUNE' ? '#0d6efd' :
                     status.includes('FINISH') ? '#198754' : '#ffc107');
+        }
+
+        function updateBalance(data)
+        {
+            if (data.poids !== undefined)
+            {
+                const poids = parseFloat(data.poids) || 0;
+                $('#etat-poids').text(poids.toFixed(2));
+            }
+            if (data.tare !== undefined)
+            {
+                const tare = parseFloat(data.tare) || 0;
+                $('#etat-tare').text(tare.toFixed(2));
+            }
+            if (data.unite !== undefined)
+            {
+                $('#etat-unite').text(data.unite.toUpperCase());
+            }
         }
 
         function updateAspirateur()

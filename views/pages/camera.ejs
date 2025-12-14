@@ -7,9 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/stylesheets/modern.css">
     <link rel="stylesheet" href="/stylesheets/camera.css">
+    <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="<%= scriptUrl %>"></script>
 </head>
-<body style="margin: 0; padding: 0; background: #f8f9fa;">
+<body style="margin: 0; padding: 0; background: #f8f9fa;" data-niveau="<%= niveau %>">
 
     <%- include('../partials/header', { currentPage: 'camera', user, niveau, typeAcces }) %>
 
@@ -30,6 +31,86 @@
         <%- include('../partials/footer') %>
     </footer>
 
+    <script>
+        const socket = io();
+        const niveau = document.body.dataset.niveau || '0';
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentUser = urlParams.get('user') || '<%= user %>';
+
+        socket.on('mqtt-data-alarmes', (data) =>
+        {
+            if ((niveau === '2' || niveau === '3') && data.value && (data.value === 'ON' || data.value === '1' || data.value === 1))
+            {
+                if (typeof window.showAlarmNotification === 'function')
+                {
+                    window.showAlarmNotification(data.key);
+                }
+            }
+        });
+
+        window.showAlarmNotification = function(alarmKey)
+        {
+            const alarmLabels = {
+                'ALR_GB_OVF': 'Grand Bassin - Débordement',
+                'ALR_GB_NIV_MAX': 'Grand Bassin - Niveau Maximum',
+                'ALR_PB_OVF': 'Petit Bassin - Débordement',
+                'ALR_PB_NIV_MAX': 'Petit Bassin - Niveau Maximum',
+                'ALR_CNX_BAL': 'Connexion Balance Perdue',
+                'ALR_CNX_POW': 'Connexion Power Meter Perdue'
+            };
+            const label = alarmLabels[alarmKey] || alarmKey;
+            const reqTime = new Date().toISOString();
+            const notification = document.createElement('div');
+            notification.className = 'alarm-notification';
+            notification.setAttribute('data-alarm-key', alarmKey);
+            notification.setAttribute('data-req-time', reqTime);
+            notification.innerHTML = `
+                <div style="background: #dc2626; color: white; padding: 16px; border-radius: 8px; margin: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 24px;">⚠</span>
+                        <div style="flex: 1;">
+                            <strong style="font-size: 16px;">ALARME DÉCLENCHÉE</strong>
+                            <div style="font-size: 14px; margin-top: 4px;">${label}</div>
+                            <div style="font-size: 12px; margin-top: 4px; opacity: 0.9;">Le système va tenter de corriger automatiquement</div>
+                        </div>
+                        <button onclick="acknowledgeAlarm('${alarmKey}')" style="background: #f59e0b; border: none; color: white; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 600;">ACK</button>
+                    </div>
+                </div>
+            `;
+            let container = document.getElementById('alarm-notifications');
+            if (!container)
+            {
+                container = document.createElement('div');
+                container.id = 'alarm-notifications';
+                container.style.cssText = 'position: fixed; top: 80px; right: 20px; z-index: 1000; max-width: 400px;';
+                document.body.appendChild(container);
+            }
+            container.appendChild(notification);
+            setTimeout(() =>
+            {
+                notification.remove();
+            }, 10000);
+        };
+
+        window.acknowledgeAlarm = function(alarmKey)
+        {
+            const notifications = document.querySelectorAll(`[data-alarm-key="${alarmKey}"]`);
+            if (notifications.length === 0) return;
+            notifications.forEach(notification =>
+            {
+                const reqTime = notification.getAttribute('data-req-time');
+                socket.emit('mqtt-acknowledge-alarm',
+                {
+                    alarmType: alarmKey,
+                    user: currentUser,
+                    reqTime: reqTime
+                });
+                notification.remove();
+            });
+            console.log(`Alarme ${alarmKey} reconnue par ${currentUser}`);
+        };
+
+    </script>
     <script src="/scripts/camera-script.js"></script>
 
 </body>

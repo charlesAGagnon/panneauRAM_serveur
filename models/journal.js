@@ -16,68 +16,92 @@ const db = require('./database');
  */
 function logCommand(userLogin, commandType, commandValue)
 {
-    const info = `Type: ${commandType}, Valeur: ${commandValue}`;
-    const query = 'INSERT INTO journal (Type, UserLogin, ReqTime, Info) VALUES (?, ?, NOW(), ?)';
+    // Vérifier que l'utilisateur existe avant d'insérer
+    const checkUserQuery = 'SELECT nom FROM user WHERE nom = ?';
 
-    db.connection.query(query, ['LOG_CMD', userLogin, info], (err, result) =>
+    db.connection.query(checkUserQuery, [userLogin], (err, results) =>
     {
         if (err)
         {
-            console.error('Erreur lors de l\'ajout de la commande au journal:', err);
+            console.error('Erreur vérification utilisateur pour journal:', err);
             return;
         }
-        console.log(`Journal: Commande enregistrée - ${commandType} = ${commandValue} par ${userLogin}`);
+
+        if (!results || results.length === 0)
+        {
+            console.warn(`Journal: Utilisateur ${userLogin} n'existe pas, commande non enregistrée`);
+            return;
+        }
+
+        // Utilisateur existe, on peut enregistrer la commande
+        const info = `Type: ${commandType}, Valeur: ${commandValue}`;
+        const query = 'INSERT INTO journal (Type, UserLogin, ReqTime, Info) VALUES (?, ?, NOW(), ?)';
+
+        db.connection.query(query, ['LOG_CMD', userLogin, info], (err, result) =>
+        {
+            if (err)
+            {
+                console.error('Erreur lors de l\'ajout de la commande au journal:', err);
+                return;
+            }
+            console.log(`Journal: Commande enregistrée - ${commandType} = ${commandValue} par ${userLogin}`);
+        });
     });
 }
 
 /**
+ * FONCTION DÉSACTIVÉE - Les alarmes ne sont plus loggées automatiquement
  * Ajouter une entrée d'alarme reçue dans le journal (à la réception)
  * @param {string} alarmType - Type d'alarme (ex: "ALR_GB_OVF")
  * @param {string} reqTime - DateTime ISO de l'apparition de l'alarme
  */
 function logAlarmReceived(alarmType, reqTime)
 {
-    const info = `Type: ${alarmType}`;
-    // Convertir ISO string en format MySQL DATETIME
-    const mysqlDateTime = new Date(reqTime).toISOString().slice(0, 19).replace('T', ' ');
-    const query = 'INSERT INTO journal (Type, UserLogin, ReqTime, Info) VALUES (?, ?, ?, ?)';
-
-    console.log(`[Journal] Tentative d'ajout alarme: ${alarmType} à ${mysqlDateTime}`);
-
-    db.connection.query(query, ['LOG_ALARME', 'SYSTEME', mysqlDateTime, info], (err, result) =>
-    {
-        if (err)
-        {
-            console.error('Erreur lors de l\'ajout de l\'alarme reçue au journal:', err);
-            console.error('Query:', query);
-            console.error('Params:', ['LOG_ALARME', 'SYSTEME', mysqlDateTime, info]);
-            return;
-        }
-        console.log(`Journal: Alarme reçue enregistrée - ${alarmType} (LogID: ${result.insertId})`);
-    });
+    console.warn('[Journal] logAlarmReceived() est désactivée - Les alarmes ne sont plus loggées automatiquement');
+    // Cette fonction ne fait plus rien - les alarmes sont loggées uniquement lors de l'ACK utilisateur
 }
 
 /**
- * Ajouter une entrée d'alarme dans le journal (reconnaissance par utilisateur)
+ * Ajouter une entrée d'alarme dans le journal lors de la reconnaissance par un utilisateur
  * @param {string} userLogin - Login de l'utilisateur qui a reconnu l'alarme
  * @param {string} alarmType - Type d'alarme (ex: "ALR_GB_OVF")
  * @param {string} alarmLevel - Niveau de dépassement
  * @param {string} reqTime - DateTime ISO de l'apparition de l'alarme
  */
-function logAlarm(userLogin, alarmType, alarmLevel, reqTime)
+function logAlarmAck(userLogin, alarmType, alarmLevel, reqTime)
 {
-    const ackTime = new Date().toISOString();
-    const info = `Type: ${alarmType}, Niveau: ${alarmLevel}, Reconnaissance: ${ackTime}`;
-    const query = 'INSERT INTO journal (Type, UserLogin, ReqTime, Info) VALUES (?, ?, ?, ?)';
+    // Vérifier que l'utilisateur existe avant d'insérer
+    const checkUserQuery = 'SELECT nom FROM user WHERE nom = ?';
 
-    db.connection.query(query, ['LOG_ALARME', userLogin, reqTime, info], (err, result) =>
+    db.connection.query(checkUserQuery, [userLogin], (err, results) =>
     {
         if (err)
         {
-            console.error('Erreur lors de l\'ajout de l\'alarme au journal:', err);
+            console.error('Erreur vérification utilisateur pour alarme ACK:', err);
             return;
         }
-        console.log(`Journal: Alarme enregistrée - ${alarmType} reconnue par ${userLogin}`);
+
+        if (!results || results.length === 0)
+        {
+            console.warn(`Journal: Utilisateur ${userLogin} n'existe pas, alarme non enregistrée`);
+            return;
+        }
+
+        // Utilisateur existe, on peut enregistrer l'ACK de l'alarme
+        const ackTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const info = `Alarme: ${alarmType}, ACK: ${ackTime}`;
+        const mysqlDateTime = new Date(reqTime).toISOString().slice(0, 19).replace('T', ' ');
+        const query = 'INSERT INTO journal (Type, UserLogin, ReqTime, Info) VALUES (?, ?, ?, ?)';
+
+        db.connection.query(query, ['LOG_ALARME', userLogin, mysqlDateTime, info], (err, result) =>
+        {
+            if (err)
+            {
+                console.error('Erreur lors de l\'ajout de l\'alarme ACK au journal:', err);
+                return;
+            }
+            console.log(`Journal: Alarme ACK enregistrée - ${alarmType} reconnue par ${userLogin} (LogID: ${result.insertId})`);
+        });
     });
 }
 
@@ -174,8 +198,7 @@ createTableIfNotExists();
 
 module.exports = {
     logCommand,
-    logAlarmReceived,
-    logAlarm,
+    logAlarmAck,
     getJournalEntries,
     getJournalStats
 };

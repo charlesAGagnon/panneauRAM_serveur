@@ -3,7 +3,7 @@
 **Projet:** Système de contrôle industriel pour réservoirs d'eau (Grand Bassin et Petit Bassin)  
 **Auteur:** Charles-Antoine Gagnon  
 **Version:** 1.0  
-**Date:** 2025-12-08
+**Date:** 2025-12-14
 
 ---
 
@@ -400,23 +400,19 @@ Enregistrées via `journalModel.logCommand(userLogin, commandType, commandValue)
 **Format Info:** `Type: ConsNivGB, Valeur: 75`
 
 **2. LOG_ALARME (Alarmes système)**
-Deux moments d'enregistrement:
-
-a) **Réception alarme** (automatique par mqtt6.js):
+Enregistrement UNIQUEMENT lors de la reconnaissance utilisateur (ACK):
 
 ```javascript
-journalModel.logAlarmReceived(alarmKey, new Date().toISOString());
-// UserLogin = 'SYSTEME'
+journalModel.logAlarmAck(userLogin, alarmType, alarmLevel, reqTime);
+// UserLogin = utilisateur qui a cliqué sur ACK
 ```
 
-b) **Reconnaissance utilisateur** (via interface alertes):
-
-```javascript
-journalModel.logAlarm(userLogin, alarmType, alarmLevel, reqTime);
-// Inclut timestamp de reconnaissance
-```
+**Important:** Les alarmes NE sont PAS loggées automatiquement à la réception.
+Seuls les ACK utilisateurs créent des entrées dans le journal.
 
 **Format Info:** `Type: ALR_GB_OVF, Niveau: Critique, Reconnaissance: 2025-11-23T14:30:00Z`
+
+**Validation:** Toutes les fonctions de journal vérifient que l'utilisateur existe dans la table `user` avant insertion.
 
 ### Consultation du journal
 
@@ -444,10 +440,11 @@ Géré entièrement par `models/mqtt6.js` (Raspberry Pi 6):
 2. Écoute mesures actuelles `RAM/panneau/etats/Niv*`
 3. Écoute configuration seuils `RAM/alarmes/cmd/*`
 4. Détecte activation alarme (transition vers ON)
-5. Enregistre dans journal automatiquement
-6. Déclenche réaction automatique si applicable
-7. Envoie commande MQTT de correction
-8. Notifie frontend via Socket.IO (`mqtt-data-alarmes`)
+5. Déclenche réaction automatique si applicable
+6. Envoie commande MQTT de correction
+7. Notifie TOUS les clients via Socket.IO (`mqtt-data-alarmes`)
+8. Affiche notification avec bouton ACK (niveaux 2-3 uniquement, sur TOUTES les pages)
+9. Enregistre dans journal uniquement quand utilisateur clique ACK
 
 ### Types d'alarmes
 
@@ -618,8 +615,18 @@ socket.on("mqtt-data", function (data) {
 
 - `panneau` - Système principal (réservoirs, vannes, pompe)
 - `alarmes` - Système d'alarmes
-- `balance` - Balance (Pi 1)
-- `granulaires` - Modules granulaires (Pi 2)
+- `balance` - Balance (Pi 1) - Topics: poids, tare, unite
+- `melangeur` - Mélangeur (Pi 2) - Motors A/B/C, recettes
+- `powermeter` - Power Meter (Pi 3) - Van, Vbn, Vab, Ia, Ib, KW, KWh, FP
+- `aspirateur` - Aspirateur (Pi 4) - Sequence, NivA/B/C
+- `valves` - Valves (Pi 5) - Ouverture_PB, Ouverture_GB
+- `granulaires` - Alias pour mélangeur/aspirateur
+
+**Affichage Balance:**
+
+- Poids et Tare affichent uniquement les valeurs numériques (sans unité)
+- L'unité (kg, g, lb, etc.) est affichée séparément dans le champ "Unité"
+- L'unité peut changer dynamiquement selon les données MQTT
 
 ---
 
@@ -651,14 +658,17 @@ CREATE TABLE journal (
 );
 ```
 
-**2. utilisateurs (à documenter selon schéma réel)**
-Probablement:
+**2. user** (nom de table confirmé - singulier)
 
-- UserID (PK)
-- Login/Username
-- Password (hash)
-- Niveau (0-3)
-- TypeAcces (Invité/Utilisateur/Modérateur/Administrateur)
+```sql
+CREATE TABLE user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(50) NOT NULL,           -- Username
+    password VARCHAR(255) NOT NULL,     -- Mot de passe (plain text - à sécuriser)
+    niveauAcces INT,                    -- 0, 1, 2, 3
+    typeAcces VARCHAR(50)               -- 'Invité', 'Utilisateur', 'Modérateur', 'Administrateur'
+);
+```
 
 ---
 
@@ -1028,7 +1038,7 @@ _Ce fichier est conçu pour fournir un contexte complet à l'AI lors des interac
 
 ## Derniere analyse automatique
 
-**Date:** 2025-12-08 20:32:19
+**Date:** 2025-12-14 23:08:52
 **Fichiers analyses:** 41
 - Routes: 5 (camera.js, contacts.js, dashboard.js, index.js, raspberrypi.js)
 - Models: 11 (database.js, journal.js, mqtt.js, mqtt1.js, mqtt2.js, mqtt3.js, mqtt4.js, mqtt5.js, mqtt6.js, request.js, videoStream.js)

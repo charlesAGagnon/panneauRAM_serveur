@@ -165,7 +165,7 @@ function showAlarmNotification(alarmKey)
                     <div style="font-size: 14px; margin-top: 4px;">${label}</div>
                     <div style="font-size: 12px; margin-top: 4px; opacity: 0.9;">Le système va tenter de corriger automatiquement</div>
                 </div>
-                <button onclick="acknowledgeAlarm('${alarmKey}')" style="background: rgba(255,255,255,0.3); border: none; color: white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 14px;">Reconnaître</button>
+                <button onclick="acknowledgeAlarm('${alarmKey}')" style="background: #f59e0b; border: none; color: white; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 600;">ACK</button>
                 <button onclick="this.parentElement.parentElement.remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 14px;">X</button>
             </div>
         </div>
