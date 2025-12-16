@@ -1,9 +1,11 @@
 /**
- * @file journal-script.js
- * @author charles-Antoine Gagnon
- * @version 1
- * @date 23/11/2025
- * @brief Script pour la page Journal
+ * @file     journal-script.js
+ * @author   charles-Antoine Gagnon
+ * @version  1
+ * @date     23/11/2025
+ * @brief    Script pour la page Journal de bord
+ *           Affichage et filtrage des entrées LOG_CMD et LOG_ALARME
+ *           Export CSV disponible - Accessible niveau 3 uniquement
  */
 
 // Charger la liste des utilisateurs dans le dropdown

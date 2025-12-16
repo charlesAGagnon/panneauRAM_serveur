@@ -1,3 +1,13 @@
+/**
+ * @file     ui-components.css
+ * @author   charles-Antoine Gagnon
+ * @version  2
+ * @date     16/12/2025
+ * @brief    Composants UI spécialisés pour PanneauRAM
+ *           Cylindres d'eau, sliders verticaux/horizontaux
+ *           Styles pour sliders désactivés selon mode AUTO/MANUEL
+ */
+
 /* ============================================
    UI COMPONENTS - Cylindres, Sliders, Boutons
    Optimisé pour affichage compact

@@ -1,3 +1,13 @@
+/**
+ * @file     camera.css
+ * @author   charles-Antoine Gagnon
+ * @version  1
+ * @date     14/11/2025
+ * @brief    Styles spécifiques pour la page Caméra
+ *           Affichage du flux vidéo RTSP en temps réel
+ *           Canvas responsive avec ratio 16:9
+ */
+
 /* Camera Page Specific Styles */
 
 .camera-container {

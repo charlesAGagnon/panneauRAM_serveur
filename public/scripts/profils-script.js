@@ -1,9 +1,11 @@
 /**
- * @file profils-script.js
- * @author charles-Antoine Gagnon
- * @version 2
- * @date 14/11/2025
- * @brief Script pour la gestion des profils
+ * @file     profils-script.js
+ * @author   charles-Antoine Gagnon
+ * @version  2
+ * @date     14/11/2025
+ * @brief    Script pour la gestion des profils utilisateurs
+ *           CRUD complet: Création, lecture, modification, suppression
+ *           Accessible uniquement aux niveaux 2 et 3
  */
 
 console.log('profils-script.js chargé');

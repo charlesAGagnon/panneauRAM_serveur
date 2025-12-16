@@ -1,10 +1,11 @@
 /**
  * @file     database.js
- * @author  charles-Antoine Gagnon
+ * @author   charles-Antoine Gagnon
  * @version  1
  * @date     18/09/2025
- * @brief    Première ébauche d'une architecture générique "RESTful" avec Express
- *          Routeur principal
+ * @brief    Configuration et connexion à la base de données MySQL
+ *           Base: paneauram, Tables: user, journal, contacts
+ *           Pool de connexions pour performances optimales
  */
 
 var mysql = require('mysql');

@@ -1,9 +1,12 @@
 /**
- * @file alertes-script.js
- * @author charles-Antoine Gagnon
- * @version 2
- * @date 23/11/2025
- * @brief Script pour la page Alertes (Gestion des seuils et affichage)
+ * @file     alertes-script.js
+ * @author   charles-Antoine Gagnon
+ * @version  2
+ * @date     23/11/2025
+ * @brief    Script pour la page Alertes
+ *           Gestion des seuils d'alarme et affichage des états
+ *           Configuration des niveaux hauts, temps de garde et temps de réaction
+ *           Accessible niveaux 2 et 3 pour modification
  */
 
 const socket = io();

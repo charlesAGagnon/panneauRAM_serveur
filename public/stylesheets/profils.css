@@ -1,3 +1,13 @@
+/**
+ * @file     profils.css
+ * @author   charles-Antoine Gagnon
+ * @version  1
+ * @date     14/11/2025
+ * @brief    Styles spécifiques pour la page Profils
+ *           Gestion des utilisateurs, formulaires, liste
+ *           Accessible niveaux 2 et 3 uniquement
+ */
+
 /* Profils Page Specific Styles */
 
 .profils-container {

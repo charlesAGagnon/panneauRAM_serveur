@@ -1,10 +1,10 @@
 /**
- * @file     index.js
- * @author  charles-Antoine Gagnon
+ * @file     contacts.js
+ * @author   charles-Antoine Gagnon
  * @version  1
  * @date     18/09/2025
- * @brief    Première ébauche d'une architecture générique "RESTful" avec Express
- *          Routeur principal
+ * @brief    Route pour la page des contacts
+ *           Affichage de la liste des contacts utilisateurs
  */
 
 var express = require('express');

@@ -1,10 +1,11 @@
 /**
- * @file     requete.js
- * @author  charles-Antoine Gagnon
+ * @file     request.js
+ * @author   charles-Antoine Gagnon
  * @version  1
  * @date     18/09/2025
- * @brief    Première ébauche d'une architecture générique "RESTful" avec Express
- *          Routeur principal
+ * @brief    Gestionnaire de requêtes base de données
+ *           Opérations CRUD sur les tables user, journal, contacts
+ *           Validation et authentification utilisateurs
  */
 
 var database = require('./database');

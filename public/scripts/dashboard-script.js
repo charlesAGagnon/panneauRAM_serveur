@@ -1,4 +1,14 @@
-// dashboard-script.js - Script commun pour les dashboards userNiveau
+/**
+ * @file     dashboard-script.js
+ * @author   charles-Antoine Gagnon
+ * @version  2
+ * @date     16/12/2025
+ * @brief    Script commun pour les dashboards userNiveau
+ *           Gestion des consignes et affichage des mesures en temps réel
+ *           Mode AUTO: Consignes réservoirs actives, valves désactivées
+ *           Mode MANUEL: Valves actives, consignes réservoirs désactivées
+ */
+
 const socket = io();
 const niveau = document.body.dataset.niveau || '0';
 const canWrite = niveau !== '0';
