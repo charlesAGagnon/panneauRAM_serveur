@@ -250,6 +250,9 @@ function updateMesuresDisplay()
     {
         const etatMode = document.getElementById('etat-mode');
         if (etatMode) etatMode.textContent = mesures.Mode.toUpperCase();
+
+        // Mettre à jour l'état des sliders de valves selon le mode
+        updateValveSlidersState(mesures.Mode);
     }
 
     // AFFICHAGE CYLINDRES (visualisation graphique)
@@ -326,6 +329,67 @@ function updateSwitch(btnId, value)
     }
 }
 
+// Fonction pour activer/désactiver les sliders selon le mode
+function updateValveSlidersState(mode)
+{
+    const isManualMode = mode === 'manuel';
+
+    // Sliders de RÉSERVOIRS - Actifs en mode AUTO uniquement
+    const reservoirSliders = [
+        'slider-gb',
+        'slider-pb',
+        'slider-tmpb'
+    ];
+
+    // Sliders de VALVES - Actifs en mode MANUEL uniquement
+    const valveSliders = [
+        'slider-gb-valve',
+        'slider-pb-valve',
+        'slider-ec',
+        'slider-ef'
+    ];
+
+    // Mode AUTO: réservoirs actifs, valves désactivées
+    // Mode MANUEL: réservoirs désactivés, valves actives
+    reservoirSliders.forEach(sliderId =>
+    {
+        const slider = document.getElementById(sliderId);
+        if (slider)
+        {
+            slider.disabled = isManualMode;
+            if (isManualMode)
+            {
+                slider.classList.add('slider-disabled');
+                slider.title = 'Les consignes de réservoirs sont désactivées en mode manuel';
+            }
+            else
+            {
+                slider.classList.remove('slider-disabled');
+                slider.title = '';
+            }
+        }
+    });
+
+    valveSliders.forEach(sliderId =>
+    {
+        const slider = document.getElementById(sliderId);
+        if (slider)
+        {
+            slider.disabled = !isManualMode;
+            if (!isManualMode)
+            {
+                slider.classList.add('slider-disabled');
+                slider.title = 'Les consignes de valves sont désactivées en mode automatique';
+            }
+            else
+            {
+                slider.classList.remove('slider-disabled');
+                slider.title = '';
+            }
+        }
+    });
+}
+
 // Fonction pour restaurer l'UI avec les consignes sauvegardées
 function updateConsignesUI()
 {
@@ -365,6 +429,9 @@ function updateConsignesUI()
     {
         selMode.value = consignes.Mode;
     }
+
+    // Mettre à jour l'état des sliders de valves selon le mode
+    updateValveSlidersState(mesures.Mode || consignes.Mode || 'auto');
 }
 
 if (canWrite)
@@ -511,6 +578,9 @@ if (canWrite)
             const value = e.target.value;
             // Mettre à jour la consigne locale
             consignes.Mode = value;
+
+            // Mettre à jour l'état des sliders de valves
+            updateValveSlidersState(value);
 
             // Envoyer la commande MQTT
             socket.emit('mqtt-publish',

@@ -138,6 +138,38 @@ input[type="range"].slider-vertical::-moz-range-thumb:hover {
     box-shadow: 0 3px 10px rgba(79, 70, 229, 0.6);
 }
 
+/* SLIDERS DESACTIVES (mode manuel) */
+input[type="range"].slider-disabled,
+input[type="range"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+input[type="range"].slider-disabled::-webkit-slider-thumb,
+input[type="range"]:disabled::-webkit-slider-thumb {
+    cursor: not-allowed;
+    background: #94a3b8;
+}
+
+input[type="range"].slider-disabled::-moz-range-thumb,
+input[type="range"]:disabled::-moz-range-thumb {
+    cursor: not-allowed;
+    background: #94a3b8;
+}
+
+input[type="range"].slider-disabled::-webkit-slider-track,
+input[type="range"]:disabled::-webkit-slider-track {
+    background: #e2e8f0;
+}
+
+/* Container des sliders desactives */
+.side-slider-container:has(input.slider-disabled),
+.side-slider-container:has(input:disabled) {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .slider-label {
     font-size: 11px;
     font-weight: 600;

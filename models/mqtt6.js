@@ -10,8 +10,8 @@ const mqtt = require('mqtt');
 const journalModel = require('./journal');
 
 // Connexion au broker MQTT
-//const client = mqtt.connect('mqtt://172.17.15.91:1883');
-const client = mqtt.connect('mqtt://localhost:1883');
+const client = mqtt.connect('mqtt://172.17.15.195:1883');
+//const client = mqtt.connect('mqtt://localhost:1883');
 
 // Topics d'alarmes (Lecture des états d'alarme)
 const ALARM_TOPICS = [
