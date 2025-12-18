@@ -86,6 +86,50 @@
                 </div>
             </div>
 
+            <!-- ETATS PURGES (Pi 5 - Valves) -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-header-title"> Purges (Ouverture Valves)</h3>
+                </div>
+                <div class="card-body" style="display: flex; justify-content: space-around; align-items: center; gap: 40px; padding: 30px;">
+
+                    <!-- Jauge Purge GB -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                        <div style="font-weight: 600; font-size: 14px; color: #374151; margin-bottom: 10px;">PURGE GB</div>
+                        <div style="position: relative; width: 150px; height: 75px;">
+                            <!-- Arc de fond -->
+                            <svg width="150" height="75" style="transform: rotate(0deg);">
+                                <path d="M 10 65 A 60 60 0 0 1 140 65" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round" />
+                                <path id="gauge-arc-gb" d="M 10 65 A 60 60 0 0 1 140 65" fill="none" stroke="#3b82f6" stroke-width="12" stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="188.5" style="transition: stroke-dashoffset 0.3s ease;" />
+                            </svg>
+                            <!-- Valeur au centre -->
+                            <div style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); text-align: center;">
+                                <div id="etat-purge-gb" style="font-size: 24px; font-weight: 700; color: #3b82f6;">--</div>
+                                <div style="font-size: 12px; color: #6b7280; font-weight: 500;">%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Jauge Purge PB -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                        <div style="font-weight: 600; font-size: 14px; color: #374151; margin-bottom: 10px;">PURGE PB</div>
+                        <div style="position: relative; width: 150px; height: 75px;">
+                            <!-- Arc de fond -->
+                            <svg width="150" height="75" style="transform: rotate(0deg);">
+                                <path d="M 10 65 A 60 60 0 0 1 140 65" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round" />
+                                <path id="gauge-arc-pb" d="M 10 65 A 60 60 0 0 1 140 65" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="188.5" style="transition: stroke-dashoffset 0.3s ease;" />
+                            </svg>
+                            <!-- Valeur au centre -->
+                            <div style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); text-align: center;">
+                                <div id="etat-purge-pb" style="font-size: 24px; font-weight: 700; color: #10b981;">--</div>
+                                <div style="font-size: 12px; color: #6b7280; font-weight: 500;">%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
             <!-- RESERVOIRS STATUS - VISUAL CYLINDERS -->
             <div class="card">
                 <div class="card-header">

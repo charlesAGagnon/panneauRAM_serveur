@@ -41,6 +41,31 @@
                 </div>
             </div>
 
+            <!-- Mode Contrôle -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-header-title"> Mode</h2>
+                </div>
+                <div class="card-body">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div class="status-display">
+                            <span class="status-label">Mode actuel :</span>
+                            <span class="status-value" id="mode-melangeur">-</span>
+                        </div>
+                        <% if (niveau !== '0') { %>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn-mode-control btn btn-primary" data-mode="auto" style="flex: 1;">
+                                Auto
+                            </button>
+                            <button class="btn-mode-control btn btn-primary" data-mode="manuel" style="flex: 1;">
+                                Manuel
+                            </button>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
             <!-- Moteurs -->
             <div class="card">
                 <div class="card-header">
@@ -191,7 +216,8 @@
                 motA: 'off',
                 motB: 'off',
                 motC: 'off',
-                recetteStatut: 'AUCUNE'
+                recetteStatut: 'AUCUNE',
+                mode: 'auto'
             },
             aspirateur:
             {
@@ -316,6 +342,9 @@
             if (data.motB) localMotorState.motB = data.motB;
             if (data.motC) localMotorState.motC = data.motC;
 
+            // Restaurer le mode
+            if (data.mode) mqttData.melangeur.mode = data.mode;
+
             // Restaurer les inputs de recette
             if (data.recette) $('#input-recette').val(data.recette);
 
@@ -396,6 +425,32 @@
                 .text(status)
                 .css('color', status === 'AUCUNE' ? '#0d6efd' :
                     status.includes('FINISH') ? '#198754' : '#ffc107');
+
+            // Mode status
+            const mode = mqttData.melangeur.mode || 'auto';
+            $('#mode-melangeur').text(mode.toUpperCase());
+
+            // Mettre à jour les boutons de mode (style actif)
+            $('.btn-mode-control').each(function()
+            {
+                const btnMode = $(this).data('mode');
+                if (btnMode === mode)
+                {
+                    $(this).css(
+                    {
+                        'background': '#3b82f6',
+                        'color': 'white'
+                    });
+                }
+                else
+                {
+                    $(this).css(
+                    {
+                        'background': 'white',
+                        'color': '#3b82f6'
+                    });
+                }
+            });
         }
 
         function updateBalance(data)
@@ -475,11 +530,32 @@
             const recipe = [1, 2, 3].map(i => $(`#ing${i}`).val() || '0').join(',');
             socket.emit('mqtt-command-pi2-recette',
             {
-                value: recipe
+                value: recipe,
+                user: '<%= user %>'
             });
 
             // Clear form
             $(this).trigger('reset');
+        });
+
+        // Mode Control
+        $('.btn-mode-control').click(function()
+        {
+            if (!canWrite) return;
+
+            const mode = $(this).data('mode');
+            console.log('Changement de mode vers:', mode);
+
+            // Mettre à jour localement
+            mqttData.melangeur.mode = mode;
+            updateMelangeur();
+
+            // Envoyer la commande
+            socket.emit('mqtt-command-pi2-mode',
+            {
+                value: mode,
+                user: '<%= user %>'
+            });
         });
 
     </script>

@@ -3,7 +3,7 @@
 **Projet:** Système de contrôle industriel pour réservoirs d'eau (Grand Bassin et Petit Bassin)  
 **Auteur:** Charles-Antoine Gagnon  
 **Version:** 1.0  
-**Date:** 2025-12-16
+**Date:** 2025-12-18
 
 ---
 
@@ -167,8 +167,8 @@ Handler MQTT pour le panneau de contrôle principal:
 - `RAM/panneau/etats/NivGB` - Niveau Grand Bassin (%)
 - `RAM/panneau/etats/NivPB` - Niveau Petit Bassin (%)
 - `RAM/panneau/etats/TmpPB` - Température Petit Bassin
-- `RAM/panneau/etats/ValveGB` - État vanne GB (%)
-- `RAM/panneau/etats/ValvePB` - État vanne PB (%)
+- `RAM/panneau/etats/PurgeGB` - État purge GB (%)
+- `RAM/panneau/etats/PurgePB` - État purge PB (%)
 - `RAM/panneau/etats/ValveEC/EF/EEC/EEF` - États vannes entrée/sortie
 - `RAM/panneau/etats/Pompe` - État pompe (on/off)
 - `RAM/panneau/etats/Mode` - Mode opération (auto/manuel)
@@ -393,7 +393,7 @@ Menu adaptatif selon niveau:
 Enregistrées via `journalModel.logCommand(userLogin, commandType, commandValue)`:
 
 - Toutes les modifications de consignes (ConsNivGB, ConsNivPB, ConsTmpPB)
-- Commandes vannes (ValveGB, ValvePB, ValveEC, etc.)
+- Commandes vannes (PurgeGB, PurgePB, ValveEC, etc.)
 - Changements de mode (auto/manuel)
 - Contrôle pompe
 
@@ -1038,7 +1038,7 @@ _Ce fichier est conçu pour fournir un contexte complet à l'AI lors des interac
 
 ## Derniere analyse automatique
 
-**Date:** 2025-12-16 20:48:31
+**Date:** 2025-12-18 17:41:31
 **Fichiers analyses:** 41
 - Routes: 5 (camera.js, contacts.js, dashboard.js, index.js, raspberrypi.js)
 - Models: 11 (database.js, journal.js, mqtt.js, mqtt1.js, mqtt2.js, mqtt3.js, mqtt4.js, mqtt5.js, mqtt6.js, request.js, videoStream.js)

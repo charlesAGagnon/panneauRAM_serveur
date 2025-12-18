@@ -17,7 +17,8 @@ const topics = [
     'RAM/melangeur/etats/recetteStatut',
     'RAM/melangeur/etats/motA',
     'RAM/melangeur/etats/motB',
-    'RAM/melangeur/etats/motC'
+    'RAM/melangeur/etats/motC',
+    'RAM/melangeur/etats/mode'
 ];
 
 // Topics de commandes (écriture)
@@ -37,7 +38,8 @@ const currentData = {
     recetteStatut: 'FINISHED',
     motA: 'off',
     motB: 'off',
-    motC: 'off'
+    motC: 'off',
+    mode: 'auto'
 };
 
 // Dernières commandes envoyées (consignes)

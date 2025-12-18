@@ -58,10 +58,17 @@ let energyData = {
     FP: 0
 };
 
+// VALVES (Pi 5) - Purges
+let valvesData = {
+    PurgeGB: 0,
+    PurgePB: 0
+};
+
 // CONNECTION STATUS
 socket.on('connect', () =>
 {
     console.log('Connected to Socket.IO');
+    socket.emit('join-pi5');
 });
 
 socket.on('disconnect', () =>
@@ -193,6 +200,24 @@ socket.on('mqtt-data-pi3', (msg) =>
     }
 });
 
+// VALVES DATA (Pi 5)
+socket.on('mqtt-initial-data-pi5', (data) =>
+{
+    console.log('Pi 5 - Donnees initiales:', data);
+    Object.assign(valvesData, data);
+    updateValvesDisplay();
+});
+
+socket.on('mqtt-data-pi5', (msg) =>
+{
+    console.log('Pi 5 - Mise a jour:', msg);
+    if (msg.key && msg.value !== undefined)
+    {
+        valvesData[msg.key] = msg.value;
+        updateValvesDisplay();
+    }
+});
+
 function updateMesuresDisplay()
 {
     console.log('updateMesuresDisplay appele avec mesures:', mesures);
@@ -317,6 +342,43 @@ function updateEnergyDisplay()
     if (energyData.KW !== undefined) document.getElementById('stat-kw').textContent = (parseFloat(energyData.KW) || 0).toFixed(2);
     if (energyData.KWh !== undefined) document.getElementById('stat-kwh').textContent = (parseFloat(energyData.KWh) || 0).toFixed(2);
     if (energyData.FP !== undefined) document.getElementById('stat-fp').textContent = (parseFloat(energyData.FP) || 0).toFixed(2);
+}
+
+function updateValvesDisplay()
+{
+    console.log('Mise a jour affichage valves:', valvesData);
+
+    // Purge GB - Texte et jauge
+    if (valvesData.PurgeGB !== undefined)
+    {
+        const etatPurgeGB = document.getElementById('etat-purge-gb');
+        if (etatPurgeGB) etatPurgeGB.textContent = valvesData.PurgeGB;
+
+        const gaugeArcGB = document.getElementById('gauge-arc-gb');
+        if (gaugeArcGB)
+        {
+            const percentage = Math.max(0, Math.min(100, parseFloat(valvesData.PurgeGB) || 0));
+            const arcLength = 188.5;
+            const offset = arcLength - (arcLength * percentage / 100);
+            gaugeArcGB.style.strokeDashoffset = offset;
+        }
+    }
+
+    // Purge PB - Texte et jauge
+    if (valvesData.PurgePB !== undefined)
+    {
+        const etatPurgePB = document.getElementById('etat-purge-pb');
+        if (etatPurgePB) etatPurgePB.textContent = valvesData.PurgePB;
+
+        const gaugeArcPB = document.getElementById('gauge-arc-pb');
+        if (gaugeArcPB)
+        {
+            const percentage = Math.max(0, Math.min(100, parseFloat(valvesData.PurgePB) || 0));
+            const arcLength = 188.5;
+            const offset = arcLength - (arcLength * percentage / 100);
+            gaugeArcPB.style.strokeDashoffset = offset;
+        }
+    }
 }
 
 function updateConsigneDisplay(sliderId, valId, value)

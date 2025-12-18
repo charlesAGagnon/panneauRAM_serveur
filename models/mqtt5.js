@@ -13,16 +13,16 @@ const client = mqtt.connect('mqtt://172.17.15.195:1883');
 //const client = mqtt.connect('mqtt://localhost:1883');
 // Topics de lecture pour Pi 5 - Valves (états)
 const topics = [
-    'RAM/valves/etats/Ouverture_PB',
-    'RAM/valves/etats/Ouverture_GB'
+    'RAM/valves/etats/PurgePB',
+    'RAM/valves/etats/PurgeGB'
 ];
 
 let io = null;
 
 // Données actuelles pour Pi 5 - Valves
 const currentData = {
-    Ouverture_PB: 0,
-    Ouverture_GB: 0
+    PurgePB: 0,
+    PurgeGB: 0
 };
 
 client.on('connect', function ()
