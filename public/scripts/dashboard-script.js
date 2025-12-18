@@ -53,9 +53,9 @@ let energyData = {
     Vab: 0,
     Ia: 0,
     Ib: 0,
-    KW: 0,
-    KWh: 0,
-    FP: 0
+    Kw: 0,
+    Kwh: 0,
+    Fp: 0
 };
 
 // VALVES (Pi 5) - Purges
@@ -68,6 +68,7 @@ let valvesData = {
 socket.on('connect', () =>
 {
     console.log('Connected to Socket.IO');
+    socket.emit('join-pi3');
     socket.emit('join-pi5');
 });
 
@@ -187,12 +188,14 @@ socket.on('mqtt-data', (msg) =>
 // ENERGY DATA (Pi 3)
 socket.on('mqtt-initial-data-pi3', (data) =>
 {
+    console.log('Pi 3 - Donnees initiales:', data);
     Object.assign(energyData, data);
     updateEnergyDisplay();
 });
 
 socket.on('mqtt-data-pi3', (msg) =>
 {
+    console.log('Pi 3 - Mise a jour:', msg);
     if (msg.key && msg.value !== undefined)
     {
         energyData[msg.key] = msg.value;
@@ -334,14 +337,20 @@ function updateMesuresDisplay()
 
 function updateEnergyDisplay()
 {
-    if (energyData.Van !== undefined) document.getElementById('stat-van').textContent = (parseFloat(energyData.Van) || 0).toFixed(1);
+    console.log('Mise a jour affichage energy:', energyData);
+    if (energyData.Van !== undefined)
+    {
+        const elem = document.getElementById('stat-van');
+        console.log('Element stat-van:', elem);
+        if (elem) elem.textContent = (parseFloat(energyData.Van) || 0).toFixed(1);
+    }
     if (energyData.Vbn !== undefined) document.getElementById('stat-vbn').textContent = (parseFloat(energyData.Vbn) || 0).toFixed(1);
     if (energyData.Vab !== undefined) document.getElementById('stat-vab').textContent = (parseFloat(energyData.Vab) || 0).toFixed(1);
     if (energyData.Ia !== undefined) document.getElementById('stat-ia').textContent = (parseFloat(energyData.Ia) || 0).toFixed(2);
     if (energyData.Ib !== undefined) document.getElementById('stat-ib').textContent = (parseFloat(energyData.Ib) || 0).toFixed(2);
-    if (energyData.KW !== undefined) document.getElementById('stat-kw').textContent = (parseFloat(energyData.KW) || 0).toFixed(2);
-    if (energyData.KWh !== undefined) document.getElementById('stat-kwh').textContent = (parseFloat(energyData.KWh) || 0).toFixed(2);
-    if (energyData.FP !== undefined) document.getElementById('stat-fp').textContent = (parseFloat(energyData.FP) || 0).toFixed(2);
+    if (energyData.Kw !== undefined) document.getElementById('stat-kw').textContent = (parseFloat(energyData.Kw) || 0).toFixed(2);
+    if (energyData.Kwh !== undefined) document.getElementById('stat-kwh').textContent = (parseFloat(energyData.Kwh) || 0).toFixed(2);
+    if (energyData.Fp !== undefined) document.getElementById('stat-fp').textContent = (parseFloat(energyData.Fp) || 0).toFixed(2);
 }
 
 function updateValvesDisplay()

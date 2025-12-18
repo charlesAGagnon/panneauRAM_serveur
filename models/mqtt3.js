@@ -18,9 +18,9 @@ const topics = [
     'RAM/powermeter/etats/Vab',
     'RAM/powermeter/etats/Ia',
     'RAM/powermeter/etats/Ib',
-    'RAM/powermeter/etats/KW',
-    'RAM/powermeter/etats/KWh',
-    'RAM/powermeter/etats/FP'
+    'RAM/powermeter/etats/Kw',
+    'RAM/powermeter/etats/Kwh',
+    'RAM/powermeter/etats/Fp'
 ];
 
 let io = null;
@@ -32,9 +32,9 @@ const currentData = {
     Vab: 0.0,
     Ia: 0.0,
     Ib: 0.0,
-    KW: 0.0,
-    KWh: 0.0,
-    FP: 0.0
+    Kw: 0.0,
+    Kwh: 0.0,
+    Fp: 0.0
 };
 
 client.on('connect', function ()
